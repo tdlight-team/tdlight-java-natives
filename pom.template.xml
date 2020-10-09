@@ -1,9 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>it.tdlight</groupId>
-	<artifactId>tdlight-natives-${OPERATING_SYSTEM_NAME}-${CPU_ARCHITECTURE_NAME}</artifactId>
-	<version>3.0.0-${IMPLEMENTATION_NAME}-SNAPSHOT</version>
-	<name>TDLight Natives for Windows (amd64)</name>
+	<artifactId>${IMPLEMENTATION_NAME}-natives-${OPERATING_SYSTEM_NAME}-${CPU_ARCHITECTURE_NAME}</artifactId>
+	<version>3.0.0-SNAPSHOT</version>
+	<name>${IMPLEMENTATION_NAME} natives for ${OPERATING_SYSTEM_NAME} (${CPU_ARCHITECTURE_NAME})</name>
 	<packaging>jar</packaging>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -86,8 +86,8 @@
 						<configuration>
 							<relocations>
 								<relocation>
-									<pattern>it.tdlight.jni.operating_system_name.cpu_architecture_name.implementation_name</pattern>
-									<shadedPattern>it.tdlight.jni.${OPERATING_SYSTEM_NAME}.${CPU_ARCHITECTURE_NAME}.${IMPLEMENTATION_NAME}</shadedPattern>
+									<pattern>it.tdlight.jni.implementation_name.operating_system_name.cpu_architecture_name</pattern>
+									<shadedPattern>it.tdlight.jni.${IMPLEMENTATION_NAME}.${OPERATING_SYSTEM_NAME}.${CPU_ARCHITECTURE_NAME}</shadedPattern>
 								</relocation>
 							</relocations>
 						</configuration>

@@ -1,4 +1,4 @@
-package it.tdlight.jni.operating_system_name.cpu_architecture_name.implementation_name;
+package it.tdlight.jni.implementation_name.operating_system_name.cpu_architecture_name;
 
 import java.lang.ClassLoader;
 
