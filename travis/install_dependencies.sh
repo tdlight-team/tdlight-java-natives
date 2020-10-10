@@ -32,8 +32,9 @@ elif [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
   choco install python3 --params "/InstallDir:C:\Python3"
 
   [ -d ./windowsenv/ ] && $(yes | rm -rf ./windowsenv/)
+  [ -d $VCPKG_DIR ] && $(yes | rm -rf $VCPKG_DIR)
   git clone --depth=1 https://github.com/tdlight-team/windows-amd64-prebuilt-libraries.git windowsenv
-  mv windowsenv/vcpkg $VCPKG_DIR
+  mv windowsenv/vcpkg/. $VCPKG_DIR
 else
   echo "Unrecognized os: $TRAVIS_OS_NAME"
   exit 1
