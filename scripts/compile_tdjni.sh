@@ -71,7 +71,18 @@ cmake \
 # Build
 echo "Compiling ${IMPLEMENTATION_NAME} jni..."
 cmake --build . --target install --parallel ${CPU_CORES}
+cd ..
 
+# Copy to resources
+echo "Copying to resources..."
+[ -d  ./src/main/resources/libs/${OPERATING_SYSTEM_NAME_SHORT}/${CPU_ARCHITECTURE_NAME}/ ] || mkdir -p ./src/main/resources/libs/${OPERATING_SYSTEM_NAME_SHORT}/${CPU_ARCHITECTURE_NAME}/
+if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
+	cp ./tdjni_bin/tdjni.dll ./src/main/resources/libs/${OPERATING_SYSTEM_NAME_SHORT}/${CPU_ARCHITECTURE_NAME}/tdjni.dll
+elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+	cp ./tdjni_bin/libtdjni.dylib ./src/main/resources/libs/${OPERATING_SYSTEM_NAME_SHORT}/${CPU_ARCHITECTURE_NAME}/tdjni.dylib
+elif [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+	cp ./tdjni_bin/libtdjni.so ./src/main/resources/libs/${OPERATING_SYSTEM_NAME_SHORT}/${CPU_ARCHITECTURE_NAME}/tdjni.so
+fi
 
 echo "Done."
 exit 0

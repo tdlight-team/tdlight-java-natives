@@ -1,0 +1,64 @@
+language: shell
+
+os:
+  - linux
+  - windows
+  - osx
+arch:
+  - amd64
+  - arm64
+osx_image: xcode11.3
+dist: bionic
+before_install:
+  - cp .travis.settings.xml $HOME/.m2/settings.xml
+  - chmod +x travis/build.sh
+  - chmod +x travis/build_success.sh
+  - chmod +x travis/install_dependencies.sh
+  - chmod +x travis/setup_variables.sh
+addons:
+  apt:
+    update: true
+    packages:
+    - make
+    - git
+    - zlib1g-dev
+    - libssl-dev
+    - gperf
+    - php
+    - cmake
+    - g++
+    - ccache
+    - maven
+    - openjdk-11-jdk
+    - python3
+    - php7.2-cli
+cache:
+  bundler: true
+  cocoapods: true
+  ccache: true
+  directories:
+    - ".autoconf"
+    - "$HOME/.m2"
+    - "$HOME/.ccache"
+  
+deploy:
+  - provider: pages
+    skip-cleanup: true
+    github-token: $GITHUB_TOKEN
+    keep-history: false
+    local-dir: out/docs
+    repo: tdlight-team/tdlight-docs
+    target_branch: master
+    email: andrea@cavallium.it
+    name: "Andrea Cavalli"
+    verbose: true
+    on:
+      branch: dev
+      condition: $TRAVIS_OS_NAME = linux && $TRAVIS_CPU_ARCH = amd64
+#  - provider: script
+#    skip-cleanup: true
+#    script: "mvn -B -V deploy"
+
+install: ./travis/install_dependencies.sh
+script: ./travis/build.sh
+after_success: ./travis/build_success.sh
