@@ -29,7 +29,8 @@ addons:
     - libssl-dev
     - gperf
     - cmake
-    - clang
+    - clang-10
+    - clang-tools-10
     - libc++-10-dev
     - libc++abi-10-dev
     - libc++-10-dev
