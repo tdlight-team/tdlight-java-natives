@@ -35,9 +35,9 @@ elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
 elif [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
   export CMAKE_EXTRA_ARGUMENTS=""
   export TRAVIS_CPU_ARCH_JAVA="$(tr '[:upper:]' '[:lower:]'<<<"${TRAVIS_CPU_ARCH}")"
-  export PATH="$PATH:/usr/lib/jvm/java-8-openjdk-$TRAVIS_CPU_ARCH_JAVA/bin"
-  export JAVA_HOME="/usr/lib/jvm/java-8-openjdk-$TRAVIS_CPU_ARCH_JAVA"
-  export JAVA_INCLUDE_PATH="/usr/lib/jvm/java-8-openjdk-$TRAVIS_CPU_ARCH_JAVA/include"
+  export PATH="$PATH:/usr/lib/jvm/java-11-openjdk-$TRAVIS_CPU_ARCH_JAVA/bin"
+  export JAVA_HOME="/usr/lib/jvm/java-11-openjdk-$TRAVIS_CPU_ARCH_JAVA"
+  export JAVA_INCLUDE_PATH="/usr/lib/jvm/java-11-openjdk-$TRAVIS_CPU_ARCH_JAVA/include"
   export CPU_CORES=" -- -j${CPU_CORES_NUM}"
   export CXXFLAGS="-stdlib=libc++"
   export CC="/usr/bin/clang"
