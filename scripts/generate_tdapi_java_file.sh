@@ -62,6 +62,14 @@ cp -r ./src/main/jni-java-src ./generated/src/main/jni-java-src
 echo "Configuring CMake..."
 cd ./generated/tdapi_java_build/
 echo "Telegram source path: '$(realpath -m ../implementation/)'"
+echo "Td bin path: '$(realpath -m ../td_bin/)'"
+echo "Td bin files: $(ls $(realpath -m ../td_bin/))"
+echo "Td bin/lib path: '$(realpath -m ../td_bin/lib/)'"
+echo "Td bin/lib files: $(ls $(realpath -m ../td_bin/lib/))"
+echo "Td CMake path: '$(realpath -m ../td_bin/lib/cmake/)'"
+echo "Td CMake files: $(ls $(realpath -m ../td_bin/lib/cmake/))"
+echo "Td CMake/td path: '$(realpath -m ../td_bin/lib/cmake/Td/)'"
+echo "Td CMake/td files: $(ls $(realpath -m ../td_bin/lib/cmake/Td/))"
 cmake -DCMAKE_BUILD_TYPE=Release \
  -DTD_SRC_DIR=$(realpath -m ../implementation/) \
  -DTD_GENERATED_BINARIES_DIR=$(realpath -m ../td_tools/td/generate) \
