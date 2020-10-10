@@ -1,0 +1,5 @@
+../src/main/jni-java-src/it/tdlight/jni/NativeClient.java
+../src/main/jni-java-src/it/tdlight/jni/NativeLog.java
+../src/main/jni-java-src/it/tdlight/jni/TdApi.java
+../src/main/jni-java-src/it/tdlight/jni/FatalErrorCallbackPtr.java
+../src/main/jni-java-src/it/tdlight/jni/ObjectsUtils.java
