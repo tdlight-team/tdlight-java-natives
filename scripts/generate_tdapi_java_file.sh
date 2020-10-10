@@ -79,7 +79,7 @@ cd ..
 
 echo "Patching TdApi.java..."
 cd ../tdlib-serializer/
-pip3 install -r requirements.txt
+pip3 install -r requirements.txt --user
 cd ../generated/
 python3 ../tdlib-serializer/ $(realpath -m ./src/main/jni-java-src/it/tdlight/jni/TdApi.java) $(realpath -m ./src/main/jni-java-src/it/tdlight/jni/new_TdApi.java) $(realpath -m ../tdlib-serializer/headers.txt)
 rm ./src/main/jni-java-src/it/tdlight/jni/TdApi.java
