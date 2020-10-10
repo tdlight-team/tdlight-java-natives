@@ -31,7 +31,11 @@ addons:
     - cmake
     - g++
     - clang
-    - libc++-dev
+    - libc++-10-dev
+    - libc++abi-10-dev
+    - libc++-10-dev
+    - libc++1-10
+    - libc++abi1-10
     - ccache
     - maven
     - python3
@@ -46,7 +50,7 @@ cache:
     - ".autoconf"
     - "$HOME/.m2"
     - "$HOME/.ccache"
-    - "$HOME/.cache/pip"
+    - "$HOME/pip"
   
 #deploy:
 #  - provider: pages
