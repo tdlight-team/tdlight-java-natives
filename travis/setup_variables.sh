@@ -26,7 +26,7 @@ echo "============================="
 
 # ====== OS Variables
 if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
-  export VCPKG_DIR="$(realpath .)/generate/vcpkg"
+  export VCPKG_DIR="$(realpath .)/generated/vcpkg"
   export CMAKE_EXTRA_ARGUMENTS="-A x64 -DCMAKE_TOOLCHAIN_FILE:FILEPATH=$VCPKG_DIR/scripts/buildsystems/vcpkg.cmake"
   export PATH="$PATH:/c/tools/php74:/c/PHP:/c/Program Files (x86)/Microsoft Visual Studio/2019/BuildTools/VC/Tools/MSVC/14.27.29110/bin/Hostx64/x64:/c/Program Files/OpenJDK/openjdk-11.0.8_10/bin:/c/Program Files/CMake/bin:/c/ProgramData/chocolatey/bin:/c/Program Files/apache-maven-3.6.3/bin:/c/ProgramData/chocolatey/lib/maven/apache-maven-3.6.3/bin:/c/ProgramData/chocolatey/lib/base64/tools:/c/Program Files/NASM"
   export JAVA_HOME="/c/Program Files/OpenJDK/openjdk-11.0.8_10"
