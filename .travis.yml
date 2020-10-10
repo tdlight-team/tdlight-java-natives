@@ -11,7 +11,7 @@ env:
   - IMPLEMENTATION_NAME=tdlib
   - IMPLEMENTATION_NAME=tdlight
 osx_image: xcode11.3
-dist: xenial
+dist: bionic
 before_install:
   - cp .travis.settings.xml $HOME/.m2/settings.xml
   - chmod +x travis/build.sh
@@ -36,8 +36,8 @@ addons:
     - maven
     - python3
     - python3-pip
-    - php7.0-cli
-    - openjdk-8-jdk
+    - php7.2-cli
+    - openjdk-11-jdk
 cache:
   bundler: true
   cocoapods: true
