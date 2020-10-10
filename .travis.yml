@@ -46,6 +46,7 @@ cache:
     - ".autoconf"
     - "$HOME/.m2"
     - "$HOME/.ccache"
+    - "$HOME/.cache/pip"
   
 #deploy:
 #  - provider: pages
