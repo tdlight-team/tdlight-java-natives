@@ -4,6 +4,7 @@
 # CPU_ARCHITECTURE_NAME = <amd64 | aarch64>
 # IMPLEMENTATION_NAME = <tdlib | tdlight>
 # CPU_CORES = <cores>
+# CMAKE_EXTRA_ARGUMENTS = <args>
 
 # Check variables correctness
 if [ -z "${OPERATING_SYSTEM_NAME}" ]; then
@@ -31,6 +32,8 @@ echo "Current directory: $(pwd)"
 echo "Operating system: ${OPERATING_SYSTEM_NAME}"
 echo "Architecture: ${CPU_ARCHITECTURE_NAME}"
 echo "Td implementation: ${IMPLEMENTATION_NAME}"
+echo "CPU cores count: ${CPU_CORES}"
+echo "CMake extra arguments: '${CMAKE_EXTRA_ARGUMENTS}'"
 
 # Delete old data
 echo "Deleting old data..."

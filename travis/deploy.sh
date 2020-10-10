@@ -5,7 +5,10 @@ source ./travis/setup_variables.sh
 
 cd ./scripts/
 
-./deploy_snapshot.sh
+git config user.email \"jenkins@mchv.eu\"
+git config user.name \"Jenkins\"
+
+./deploy_release.sh
 
 echo "Build success"
 exit 0
