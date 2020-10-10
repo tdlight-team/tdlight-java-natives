@@ -44,23 +44,20 @@ cache:
     - "$HOME/.m2"
     - "$HOME/.ccache"
   
-deploy:
-  - provider: pages
-    skip-cleanup: true
-    github-token: $GITHUB_TOKEN
-    keep-history: false
-    local-dir: out/docs
-    repo: tdlight-team/tdlight-docs
-    target_branch: master
-    email: andrea@cavallium.it
-    name: "Andrea Cavalli"
-    verbose: true
-    on:
-      branch: dev
-      condition: $TRAVIS_OS_NAME = linux && $TRAVIS_CPU_ARCH = amd64
-#  - provider: script
+#deploy:
+#  - provider: pages
 #    skip-cleanup: true
-#    script: "mvn -B -V deploy"
+#    github-token: $GITHUB_TOKEN
+#    keep-history: false
+#    local-dir: out/docs
+#    repo: tdlight-team/tdlight-docs
+#    target_branch: master
+#    email: andrea@cavallium.it
+#    name: "Andrea Cavalli"
+#    verbose: true
+#    on:
+#      branch: dev
+#      condition: $TRAVIS_OS_NAME = linux && $TRAVIS_CPU_ARCH = amd64
 
 install: ./travis/install_dependencies.sh
 script: ./travis/build.sh
