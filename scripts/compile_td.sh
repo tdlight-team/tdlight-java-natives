@@ -49,7 +49,7 @@ echo "Creating missing folders..."
 echo "Configuring CMake..."
 cd ./generated/td_build/
 cmake -DCMAKE_BUILD_TYPE=Release \
- -DCMAKE_INSTALL_PREFIX:PATH=$(realpath ../td_bin/) \
+ -DCMAKE_INSTALL_PREFIX:PATH=$(realpath -m ../td_bin/) \
  -DTD_ENABLE_JNI=ON \
  ${CMAKE_EXTRA_ARGUMENTS} \
  ../implementation

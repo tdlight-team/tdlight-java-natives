@@ -61,16 +61,16 @@ cp -r ./src/main/jni-java-src ./generated/src/main/jni-java-src
 # Configure cmake
 echo "Configuring CMake..."
 cd ./generated/tdapi_java_build/
-echo "Telegram source path: '$(realpath ../implementation/)'"
+echo "Telegram source path: '$(realpath -m ../implementation/)'"
 cmake -DCMAKE_BUILD_TYPE=Release \
- -DTD_SRC_DIR=$(realpath ../implementation/) \
- -DTD_GENERATED_BINARIES_DIR=$(realpath ../td_tools/td/generate) \
- -DTd_DIR=$(realpath ../td_bin/lib/cmake/Td/) \
- -DTDNATIVES_BIN_DIR=$(realpath ../tdjni_bin/) \
- -DTDNATIVES_DOCS_BIN_DIR=$(realpath ../tdjni_docs/) \
- -DJAVA_SRC_DIR=$(realpath ../src/main/jni-java-src/) \
+ -DTD_SRC_DIR=$(realpath -m ../implementation/) \
+ -DTD_GENERATED_BINARIES_DIR=$(realpath -m ../td_tools/td/generate) \
+ -DTd_DIR=$(realpath -m ../td_bin/lib/cmake/Td/) \
+ -DTDNATIVES_BIN_DIR=$(realpath -m ../tdjni_bin/) \
+ -DTDNATIVES_DOCS_BIN_DIR=$(realpath -m ../tdjni_docs/) \
+ -DJAVA_SRC_DIR=$(realpath -m ../src/main/jni-java-src/) \
  ${CMAKE_EXTRA_ARGUMENTS} \
- $(realpath ../src/main/jni-cpp-src/)
+ $(realpath -m ../src/main/jni-cpp-src/)
 
 # Run cmake to generate TdApi.java
 echo "Generating TdApi.java..."
@@ -81,13 +81,13 @@ echo "Patching TdApi.java..."
 cd ./tdlib-serializer/
 python3 -m pip install -r requirements.txt
 cd ../
-python3 ../tdlib-serializer/ $(realpath ./src/main/jni-java-src/it/tdlight/jni/TdApi.java) $(realpath ./src/main/jni-java-src/it/tdlight/jni/new_TdApi.java) $(realpath ../tdlib-serializer/headers.txt)
+python3 ../tdlib-serializer/ $(realpath -m ./src/main/jni-java-src/it/tdlight/jni/TdApi.java) $(realpath -m ./src/main/jni-java-src/it/tdlight/jni/new_TdApi.java) $(realpath -m ../tdlib-serializer/headers.txt)
 rm ./src/main/jni-java-src/it/tdlight/jni/TdApi.java
 unexpand --tabs=2 ./src/main/jni-java-src/it/tdlight/jni/new_TdApi.java > ./src/main/jni-java-src/it/tdlight/jni/TdApi.java
 rm ./src/main/jni-java-src/it/tdlight/jni/new_TdApi.java
 cp ./src/main/jni-java-src/it/tdlight/jni/TdApi.java ./src/main/java/it/tdlight/jni/TdApi.java
 
-echo "Generated '$(realpath ./src/main/java/it/tdlight/jni/TdApi.java)'"
+echo "Generated '$(realpath -m ./src/main/java/it/tdlight/jni/TdApi.java)'"
 
 echo "Done."
 exit 0
