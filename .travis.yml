@@ -32,9 +32,9 @@ addons:
     - g++
     - ccache
     - maven
-    - openjdk-11-jdk
     - python3
-    - php7.2-cli
+    - php7.0-cli
+    - openjdk-9-jdk
 cache:
   bundler: true
   cocoapods: true
