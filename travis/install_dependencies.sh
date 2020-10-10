@@ -31,7 +31,7 @@ elif [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
   choco install php --version=7.4.9 --package-parameters='"/ThreadSafe ""/InstallDir:C:\PHP"""'
   choco install python3 --params "/InstallDir:C:\Python3"
 
-  [ -d ./windowsenv/ ] && rm -rf ./windowsenv/
+  [ -d ./windowsenv/ ] && $(yes | rm -rf ./windowsenv/)
   git clone --depth=1 https://github.com/tdlight-team/windows-amd64-prebuilt-libraries.git windowsenv
   mv windowsenv/vcpkg $VCPKG_DIR
 else
