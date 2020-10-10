@@ -58,6 +58,16 @@ cp -r ./src/main/jni-cpp-src/common/. ./generated/src/main/jni-cpp-src
 cp -r ./src/main/jni-cpp-src/${IMPLEMENTATION_NAME}/. ./generated/src/main/jni-cpp-src
 cp -r ./src/main/jni-java-src ./generated/src/main/jni-java-src
 
+# Copy executables
+echo "Copying executables..."
+if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
+	cp $(realpath -m ../td_tools/td/generate/Debug/td_generate_java_api.exe) $(realpath -m ../td_tools/td/generate/Debug/td_generate_java_api)
+	export TD_GENERATED_BINARIES_DIR=$(realpath -m ../td_tools/td/generate/Debug)
+else
+	export TD_GENERATED_BINARIES_DIR=$(realpath -m ../td_tools/td/generate)
+fi
+
+
 # Configure cmake
 echo "Configuring CMake..."
 cd ./generated/tdapi_java_build/
@@ -72,7 +82,7 @@ echo "Td CMake/td path: '$(realpath -m ../td_bin/lib/cmake/Td/)'"
 echo "Td CMake/td files: $(ls $(realpath -m ../td_bin/lib/cmake/Td/))"
 cmake -DCMAKE_BUILD_TYPE=Release \
  -DTD_SRC_DIR=$(realpath -m ../implementation/) \
- -DTD_GENERATED_BINARIES_DIR=$(realpath -m ../td_tools/td/generate) \
+ -DTD_GENERATED_BINARIES_DIR=${TD_GENERATED_BINARIES_DIR} \
  -DTd_DIR=$(realpath -m ../td_bin/lib/cmake/Td/) \
  -DTDNATIVES_BIN_DIR=$(realpath -m ../tdjni_bin/) \
  -DTDNATIVES_DOCS_BIN_DIR=$(realpath -m ../tdjni_docs/) \
