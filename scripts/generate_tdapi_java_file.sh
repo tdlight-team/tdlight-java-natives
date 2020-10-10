@@ -69,11 +69,12 @@ cmake -DCMAKE_BUILD_TYPE=Release \
  -DTDNATIVES_BIN_DIR=$(realpath ../tdjni_bin/) \
  -DTDNATIVES_DOCS_BIN_DIR=$(realpath ../tdjni_docs/) \
  -DJAVA_SRC_DIR=$(realpath ../src/main/jni-java-src/) \
+ ${CMAKE_EXTRA_ARGUMENTS} \
  $(realpath ../src/main/jni-cpp-src/)
 
 # Run cmake to generate TdApi.java
 echo "Generating TdApi.java..."
-cmake --build . --target td_generate_java_api --config Release --parallel ${CPU_CORES}
+cmake --build . --target td_generate_java_api --config Release ${CPU_CORES}
 cd ..
 
 echo "Patching TdApi.java..."

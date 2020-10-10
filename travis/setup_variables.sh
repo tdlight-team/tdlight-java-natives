@@ -5,11 +5,11 @@ set -e
 export MAVEN_OPTS="--add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens java.base/java.lang.reflect=ALL-UNNAMED --add-opens java.base/javax.crypto=ALL-UNNAMED --add-opens java.base/java.io=ALL-UNNAMED"
 if [ "$TRAVIS_CPU_ARCH" = "arm64" ]; then
     export CPU_ARCHITECTURE_NAME="aarch64"
-    export CPU_CORES="2"
+    export CPU_CORES_NUM="2"
 else
     CPU_ARCHITECTURE_NAME="$(tr '[:upper:]' '[:lower:]'<<<"${TRAVIS_CPU_ARCH}")"
     export CPU_ARCHITECTURE_NAME;
-    export CPU_CORES="2"
+    export CPU_CORES_NUM="2"
 fi
 OPERATING_SYSTEM_NAME="$(tr '[:upper:]' '[:lower:]'<<<"${TRAVIS_OS_NAME}")"
 export OPERATING_SYSTEM_NAME
@@ -25,17 +25,20 @@ if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
   export CMAKE_EXTRA_ARGUMENTS="-A x64 -DCMAKE_TOOLCHAIN_FILE:FILEPATH=$VCPKG_DIR/scripts/buildsystems/vcpkg.cmake"
   export PATH="$PATH:/c/tools/php74:/c/PHP:/c/Program Files (x86)/Microsoft Visual Studio/2019/BuildTools/VC/Tools/MSVC/14.27.29110/bin/Hostx64/x64:/c/Program Files/OpenJDK/openjdk-11.0.8_10/bin:/c/Program Files/CMake/bin:/c/ProgramData/chocolatey/bin:/c/Program Files/apache-maven-3.6.3/bin:/c/ProgramData/chocolatey/lib/maven/apache-maven-3.6.3/bin:/c/ProgramData/chocolatey/lib/base64/tools:/c/Program Files/NASM"
   export JAVA_HOME="/c/Program Files/OpenJDK/openjdk-11.0.8_10"
+  export CPU_CORES=" -- -m"
 elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
   export CMAKE_EXTRA_ARGUMENTS=""
   export PATH="$PATH:$(/usr/libexec/java_home -v 14)"
   export JAVA_HOME="$(/usr/libexec/java_home -v 14)"
   export JAVA_INCLUDE_PATH="$(/usr/libexec/java_home -v 14)/include"
+  export CPU_CORES=" -- -j${CPU_CORES_NUM}"
 elif [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
   export CMAKE_EXTRA_ARGUMENTS=""
   export TRAVIS_CPU_ARCH_JAVA="$(tr '[:upper:]' '[:lower:]'<<<"${TRAVIS_CPU_ARCH}")"
   export PATH="$PATH:/usr/lib/jvm/java-11-openjdk-$TRAVIS_CPU_ARCH_JAVA/bin"
   export JAVA_HOME="/usr/lib/jvm/java-11-openjdk-$TRAVIS_CPU_ARCH_JAVA"
   export JAVA_INCLUDE_PATH="/usr/lib/jvm/java-11-openjdk-$TRAVIS_CPU_ARCH_JAVA/include"
+  export CPU_CORES=" -- -j${CPU_CORES_NUM}"
 fi
 
 # ====== Print variables
@@ -57,6 +60,7 @@ echo "MAVEN_OPTS=${MAVEN_OPTS}"
 echo "TRAVIS_CPU_ARCH=${TRAVIS_CPU_ARCH}"
 echo "TRAVIS_CPU_ARCH_JAVA=${TRAVIS_CPU_ARCH_JAVA}"
 echo "CPU_ARCHITECTURE_NAME=${CPU_ARCHITECTURE_NAME}"
+echo "CPU_CORES_NUM=${CPU_CORES_NUM}"
 echo "CPU_CORES=${CPU_CORES}"
 echo "TRAVIS_OS_NAME=${TRAVIS_OS_NAME}"
 echo "OPERATING_SYSTEM_NAME=${OPERATING_SYSTEM_NAME}"

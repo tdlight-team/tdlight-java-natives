@@ -69,11 +69,12 @@ cmake \
  -DJAVA_SRC_DIR=$(realpath ../src/main/jni-java-src/) \
  -DTDNATIVES_CPP_SRC_DIR:PATH=$(realpath ../src/main/jni-cpp-src/) \
  -DOPENSSL_USE_STATIC_LIBS=True \
+ ${CMAKE_EXTRA_ARGUMENTS} \
  $(realpath ../src/main/jni-cpp-src/)
 
 # Build
 echo "Compiling ${IMPLEMENTATION_NAME} jni..."
-cmake --build . --target install --parallel ${CPU_CORES}
+cmake --build . --target install ${CPU_CORES}
 cd ..
 
 # Copy to resources

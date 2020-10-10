@@ -51,11 +51,12 @@ cd ./generated/td_build/
 cmake -DCMAKE_BUILD_TYPE=Release \
  -DCMAKE_INSTALL_PREFIX:PATH=$(realpath ../td_bin/) \
  -DTD_ENABLE_JNI=ON \
+ ${CMAKE_EXTRA_ARGUMENTS} \
  ../implementation
 
 # Build
 echo "Compiling ${IMPLEMENTATION_NAME} td..."
-cmake --build . --target install --parallel ${CPU_CORES}
+cmake --build . --target install ${CPU_CORES}
 
 
 echo "Done."
