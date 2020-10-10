@@ -10,7 +10,7 @@ arch:
 env:
   - IMPLEMENTATION_NAME=tdlib CACHE_NAME=tdlib
   - IMPLEMENTATION_NAME=tdlight CACHE_NAME=tdlight
-osx_image: xcode12
+osx_image: xcode11.3
 dist: bionic
 before_install:
   - cp .travis.settings.xml $HOME/.m2/settings.xml
