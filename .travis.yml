@@ -7,6 +7,9 @@ os:
 arch:
   - amd64
   - arm64
+jobs:
+  - IMPLEMENTATION_NAME=tdlib
+  - IMPLEMENTATION_NAME=tdlight
 osx_image: xcode11.3
 dist: bionic
 before_install:
