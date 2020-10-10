@@ -41,8 +41,8 @@ elif [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
   export CPU_CORES=" -- -j${CPU_CORES_NUM}"
   export CXXFLAGS="-stdlib=libc++"
   export CFLAGS="-stdlib=libc++"
-  export CC="/usr/bin/clang"
-  export CXX="/usr/bin/clang++"
+  export CC="/usr/bin/clang-10"
+  export CXX="/usr/bin/clang++-10"
 fi
 
 # ====== Print variables
