@@ -27,7 +27,6 @@ addons:
     - zlib1g-dev
     - libssl-dev
     - gperf
-    - php
     - cmake
     - g++
     - clang
@@ -36,7 +35,7 @@ addons:
     - maven
     - python3
     - php7.0-cli
-    - openjdk-9-jdk
+    - openjdk-8-jdk
 cache:
   bundler: true
   cocoapods: true
