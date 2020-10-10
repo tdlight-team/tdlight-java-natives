@@ -40,6 +40,7 @@ elif [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
   export JAVA_INCLUDE_PATH="/usr/lib/jvm/java-11-openjdk-$TRAVIS_CPU_ARCH_JAVA/include"
   export CPU_CORES=" -- -j${CPU_CORES_NUM}"
   export CXXFLAGS="-stdlib=libc++"
+  export CFLAGS="-stdlib=libc++"
   export CC="/usr/bin/clang"
   export CXX="/usr/bin/clang++"
 fi
