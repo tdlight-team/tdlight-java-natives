@@ -78,9 +78,9 @@ cmake --build . --target td_generate_java_api --config Release ${CPU_CORES}
 cd ..
 
 echo "Patching TdApi.java..."
-cd ./tdlib-serializer/
+cd ../tdlib-serializer/
 python3 -m pip install -r requirements.txt
-cd ../
+cd ../generated/
 python3 ../tdlib-serializer/ $(realpath -m ./src/main/jni-java-src/it/tdlight/jni/TdApi.java) $(realpath -m ./src/main/jni-java-src/it/tdlight/jni/new_TdApi.java) $(realpath -m ../tdlib-serializer/headers.txt)
 rm ./src/main/jni-java-src/it/tdlight/jni/TdApi.java
 unexpand --tabs=2 ./src/main/jni-java-src/it/tdlight/jni/new_TdApi.java > ./src/main/jni-java-src/it/tdlight/jni/TdApi.java
