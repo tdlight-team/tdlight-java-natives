@@ -51,8 +51,8 @@ echo "Creating missing folders..."
 
 # Copy source files
 echo "Copying source files..."
-cp -r ./src/main/jni-cpp-src/common ./generated/src/main/jni-cpp-src
-cp -r ./src/main/jni-cpp-src/${IMPLEMENTATION_NAME} ./generated/src/main/jni-cpp-src
+cp -r ./src/main/jni-cpp-src/common/. ./generated/src/main/jni-cpp-src
+cp -r ./src/main/jni-cpp-src/${IMPLEMENTATION_NAME}/. ./generated/src/main/jni-cpp-src
 cp -r ./src/main/jni-java-src ./generated/src/main/jni-java-src
 
 # Configure cmake
