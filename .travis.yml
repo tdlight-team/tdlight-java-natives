@@ -30,6 +30,8 @@ addons:
     - php
     - cmake
     - g++
+    - clang
+    - libc++-dev
     - ccache
     - maven
     - python3
