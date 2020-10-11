@@ -48,7 +48,11 @@ cp -r implementations/${IMPLEMENTATION_NAME} ./generated/implementation
 echo "Patching implementation files..."
 #Fix bug: https://github.com/tdlib/td/issues/1238
 if [[ "$IMPLEMENTATION_NAME" = "tdlib" ]]; then
-	sed -f "src/main/replacements/fix-tdlib-tdutils-windows-cmake.sed" -i ./generated/implementation/tdutils/CMakeLists.txt
+	if [[ "$OPERATING_SYSTEM_NAME" = "osx" ]]; then
+		sed -f "src/main/replacements/fix-tdlib-tdutils-windows-cmake.sed" -i "" ./generated/implementation/tdutils/CMakeLists.txt
+	else
+		sed -f "src/main/replacements/fix-tdlib-tdutils-windows-cmake.sed" -i"" ./generated/implementation/tdutils/CMakeLists.txt
+	fi
 fi
 
 # Configure cmake
