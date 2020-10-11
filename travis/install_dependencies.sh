@@ -18,6 +18,10 @@ elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
   sudo port select --set pip pip$PYTHON;
   pip install pyinstaller --user;
   export PATH=$PATH:$(python3 -c "import site; print(site.USER_BASE)")/bin;
+
+  xcode-select --install
+  /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+  brew install gperf cmake openssl coreutils
 elif [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
   echo "==Windows=="
   choco install ccache
