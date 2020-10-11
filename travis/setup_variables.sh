@@ -41,9 +41,6 @@ elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
   export CPU_CORES=" -- -j${CPU_CORES_NUM}"
 elif [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
   export CMAKE_EXTRA_ARGUMENTS="-DOPENSSL_USE_STATIC_LIBS=ON -DCMAKE_FIND_LIBRARY_SUFFIXES=\".a\""
-	if [[ "$CPU_ARCHITECTURE_NAME" = "aarch64" ]]; then
-		export CMAKE_EXTRA_ARGUMENTS="-DCMAKE_POSITION_INDEPENDENT_CODE=TRUE $CMAKE_EXTRA_ARGUMENTS"
-	fi
   export TRAVIS_CPU_ARCH_JAVA="$(tr '[:upper:]' '[:lower:]'<<<"${TRAVIS_CPU_ARCH}")"
   export PATH="$PATH:/usr/lib/jvm/java-11-openjdk-$TRAVIS_CPU_ARCH_JAVA/bin"
   export JAVA_HOME="/usr/lib/jvm/java-11-openjdk-$TRAVIS_CPU_ARCH_JAVA"
@@ -52,6 +49,11 @@ elif [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
   export CXXFLAGS="-static-libgcc -static-libstdc++"
   export CC="/usr/bin/clang-10"
   export CXX="/usr/bin/clang++-10"
+	if [[ "$CPU_ARCHITECTURE_NAME" = "aarch64" ]]; then
+		export CMAKE_EXTRA_ARGUMENTS="-DCMAKE_POSITION_INDEPENDENT_CODE=ON -DPOSITION_INDEPENDENT_CODE=ON $CMAKE_EXTRA_ARGUMENTS"
+		export CMAKE_EXE_LINKER_FLAGS="$CMAKE_EXE_LINKER_FLAGS -f"
+		export CFLAGS="-fPIC"
+	fi
 fi
 
 # ====== Print variables
