@@ -105,7 +105,11 @@ cd ..
 echo "Patching TdApi.java..."
 ${PYTHON_EXECUTABLE} ../tdlib-serializer/ $(realpath -m ./src/main/jni-java-src/it/tdlight/jni/TdApi.java) $(realpath -m ./src/main/jni-java-src/it/tdlight/jni/new_TdApi.java) $(realpath -m ../tdlib-serializer/headers.txt)
 rm ./src/main/jni-java-src/it/tdlight/jni/TdApi.java
-unexpand --tabs=2 ./src/main/jni-java-src/it/tdlight/jni/new_TdApi.java > ./src/main/jni-java-src/it/tdlight/jni/TdApi.java
+if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+	unexpand --tabs=2 ./src/main/jni-java-src/it/tdlight/jni/new_TdApi.java > ./src/main/jni-java-src/it/tdlight/jni/TdApi.java
+else
+	unexpand -t 2 ./src/main/jni-java-src/it/tdlight/jni/new_TdApi.java > ./src/main/jni-java-src/it/tdlight/jni/TdApi.java
+fi
 rm ./src/main/jni-java-src/it/tdlight/jni/new_TdApi.java
 cp ./src/main/jni-java-src/it/tdlight/jni/TdApi.java ./src/main/java/it/tdlight/jni/TdApi.java
 
