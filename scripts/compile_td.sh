@@ -56,7 +56,7 @@ cmake -DCMAKE_BUILD_TYPE=Release \
 
 # Build
 echo "Compiling ${IMPLEMENTATION_NAME} td..."
-cmake --build . --target install ${CPU_CORES}
+cmake --build . --target install --config Release ${CPU_CORES}
 
 
 echo "Done."

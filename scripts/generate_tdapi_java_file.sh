@@ -61,7 +61,7 @@ cp -r ./src/main/jni-java-src ./generated/src/main/jni-java-src
 # Copy executables
 echo "Copying executables..."
 if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
-	export TD_GENERATED_BINARIES_DIR=$(realpath -m ./generated/td_tools/td/generate/Debug)
+	export TD_GENERATED_BINARIES_DIR=$(realpath -m ./generated/td_tools/td/generate/Release)
 else
 	export TD_GENERATED_BINARIES_DIR=$(realpath -m ./generated/td_tools/td/generate)
 fi

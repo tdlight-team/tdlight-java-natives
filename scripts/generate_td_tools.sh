@@ -52,11 +52,11 @@ cmake -DCMAKE_BUILD_TYPE=Release -DTD_ENABLE_JNI=ON ${CMAKE_EXTRA_ARGUMENTS} ../
 
 # Run cmake to generate common tools
 echo "Generating cross compilation tools..."
-cmake --build . --target prepare_cross_compiling ${CPU_CORES}
+cmake --build . --target prepare_cross_compiling --config Release ${CPU_CORES}
 
 # Run cmake to generate java tools
 echo "Generating java tools..."
-cmake --build . --target td_generate_java_api ${CPU_CORES}
+cmake --build . --target td_generate_java_api --config Release ${CPU_CORES}
 
 echo "Generated executable '$(realpath -m ./td/generate/generate_common)'"
 echo "Generated executable '$(realpath -m ./td/generate/td_generate_java_api)'"

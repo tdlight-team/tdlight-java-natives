@@ -74,7 +74,7 @@ cmake \
 
 # Build
 echo "Compiling ${IMPLEMENTATION_NAME} jni..."
-cmake --build . --target install ${CPU_CORES}
+cmake --build . --target install --config Release ${CPU_CORES}
 cd ..
 
 # Copy to resources
