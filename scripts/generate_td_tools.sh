@@ -48,11 +48,7 @@ cp -r implementations/${IMPLEMENTATION_NAME} ./generated/implementation
 echo "Configuring CMake..."
 mkdir ./generated/td_tools/
 cd ./generated/td_tools/
-cmake \
- -DCMAKE_BUILD_TYPE=Release \
- -DTD_ENABLE_JNI=ON \
- ${CMAKE_EXTRA_ARGUMENTS} \
- ../implementation/
+cmake -DCMAKE_BUILD_TYPE=Release -DTD_ENABLE_JNI=ON ${CMAKE_EXTRA_ARGUMENTS} ../implementation/
 
 # Run cmake to generate common tools
 echo "Generating cross compilation tools..."
