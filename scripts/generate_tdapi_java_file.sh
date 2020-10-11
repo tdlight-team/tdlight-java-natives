@@ -35,6 +35,14 @@ echo "Td implementation: ${IMPLEMENTATION_NAME}"
 echo "CPU cores count: ${CPU_CORES}"
 echo "CMake extra arguments: '${CMAKE_EXTRA_ARGUMENTS}'"
 
+# Setup constants
+if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
+	export PYTHON_EXECUTABLE="python"
+else
+	export PYTHON_EXECUTABLE="python3"
+fi
+
+
 # Delete old data
 echo "Deleting old data..."
 [ -d ./generated/tdapi_java_build/ ] && rm -r ./generated/tdapi_java_build/
@@ -95,7 +103,7 @@ cmake --build . --target td_generate_java_api --config Release ${CPU_CORES}
 cd ..
 
 echo "Patching TdApi.java..."
-python3 ../tdlib-serializer/ $(realpath -m ./src/main/jni-java-src/it/tdlight/jni/TdApi.java) $(realpath -m ./src/main/jni-java-src/it/tdlight/jni/new_TdApi.java) $(realpath -m ../tdlib-serializer/headers.txt)
+${PYTHON_EXECUTABLE} ../tdlib-serializer/ $(realpath -m ./src/main/jni-java-src/it/tdlight/jni/TdApi.java) $(realpath -m ./src/main/jni-java-src/it/tdlight/jni/new_TdApi.java) $(realpath -m ../tdlib-serializer/headers.txt)
 rm ./src/main/jni-java-src/it/tdlight/jni/TdApi.java
 unexpand --tabs=2 ./src/main/jni-java-src/it/tdlight/jni/new_TdApi.java > ./src/main/jni-java-src/it/tdlight/jni/TdApi.java
 rm ./src/main/jni-java-src/it/tdlight/jni/new_TdApi.java
