@@ -42,7 +42,7 @@ elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
 elif [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
 	if [[ "$CPU_ARCHITECTURE_NAME" = "aarch64" ]]; then
 		export CMAKE_EXTRA_ARGUMENTS=""
-		export CXXFLAGS="-stdlib=libc++"
+		export CXXFLAGS="-static-libgcc -static-libstdc++"
 	else
 		export CMAKE_EXTRA_ARGUMENTS="-DOPENSSL_USE_STATIC_LIBS=ON -DCMAKE_FIND_LIBRARY_SUFFIXES=\".a\""
 		export CXXFLAGS="-static-libgcc -static-libstdc++"
