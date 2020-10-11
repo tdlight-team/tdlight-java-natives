@@ -48,9 +48,15 @@ echo "Creating missing folders..."
 # Configure cmake
 echo "Configuring CMake..."
 cd ./generated/td_build/
+if [[ "$IMPLEMENTATION_NAME" = "tdlight" ]]; then
+  export CMAKE_EXTRA_ARGUMENTS_TD="-DTD_SKIP_BENCHMARK=ON -DTD_SKIP_TEST=ON -DTD_SKIP_TG_CLI=ON"
+else
+  export CMAKE_EXTRA_ARGUMENTS_TD=""
+fi
 cmake -DCMAKE_BUILD_TYPE=Release \
  -DCMAKE_INSTALL_PREFIX:PATH=$(realpath -m ../td_bin/) \
  -DTD_ENABLE_JNI=ON \
+ ${CMAKE_EXTRA_ARGUMENTS_TD} \
  ${CMAKE_EXTRA_ARGUMENTS} \
  ../implementation
 
