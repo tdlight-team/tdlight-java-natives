@@ -44,6 +44,13 @@ echo "Deleting old data..."
 echo "Copying implementation files..."
 cp -r implementations/${IMPLEMENTATION_NAME} ./generated/implementation
 
+# Patch implementation files
+echo "Patching implementation files..."
+#Fix bug: https://github.com/tdlib/td/issues/1238
+if [[ "$IMPLEMENTATION_NAME" = "tdlib" ]]; then
+	sed -i -f "src/main/replacements/fix-tdlib-tdutils-windows-cmake.sed" ./generated/implementation/tdutils/CMakeLists.txt
+fi
+
 # Configure cmake
 echo "Configuring CMake..."
 mkdir ./generated/td_tools/
