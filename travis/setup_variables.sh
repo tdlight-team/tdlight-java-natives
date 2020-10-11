@@ -40,14 +40,13 @@ elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
   export JAVA_INCLUDE_PATH="$(/usr/libexec/java_home -v 14)/include"
   export CPU_CORES=" -- -j${CPU_CORES_NUM}"
 elif [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
-  export CMAKE_EXTRA_ARGUMENTS=""
+  export CMAKE_EXTRA_ARGUMENTS="-DOPENSSL_USE_STATIC_LIBS=ON -DCMAKE_FIND_LIBRARY_SUFFIXES=\".a\""
   export TRAVIS_CPU_ARCH_JAVA="$(tr '[:upper:]' '[:lower:]'<<<"${TRAVIS_CPU_ARCH}")"
   export PATH="$PATH:/usr/lib/jvm/java-11-openjdk-$TRAVIS_CPU_ARCH_JAVA/bin"
   export JAVA_HOME="/usr/lib/jvm/java-11-openjdk-$TRAVIS_CPU_ARCH_JAVA"
   export JAVA_INCLUDE_PATH="/usr/lib/jvm/java-11-openjdk-$TRAVIS_CPU_ARCH_JAVA/include"
   export CPU_CORES=" -- -j${CPU_CORES_NUM}"
-  export CXXFLAGS="-stdlib=libc++"
-  export CFLAGS="-stdlib=libc++"
+  export CXXFLAGS="-static-libgcc -static-libstdc++"
   export CC="/usr/bin/clang-10"
   export CXX="/usr/bin/clang++-10"
 fi
