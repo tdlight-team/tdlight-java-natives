@@ -73,11 +73,11 @@ cmake \
  -DTDNATIVES_BIN_DIR=$(realpath -m ../tdjni_bin/) \
  -DTDNATIVES_DOCS_BIN_DIR=$(realpath -m ../tdjni_docs/) \
  -DTd_DIR=$(realpath -m ../td_bin/lib/cmake/Td/) \
- -DJAVA_SRC_DIR=$(realpath -m ../generated/src/main/jni-java-src/) \
- -DTDNATIVES_CPP_SRC_DIR:PATH=$(realpath -m ../generated/src/main/jni-cpp-src/) \
+ -DJAVA_SRC_DIR=$(realpath -m ../src/main/jni-java-src/) \
+ -DTDNATIVES_CPP_SRC_DIR:PATH=$(realpath -m ../src/main/jni-cpp-src/) \
  -DOPENSSL_USE_STATIC_LIBS=True \
  ${CMAKE_EXTRA_ARGUMENTS} \
- $(realpath -m ../generated/src/main/jni-cpp-src/)
+ $(realpath -m ../src/main/jni-cpp-src/)
 
 # Build
 echo "Compiling ${IMPLEMENTATION_NAME} jni..."
