@@ -67,7 +67,6 @@ static jint Client_nativeClientReceive(JNIEnv *env, jclass clazz, jintArray clie
       break;
     }
 
-    response = client->receive(0);
     response = manager->receive(0);
   }
   return result_size;
