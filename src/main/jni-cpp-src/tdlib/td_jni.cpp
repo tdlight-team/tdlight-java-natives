@@ -72,6 +72,11 @@ static jint Client_nativeClientReceive(JNIEnv *env, jclass clazz, jintArray clie
   return result_size;
 }
 
+static jint Client_nativeClientReceiveAdvanced(JNIEnv *env, jclass clazz, jintArray client_ids, jlongArray ids,
+                                       jobjectArray events, jdouble timeout, jboolean include_responses, jboolean include_updates) {
+  return Client_nativeClientReceive(env, clazz, client_ids, ids, events, timeout);
+}
+
 static jobject Client_nativeClientExecute(JNIEnv *env, jclass clazz, jobject function) {
   jobject result;
   td::ClientManager::execute(fetch_function(env, function))->store(env, result);
@@ -137,6 +142,7 @@ static jint register_native(JavaVM *vm) {
   register_method(client_class, "createNativeClient", "()I", Client_createNativeClient);
   register_method(client_class, "nativeClientSend", "(IJ" TD_FUNCTION ")V", Client_nativeClientSend);
   register_method(client_class, "nativeClientReceive", "([I[J[" TD_OBJECT "D)I", Client_nativeClientReceive);
+  register_method(client_class, "nativeClientReceive", "([I[J[" TD_OBJECT "DZZ)I", Client_nativeClientReceiveAdvanced);
   register_method(client_class, "nativeClientExecute", "(" TD_FUNCTION ")" TD_OBJECT, Client_nativeClientExecute);
 
   register_method(log_class, "setVerbosityLevel", "(I)V", Log_setVerbosityLevel);

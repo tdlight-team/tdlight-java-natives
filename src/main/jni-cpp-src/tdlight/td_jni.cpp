@@ -171,7 +171,6 @@ static jint register_native(JavaVM *vm) {
   register_method(client_class, "nativeClientReceive", "([I[J[" TD_OBJECT "D)I", Client_nativeClientReceive);
   register_method(client_class, "nativeClientReceive", "([I[J[" TD_OBJECT "DZZ)I", Client_nativeClientReceiveAdvanced);
   register_method(client_class, "nativeClientExecute", "(" TD_FUNCTION ")" TD_OBJECT, Client_nativeClientExecute);
-  register_method(client_class, "destroyNativeClient", "(J)V", Client_destroyNativeClient);
 
   register_method(log_class, "setVerbosityLevel", "(I)V", Log_setVerbosityLevel);
   register_method(log_class, "setFilePath", "(Ljava/lang/String;)Z", Log_setFilePath);
