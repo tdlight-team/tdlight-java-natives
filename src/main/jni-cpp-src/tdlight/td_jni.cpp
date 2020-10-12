@@ -72,38 +72,6 @@ static jint Client_nativeClientReceive(JNIEnv *env, jclass clazz, jintArray clie
   return result_size;
 }
 
-static jint Client_nativeClientReceiveAdvanced(JNIEnv *env, jclass clazz, jintArray client_ids, jlongArray ids,
-                                       jobjectArray events, jdouble timeout, jboolean include_responses, jboolean include_updates) {
-  jsize events_size = env->GetArrayLength(ids);  // client_ids, ids and events must be of equal size
-  if (events_size == 0) {
-    return 0;
-  }
-  jsize result_size = 0;
-
-  auto *manager = get_manager();
-  auto response = manager->receive(timeout, include_responses, include_updates);
-  while (response.object) {
-    jint client_id = static_cast<jint>(response.client_id);
-    env->SetIntArrayRegion(client_ids, result_size, 1, &client_id);
-
-    jlong request_id = static_cast<jlong>(response.request_id);
-    env->SetLongArrayRegion(ids, result_size, 1, &request_id);
-
-    jobject object;
-    response.object->store(env, object);
-    env->SetObjectArrayElement(events, result_size, object);
-    env->DeleteLocalRef(object);
-
-    result_size++;
-    if (result_size == events_size) {
-      break;
-    }
-
-    response = manager->receive(0, include_responses, include_updates);
-  }
-  return result_size;
-}
-
 static jobject Client_nativeClientExecute(JNIEnv *env, jclass clazz, jobject function) {
   jobject result;
   td::ClientManager::execute(fetch_function(env, function))->store(env, result);
@@ -169,7 +137,6 @@ static jint register_native(JavaVM *vm) {
   register_method(client_class, "createNativeClient", "()I", Client_createNativeClient);
   register_method(client_class, "nativeClientSend", "(IJ" TD_FUNCTION ")V", Client_nativeClientSend);
   register_method(client_class, "nativeClientReceive", "([I[J[" TD_OBJECT "D)I", Client_nativeClientReceive);
-  register_method(client_class, "nativeClientReceive", "([I[J[" TD_OBJECT "DZZ)I", Client_nativeClientReceiveAdvanced);
   register_method(client_class, "nativeClientExecute", "(" TD_FUNCTION ")" TD_OBJECT, Client_nativeClientExecute);
 
   register_method(log_class, "setVerbosityLevel", "(I)V", Log_setVerbosityLevel);
