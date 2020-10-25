@@ -23,6 +23,7 @@ elif [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
   echo "==Windows=="
   choco install ccache
   choco install make
+  choco install windows-sdk-10.1
   choco install visualstudio2019buildtools --version=16.7.0.0 --package-parameters "--add Microsoft.VisualStudio.Component.VC.Tools.x86.x64"
   choco install openjdk11 --version=11.0.8.10
   choco install maven --version=3.6.3
@@ -37,6 +38,8 @@ elif [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
   [ -d $VCPKG_DIR ] && $(yes | rm -rf $VCPKG_DIR)
   git clone --depth=1 https://github.com/tdlight-team/windows-amd64-prebuilt-libraries.git windowsenv
   mv windowsenv/vcpkg $VCPKG_DIR
+  cd $VCPKG_DIR
+  vcpkg integrate install
 else
   echo "Unrecognized os: $TRAVIS_OS_NAME"
   exit 1
