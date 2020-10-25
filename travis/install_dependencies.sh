@@ -39,7 +39,7 @@ elif [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
   git clone --depth=1 https://github.com/tdlight-team/windows-amd64-prebuilt-libraries.git windowsenv
   mv windowsenv/vcpkg $VCPKG_DIR
   cd $VCPKG_DIR
-  vcpkg integrate install
+  ./vcpkg integrate install
 else
   echo "Unrecognized os: $TRAVIS_OS_NAME"
   exit 1
