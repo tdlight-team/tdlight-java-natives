@@ -22,6 +22,7 @@ elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
 elif [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
   echo "==Windows=="
   choco install ccache
+  choco install make
   choco install visualstudio2019buildtools --version=16.7.0.0 --package-parameters "--add Microsoft.VisualStudio.Component.VC.Tools.x86.x64"
   choco install openjdk11 --version=11.0.8.10
   choco install maven --version=3.6.3
