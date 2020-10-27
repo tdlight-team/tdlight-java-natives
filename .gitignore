@@ -53,3 +53,9 @@ buildNumber.properties
 
 /generated/
 /vcpkg/
+linux-build.sh
+linux-deploy-release.sh
+linux-deploy-snapshot.sh
+linux-generate-tdapi.sh
+win-build.sh
+win-deps.sh
