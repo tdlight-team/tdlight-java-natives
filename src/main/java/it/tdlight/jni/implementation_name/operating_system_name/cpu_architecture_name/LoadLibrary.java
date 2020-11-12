@@ -10,11 +10,11 @@ public class LoadLibrary {
 	}
 
 	private static String getOsName() {
-		return LoadLibrary.class.getPackageName().split("\\.")[4];
+		return LoadLibrary.class.getPackage().getName().split("\\.")[4];
 	}
 
 	private static String getArchName() {
-		return LoadLibrary.class.getPackageName().split("\\.")[5];
+		return LoadLibrary.class.getPackage().getName().split("\\.")[5];
 	}
 
 	private static String getFileName() {
