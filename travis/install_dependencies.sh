@@ -22,13 +22,20 @@ elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
 
   # Precompile .tlo files because of a bug in travis/macOs
   cd ./implementations/tdlight/td/generate/tl-parser/
+  echo "Configuring tl-parser"
   ./configure
+  echo "Compiling tl-parser"
   make
   cd ..
+  echo "Running tl-parser on mtproto_api"
   ./tl-parser/bin/tl-parser -v -e mtproto_api.tlo mtproto_api.tl
+  echo "Running tl-parser on secret_api"
   ./tl-parser/bin/tl-parser -v -e secret_api.tlo secret_api.tl
+  echo "Running tl-parser on telegram_api"
   ./tl-parser/bin/tl-parser -v -e telegram_api.tlo telegram_api.tl
+  echo "Running tl-parser on td_api"
   ./tl-parser/bin/tl-parser -v -e td_api.tlo td_api.tl
+  echo "Done .tlo"
 elif [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
   echo "==Windows=="
   choco install ccache
