@@ -19,6 +19,16 @@ elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
   pip install pyinstaller --user;
   export PATH=$PATH:$(python3 -c "import site; print(site.USER_BASE)")/bin;
   brew install gperf openssl coreutils
+
+  # Precompile .tlo files because of a bug in travis/macOs
+  cd ./implementations/tdlight/td/generate/tl-parser/
+  ./configure
+  make
+  cd ..
+  ./tl-parser/bin/tl-parser -v -e mtproto_api.tlo mtproto_api.tl
+  ./tl-parser/bin/tl-parser -v -e secret_api.tlo secret_api.tl
+  ./tl-parser/bin/tl-parser -v -e telegram_api.tlo telegram_api.tl
+  ./tl-parser/bin/tl-parser -v -e td_api.tlo td_api.tl
 elif [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
   echo "==Windows=="
   choco install ccache
