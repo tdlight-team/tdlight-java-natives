@@ -28,13 +28,13 @@ elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
   make
   cd ..
   echo "Running tl-parser on mtproto_api"
-  ./tl-parser/bin/tl-parser -v -e mtproto_api.tlo mtproto_api.tl
+  ./tl-parser/bin/tl-parser -v -e scheme/mtproto_api.tlo scheme/mtproto_api.tl
   echo "Running tl-parser on secret_api"
-  ./tl-parser/bin/tl-parser -v -e secret_api.tlo secret_api.tl
+  ./tl-parser/bin/tl-parser -v -e scheme/secret_api.tlo scheme/secret_api.tl
   echo "Running tl-parser on telegram_api"
-  ./tl-parser/bin/tl-parser -v -e telegram_api.tlo telegram_api.tl
+  ./tl-parser/bin/tl-parser -v -e scheme/telegram_api.tlo scheme/telegram_api.tl
   echo "Running tl-parser on td_api"
-  ./tl-parser/bin/tl-parser -v -e td_api.tlo td_api.tl
+  ./tl-parser/bin/tl-parser -v -e scheme/td_api.tlo scheme/td_api.tl
   echo "Done .tlo"
 elif [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
   echo "==Windows=="
