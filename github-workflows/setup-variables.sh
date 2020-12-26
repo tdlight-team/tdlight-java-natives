@@ -12,7 +12,7 @@ else
 fi
 
 export GH_CPU_ARCH=$(echo $GH_MATRIX_ARCH | sed -$PCRE 's/^(linux\/|windows\/|macos\/|)(386|amd64|arm64|ppc64le|arm)(\/(v6|v7))?$/\2\4/g')
-export GH_OS_NAME=$(echo $GH_MATRIX_ARCH | sed -$PCRE 's/^(linux\/|windows\/|macos\/|)(386|amd64|arm64|ppc64le|arm)(\/(v6|v7))?$/\1/g')
+export GH_OS_NAME=$(echo $GH_MATRIX_ARCH | sed -$PCRE 's/^((linux)\/|(windows)\/|(macos)\/|)(386|amd64|arm64|ppc64le|arm)(\/(v6|v7))?$/\2\3\4/g')
 
 if [[ -z "GH_OS_NAME" ]]; then
 	export GH_OS_NAME=$(echo $GH_MATRIX_OS | sed -$PCRE 's/^([^-]+)/\1/g')
