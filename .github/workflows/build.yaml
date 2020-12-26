@@ -30,6 +30,7 @@ jobs:
         with:
           submodules: "recursive"
       - name: Setup ccache variables
+        shell: bash
         run: |
           ARCH=${{ matrix.arch }}
           SAFE_ARCH=$(echo $ARCH | sed 's/\//\-/g')
