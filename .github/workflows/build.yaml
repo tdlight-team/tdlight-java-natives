@@ -10,6 +10,7 @@ jobs:
   build:
     strategy:
       matrix:
+        implementation: [tdlight, tdlib]
         include:
         - {os: ubuntu-20.04, arch: "linux/386"}
         - {os: ubuntu-20.04, arch: "linux/amd64"}
@@ -55,10 +56,12 @@ jobs:
           export REVISION=${{ github.run_number }}
           export GH_MATRIX_OS=${{ matrix.os }}
           export GH_MATRIX_ARCH=${{ matrix.arch }}
+          export IMPLEMENTATION_NAME=${{ matrix.implementation }}
 
           source ./github-workflows/setup-variables.sh
 
           echo "REVISION=$REVISION" >> $GITHUB_ENV
+          echo "IMPLEMENTATION_NAME=$IMPLEMENTATION_NAME" >> $GITHUB_ENV
           echo "TD_SRC_DIR=$TD_SRC_DIR" >> $GITHUB_ENV
           echo "TD_BIN_DIR=$TD_BIN_DIR" >> $GITHUB_ENV
           echo "TDNATIVES_BIN_DIR=$TDNATIVES_BIN_DIR" >> $GITHUB_ENV
