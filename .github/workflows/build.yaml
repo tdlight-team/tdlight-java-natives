@@ -10,6 +10,7 @@ jobs:
   build:
     strategy:
       matrix:
+        include:
         - {os: ubuntu-20.04, arch: "linux/386"}
         - {os: ubuntu-20.04, arch: "linux/amd64"}
         - {os: ubuntu-20.04, arch: "linux/arm/v6"}
