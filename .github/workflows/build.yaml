@@ -10,8 +10,13 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-20.04, windows-2019, macos-10.15]
-        arch: [linux/386, linux/amd64, linux/arm/v6, linux/arm/v7, linux/arm64, linux/ppc64le, windows/amd64, macos/amd64]
+        - {os: ubuntu-20.04, arch: "linux/386"}
+        - {os: ubuntu-20.04, arch: "linux/amd64"}
+        - {os: ubuntu-20.04, arch: "linux/arm/v6"}
+        - {os: ubuntu-20.04, arch: "linux/arm/v7"}
+        - {os: ubuntu-20.04, arch: "linux/ppc64le"}
+        - {os: windows-2019, arch: "amd64"}
+        - {os: macos-10.15, arch: "amd64"}
     runs-on: ${{ matrix.os }}
     steps:
       - name: Setup Java
