@@ -7,32 +7,32 @@ elif [[ "$OPERATING_SYSTEM_NAME" == "osx" ]]; then
   echo "==OSX======"
   export PYTHON=36
   brew install swig;
-  curl -LO https://raw.githubusercontent.com/GiovanniBussi/macports-ci/master/macports-ci;
-  source ./macports-ci install;
-  yes | sudo port install python$PYTHON;
-  yes | sudo port install py$PYTHON-pip;
-  sudo port select --set python3 python$PYTHON;
-  sudo port select --set pip pip$PYTHON;
-  pip install pyinstaller --user;
-  export PATH=$PATH:$(python3 -c "import site; print(site.USER_BASE)")/bin;
+  #curl -LO https://raw.githubusercontent.com/GiovanniBussi/macports-ci/master/macports-ci;
+  #source ./macports-ci install;
+  #yes | sudo port install python$PYTHON;
+  #yes | sudo port install py$PYTHON-pip;
+  #sudo port select --set python3 python$PYTHON;
+  #sudo port select --set pip pip$PYTHON;
+  #pip install pyinstaller --user;
+  #export PATH=$PATH:$(python3 -c "import site; print(site.USER_BASE)")/bin;
   brew install gperf openssl coreutils
 
-  # Precompile .tlo files because of a bug in travis/macOs
-  cd ./implementations/tdlight/td/generate/tl-parser/
-  echo "Configuring tl-parser"
-  ./configure
-  echo "Compiling tl-parser"
-  make
-  cd ..
-  echo "Running tl-parser on mtproto_api"
-  ./tl-parser/bin/tl-parser -v -e scheme/mtproto_api.tlo scheme/mtproto_api.tl
-  echo "Running tl-parser on secret_api"
-  ./tl-parser/bin/tl-parser -v -e scheme/secret_api.tlo scheme/secret_api.tl
-  echo "Running tl-parser on telegram_api"
-  ./tl-parser/bin/tl-parser -v -e scheme/telegram_api.tlo scheme/telegram_api.tl
-  echo "Running tl-parser on td_api"
-  ./tl-parser/bin/tl-parser -v -e scheme/td_api.tlo scheme/td_api.tl
-  echo "Done .tlo"
+  ## Precompile .tlo files because of a bug in travis/macOs
+  #cd ./implementations/tdlight/td/generate/tl-parser/
+  #echo "Configuring tl-parser"
+  #./configure
+  #echo "Compiling tl-parser"
+  #make
+  #cd ..
+  #echo "Running tl-parser on mtproto_api"
+  #./tl-parser/bin/tl-parser -v -e scheme/mtproto_api.tlo scheme/mtproto_api.tl
+  #echo "Running tl-parser on secret_api"
+  #./tl-parser/bin/tl-parser -v -e scheme/secret_api.tlo scheme/secret_api.tl
+  #echo "Running tl-parser on telegram_api"
+  #./tl-parser/bin/tl-parser -v -e scheme/telegram_api.tlo scheme/telegram_api.tl
+  #echo "Running tl-parser on td_api"
+  #./tl-parser/bin/tl-parser -v -e scheme/td_api.tlo scheme/td_api.tl
+  #echo "Done .tlo"
 elif [[ "$OPERATING_SYSTEM_NAME" == "windows" ]]; then
   echo "==Windows=="
   choco install ccache
