@@ -39,12 +39,12 @@ elif [[ "$OPERATING_SYSTEM_NAME" == "windows" ]]; then
   choco install make
   #choco install windows-sdk-10.1
   choco install visualstudio2019buildtools --version=16.7.0.0 --package-parameters "--add Microsoft.VisualStudio.Component.VC.Tools.x86.x64"
-  choco install openjdk11 --version=11.0.8.10
+  #choco install openjdk11 --version=11.0.8.10
   choco install maven --version=3.6.3
   choco install base64
   choco install gperf
   choco install strawberryperl
-  choco install nasm
+  #choco install nasm
   #choco install php --version=7.4.9 --package-parameters='"/ThreadSafe ""/InstallDir:C:\PHP"""'
   #choco install python3 --params "/InstallDir:C:\Python3"
 
