@@ -45,8 +45,8 @@ elif [[ "$OPERATING_SYSTEM_NAME" == "windows" ]]; then
   choco install gperf
   choco install strawberryperl
   choco install nasm
-  choco install php --version=7.4.9 --package-parameters='"/ThreadSafe ""/InstallDir:C:\PHP"""'
-  choco install python3 --params "/InstallDir:C:\Python3"
+  #choco install php --version=7.4.9 --package-parameters='"/ThreadSafe ""/InstallDir:C:\PHP"""'
+  #choco install python3 --params "/InstallDir:C:\Python3"
 
   [ -d ./windowsenv/ ] && $(yes | rm -rf ./windowsenv/)
   [ -d $VCPKG_DIR ] && $(yes | rm -rf $VCPKG_DIR)
