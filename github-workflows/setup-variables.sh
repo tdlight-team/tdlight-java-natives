@@ -5,7 +5,7 @@ export MAVEN_OPTS="--add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.
 echo "MATRIX_OS: $GH_MATRIX_OS"
 echo "MATRIX_ARCH: $GH_MATRIX_ARCH"
 
-if [ "MATRIX_OS" == "macos-10.15" ]; then
+if [ $GH_MATRIX_OS == "macos-10.15" ]; then
 	export PCRE="E"
 else
 	export PCRE="r"
