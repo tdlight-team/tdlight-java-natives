@@ -20,6 +20,22 @@ jobs:
         - {os: macos-10.15, arch: "amd64"}
     runs-on: ${{ matrix.os }}
     steps:
+      - name: Install sudo package
+        run: |
+          (apt-get update || true) 2>/dev/null
+          (apt-get install -y sudo || true) 2>/dev/null
+          sudo apt update
+      - uses: actions/checkout@v2
+        with:
+          submodules: "recursive"
+      - name: Cache ccache
+        id: cache-ccache
+        uses: actions/cache@v2
+        with:
+          path: ~/.ccache
+          key: ${{ runner.os }}-${{ env.SAFE_ARCH }}-ccache-all
+          restore-keys: |
+            ${{ runner.os }}-${{ env.SAFE_ARCH }}-ccache-
       - name: Setup Java
         uses: actions/setup-java@v1
         with:
@@ -59,22 +75,6 @@ jobs:
           echo "OPERATING_SYSTEM_NAME_SHORT=$OPERATING_SYSTEM_NAME_SHORT" >> $GITHUB_ENV
           echo "SRC_TDJNI_LIBNAME=$SRC_TDJNI_LIBNAME" >> $GITHUB_ENV
           echo "DEST_TDJNI_LIBNAME=$DEST_TDJNI_LIBNAME" >> $GITHUB_ENV
-      - name: Install sudo package
-        run: |
-          (apt-get update || true) 2>/dev/null
-          (apt-get install -y sudo || true) 2>/dev/null
-          sudo apt update
-      - uses: actions/checkout@v2
-        with:
-          submodules: "recursive"
-      - name: Cache ccache
-        id: cache-ccache
-        uses: actions/cache@v2
-        with:
-          path: ~/.ccache
-          key: ${{ runner.os }}-${{ env.SAFE_ARCH }}-ccache-all
-          restore-keys: |
-            ${{ runner.os }}-${{ env.SAFE_ARCH }}-ccache-
       - name: Install build tools
         run: sudo apt-get install -y make git zlib1g-dev libssl-dev gperf php-cli cmake clang-6.0 libc++-dev libc++abi-dev ccache
       - name: Build
