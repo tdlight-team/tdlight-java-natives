@@ -56,8 +56,6 @@ jobs:
           export GH_MATRIX_OS=${{ matrix.os }}
           export GH_MATRIX_ARCH=${{ matrix.arch }}
 
-          echo "$(realpath .)"
-          ls -alch .
           source ./github-workflows/setup-variables.sh
 
           echo "REVISION=$REVISION" >> $GITHUB_ENV
@@ -85,10 +83,15 @@ jobs:
           echo "OPERATING_SYSTEM_NAME_SHORT=$OPERATING_SYSTEM_NAME_SHORT" >> $GITHUB_ENV
           echo "SRC_TDJNI_LIBNAME=$SRC_TDJNI_LIBNAME" >> $GITHUB_ENV
           echo "DEST_TDJNI_LIBNAME=$DEST_TDJNI_LIBNAME" >> $GITHUB_ENV
-      - name: Install build tools
+      - name: Install dependencies
         run: sudo apt-get install -y make git zlib1g-dev libssl-dev gperf php-cli cmake clang-6.0 libc++-dev libc++abi-dev ccache
       - name: Build
+        shell: bash
         run: |
+          echo "REVISION: $REVISION"
+          echo "REVISION: ${env.REVISION}"
+          echo "REVISION: ${{env.REVISION}}"
+          cat $GITHUB_ENV
           mkdir build
           cd build
           CXXFLAGS="-stdlib=libc++" CC=/usr/bin/clang-10 CXX=/usr/bin/clang++-10 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=../tdlib ..
