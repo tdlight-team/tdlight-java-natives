@@ -4,7 +4,7 @@ set -e
 if [[ "$OPERATING_SYSTEM_NAME" == "linux" ]]; then
 	echo "==Linux===="
 	sudo apt install -y make git zlib1g-dev libssl-dev gperf cmake clang-10 \
-		libc++-10-dev libc++abi-10-dev ccache maven python3 python3-pip php7.2-cli
+		libc++-10-dev libc++abi-10-dev ccache maven python3 python3-pip php7.4-cli
 elif [[ "$OPERATING_SYSTEM_NAME" == "osx" ]]; then
 	echo "==OSX======"
 	export PYTHON=36
