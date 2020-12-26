@@ -84,8 +84,6 @@ jobs:
           echo "SRC_TDJNI_LIBNAME=$SRC_TDJNI_LIBNAME" >> $GITHUB_ENV
           echo "DEST_TDJNI_LIBNAME=$DEST_TDJNI_LIBNAME" >> $GITHUB_ENV
       - name: Install dependencies
-        run: sudo apt-get install -y make git zlib1g-dev libssl-dev gperf php-cli cmake clang-6.0 libc++-dev libc++abi-dev ccache
-      - name: Build
         shell: bash
         run: |
           echo "REVISION: $REVISION"
