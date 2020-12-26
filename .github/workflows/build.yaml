@@ -89,6 +89,12 @@ jobs:
           echo "REVISION: $REVISION"
 
           source ./github-workflows/install-dependencies.sh
+      - name: Build
+        shell: bash
+        run: |
+          echo "REVISION: $REVISION"
+
+          source ./github-workflows/install-dependencies.sh
       - uses: actions/upload-artifact@v2
         with:
           name: tdlight-${{ env.SAFE_ARCH }}
