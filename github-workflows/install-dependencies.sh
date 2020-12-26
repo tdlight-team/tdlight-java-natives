@@ -44,7 +44,7 @@ elif [[ "$OPERATING_SYSTEM_NAME" == "windows" ]]; then
   choco install base64
   choco install gperf
   choco install strawberryperl
-  #choco install nasm
+  choco install nasm
   #choco install php --version=7.4.9 --package-parameters='"/ThreadSafe ""/InstallDir:C:\PHP"""'
   #choco install python3 --params "/InstallDir:C:\Python3"
 
