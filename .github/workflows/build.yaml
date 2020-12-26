@@ -87,9 +87,8 @@ jobs:
         shell: bash
         run: |
           echo "REVISION: $REVISION"
-          echo "REVISION: ${env.REVISION}"
-          echo "REVISION: ${{env.REVISION}}"
           cat $GITHUB_ENV
+          echo "REVISION: ${{env.REVISION}}"
           mkdir build
           cd build
           CXXFLAGS="-stdlib=libc++" CC=/usr/bin/clang-10 CXX=/usr/bin/clang++-10 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=../tdlib ..
