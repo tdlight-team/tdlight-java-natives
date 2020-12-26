@@ -2,16 +2,21 @@
 set -e
 export MAVEN_OPTS="--add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens java.base/java.lang.reflect=ALL-UNNAMED --add-opens java.base/javax.crypto=ALL-UNNAMED --add-opens java.base/java.io=ALL-UNNAMED"
 
-echo "$GH_MATRIX_ARCH"
+echo "MATRIX_OS: $GH_MATRIX_OS"
+echo "MATRIX_ARCH: $GH_MATRIX_ARCH"
 
-if [ "$GH_MATRIX_ARCH" == "macos/amd64" ]; then
+if [ "MATRIX_OS" == "macos-10.15" ]; then
 	export PCRE="E"
 else
 	export PCRE="r"
 fi
 
-export GH_CPU_ARCH=$(echo $GH_MATRIX_ARCH | sed -$PCRE 's/^(linux|windows|macos)\/(386|amd64|arm64|ppc64le|arm)(\/(v6|v7))?$/\2\4/g')
-export GH_OS_NAME=$(echo $GH_MATRIX_ARCH | sed -$PCRE 's/^(linux|windows|macos)\/(386|amd64|arm64|ppc64le|arm)(\/(v6|v7))?$/\1/g')
+export GH_CPU_ARCH=$(echo $GH_MATRIX_ARCH | sed -$PCRE 's/^(linux\/|windows\/|macos\/|)(386|amd64|arm64|ppc64le|arm)(\/(v6|v7))?$/\2\4/g')
+export GH_OS_NAME=$(echo $GH_MATRIX_ARCH | sed -$PCRE 's/^(linux\/|windows\/|macos\/|)(386|amd64|arm64|ppc64le|arm)(\/(v6|v7))?$/\1/g')
+
+if [[ -z "GH_OS_NAME" ]]; then
+	export GH_OS_NAME=$(echo $GH_MATRIX_OS | sed -$PCRE 's/^([^-]+)/\1/g')
+fi
 
 if [[ "$GH_CPU_ARCH" == "arm64" ]]; then
 	export CPU_ARCHITECTURE_NAME="aarch64"

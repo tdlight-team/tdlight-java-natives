@@ -52,6 +52,7 @@ jobs:
         run: |
           # ====== Variables
           export REVISION=${{ github.run_number }}
+          export GH_MATRIX_OS=${{ matrix.os }}
           export GH_MATRIX_ARCH=${{ matrix.arch }}
 
           echo "$(realpath .)"
