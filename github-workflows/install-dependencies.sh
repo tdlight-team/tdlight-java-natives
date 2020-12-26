@@ -1,12 +1,9 @@
 #!/bin/bash -e
 set -e
 
-# ====== Setup environment variables
-source ./travis/setup_variables.sh
-
-if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+if [[ "$OPERATING_SYSTEM_NAME" == "linux" ]]; then
   echo "==Linux===="
-elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+elif [[ "$OPERATING_SYSTEM_NAME" == "osx" ]]; then
   echo "==OSX======"
   export PYTHON=36
   brew install swig;
@@ -36,7 +33,7 @@ elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
   echo "Running tl-parser on td_api"
   ./tl-parser/bin/tl-parser -v -e scheme/td_api.tlo scheme/td_api.tl
   echo "Done .tlo"
-elif [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
+elif [[ "$OPERATING_SYSTEM_NAME" == "windows" ]]; then
   echo "==Windows=="
   choco install ccache
   choco install make
@@ -58,7 +55,7 @@ elif [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
   cd $VCPKG_DIR
   ./vcpkg integrate install
 else
-  echo "Unrecognized os: $TRAVIS_OS_NAME"
+  echo "Unrecognized os: $OPERATING_SYSTEM_NAME"
   exit 1
 fi
  
