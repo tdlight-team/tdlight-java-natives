@@ -21,6 +21,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Install sudo package
+        if: runner.os == 'Linux'
         run: |
           (apt-get update || true) 2>/dev/null
           (apt-get install -y sudo || true) 2>/dev/null
@@ -29,6 +30,7 @@ jobs:
         with:
           submodules: "recursive"
       - name: Cache ccache
+        if: runner.os == 'Linux'
         id: cache-ccache
         uses: actions/cache@v2
         with:
@@ -41,6 +43,7 @@ jobs:
         with:
           java-version: 11
       - name: Setup variables
+        shell: bash
         run: |
           # ====== Variables
           REVISION=${{ github.run_number }}
