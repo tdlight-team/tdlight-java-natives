@@ -51,8 +51,8 @@ jobs:
         shell: bash
         run: |
           # ====== Variables
-          REVISION=${{ github.run_number }}
-          GH_MATRIX_ARCH=${{ matrix.arch }}
+          export REVISION=${{ github.run_number }}
+          export GH_MATRIX_ARCH=${{ matrix.arch }}
 
           echo "$(realpath .)"
           ls -alch .
