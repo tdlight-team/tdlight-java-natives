@@ -105,10 +105,10 @@ jobs:
           source ./github-workflows/build.sh
       - id: getfilename
         shell: bash
-        run: echo "::set-output name=file::$(cd generated/target; ls tdli*-natives-*shaded.jar)"
+        run: echo "::set-output name=file::$(cd generated/target; ls tdli*-natives-*.jar)"
       - id: getfilepath
         shell: bash
-        run: echo "::set-output name=file::$(ls generated/target/tdli*-natives-*shaded.jar)"
+        run: echo "::set-output name=file::$(ls generated/target/tdli*-natives-*.jar)"
       - uses: actions/upload-artifact@v2
         with:
           name: ${{ steps.getfilename.outputs.file }}
