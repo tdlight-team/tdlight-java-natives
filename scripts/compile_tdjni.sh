@@ -57,7 +57,7 @@ cp -r ./src/main/jni-java-src ./generated/src/main/jni-java-src
 
 # Copy executables
 echo "Copying executables..."
-if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
+if [[ "$OPERATING_SYSTEM_NAME" == "windows" ]]; then
 	export TD_GENERATED_BINARIES_DIR=$(realpath -m ./generated/td_tools/td/generate/Release)
 else
 	export TD_GENERATED_BINARIES_DIR=$(realpath -m ./generated/td_tools/td/generate)
@@ -87,11 +87,11 @@ cd ..
 # Copy to resources
 echo "Copying to resources..."
 [ -d  ./src/main/resources/libs/${OPERATING_SYSTEM_NAME_SHORT}/${CPU_ARCHITECTURE_NAME}/ ] || mkdir -p ./src/main/resources/libs/${OPERATING_SYSTEM_NAME_SHORT}/${CPU_ARCHITECTURE_NAME}/
-if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
+if [[ "$OPERATING_SYSTEM_NAME" == "windows" ]]; then
 	cp ./tdjni_bin/tdjni.dll ./src/main/resources/libs/${OPERATING_SYSTEM_NAME_SHORT}/${CPU_ARCHITECTURE_NAME}/tdjni.dll
-elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+elif [[ "$OPERATING_SYSTEM_NAME" == "osx" ]]; then
 	cp ./tdjni_bin/libtdjni.dylib ./src/main/resources/libs/${OPERATING_SYSTEM_NAME_SHORT}/${CPU_ARCHITECTURE_NAME}/tdjni.dylib
-elif [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+elif [[ "$OPERATING_SYSTEM_NAME" == "linux" ]]; then
 	cp ./tdjni_bin/libtdjni.so ./src/main/resources/libs/${OPERATING_SYSTEM_NAME_SHORT}/${CPU_ARCHITECTURE_NAME}/tdjni.so
 fi
 

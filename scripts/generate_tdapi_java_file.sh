@@ -36,7 +36,7 @@ echo "CPU cores count: ${CPU_CORES}"
 echo "CMake extra arguments: '${CMAKE_EXTRA_ARGUMENTS}'"
 
 # Setup constants
-if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
+if [[ "$OPERATING_SYSTEM_NAME" == "windows" ]]; then
 	export PYTHON_EXECUTABLE="python"
 else
 	export PYTHON_EXECUTABLE="python3"
@@ -68,7 +68,7 @@ cp -r ./src/main/jni-java-src ./generated/src/main/jni-java-src
 
 # Copy executables
 echo "Copying executables..."
-if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
+if [[ "$OPERATING_SYSTEM_NAME" == "windows" ]]; then
 	export TD_GENERATED_BINARIES_DIR=$(realpath -m ./generated/td_tools/td/generate/Release)
 else
 	export TD_GENERATED_BINARIES_DIR=$(realpath -m ./generated/td_tools/td/generate)
@@ -105,7 +105,7 @@ cd ..
 echo "Patching TdApi.java..."
 ${PYTHON_EXECUTABLE} ../tdlib-serializer/ $(realpath -m ./src/main/jni-java-src/it/tdlight/jni/TdApi.java) $(realpath -m ./src/main/jni-java-src/it/tdlight/jni/new_TdApi.java) $(realpath -m ../tdlib-serializer/headers.txt)
 rm ./src/main/jni-java-src/it/tdlight/jni/TdApi.java
-if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+if [[ "$OPERATING_SYSTEM_NAME" == "osx" ]]; then
 	unexpand --tabs=2 ./src/main/jni-java-src/it/tdlight/jni/new_TdApi.java > ./src/main/jni-java-src/it/tdlight/jni/TdApi.java
 else
 	unexpand -t 2 ./src/main/jni-java-src/it/tdlight/jni/new_TdApi.java > ./src/main/jni-java-src/it/tdlight/jni/TdApi.java
