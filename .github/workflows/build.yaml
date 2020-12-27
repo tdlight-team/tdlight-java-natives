@@ -51,6 +51,9 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
+          server-id: mchv-snapshot-distribution
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
       - name: Setup variables
         shell: bash
         run: |
@@ -100,8 +103,19 @@ jobs:
           echo "REVISION: $REVISION"
 
           source ./github-workflows/build.sh
+      - id: getfilename
+        shell: bash
+        run: echo "::set-output name=file::$(ls generated/target/tdli*-natives-*shaded.jar)"
       - uses: actions/upload-artifact@v2
         with:
-          name: tdlight-${{ env.SAFE_ARCH }}
-          path: tdlib/lib
+          path: ${{ steps.getfilename.outputs.file }}
+      - name: Deploy snapshot to Maven
+        shell: bash
+        run: |
+          echo "REVISION: $REVISION"
+
+          source ./github-workflows/deploy-snapshot.sh
+        env:
+          MAVEN_USERNAME: ${{ secrets.MCHV_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.MCHV_TOKEN }}
 
