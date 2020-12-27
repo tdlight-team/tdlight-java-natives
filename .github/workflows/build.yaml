@@ -122,4 +122,14 @@ jobs:
         env:
           MAVEN_USERNAME: ${{ secrets.MCHV_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.MCHV_TOKEN }}
+      - name: Deploy release to Maven
+        if: github.ref == 'refs/heads/master'
+        shell: bash
+        run: |
+          echo "REVISION: $REVISION"
+
+          source ./github-workflows/deploy-release.sh
+        env:
+          MAVEN_USERNAME: ${{ secrets.MCHV_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.MCHV_TOKEN }}
 
