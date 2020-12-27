@@ -51,11 +51,20 @@ jobs:
           key: ${{ runner.os }}-${{ env.CCACHE_SAFE_ARCH }}-ccache-all
           restore-keys: |
             ${{ runner.os }}-${{ env.CCACHE_SAFE_ARCH }}-ccache-
-      - name: Setup Java
+      - name: Setup Java (Snapshot)
+        if: github.ref != 'refs/heads/master'
         uses: actions/setup-java@v1
         with:
           java-version: 11
           server-id: mchv-snapshot-distribution
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
+      - name: Setup Java (Release)
+        if: github.ref == 'refs/heads/master'
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+          server-id: mchv-release-distribution
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
       - name: Setup variables
@@ -117,7 +126,7 @@ jobs:
         with:
           name: ${{ steps.getfilename.outputs.file }}
           path: ${{ steps.getfilepath.outputs.file }}
-      - name: Deploy snapshot to Maven
+      - name: Deploy to Maven (Snapshot)
         if: github.ref != 'refs/heads/master'
         shell: bash
         run: |
@@ -127,7 +136,7 @@ jobs:
         env:
           MAVEN_USERNAME: ${{ secrets.MCHV_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.MCHV_TOKEN }}
-      - name: Deploy release to Maven
+      - name: Deploy to Maven (Release)
         if: github.ref == 'refs/heads/master'
         shell: bash
         run: |
