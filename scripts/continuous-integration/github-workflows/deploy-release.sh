@@ -1,6 +1,6 @@
 #!/bin/bash -e
 set -e
-cd ./scripts/
+cd ./scripts/core/
 ./deploy_release.sh
 
 echo "Done."

@@ -1,6 +1,6 @@
 #!/bin/bash -e
 set -e
-cd ./scripts/
+cd ./scripts/core/
 ./generate_maven_project.sh
 ./generate_td_tools.sh
 ./compile_td.sh
