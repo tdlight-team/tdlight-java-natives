@@ -1,6 +1,6 @@
 #!/bin/bash -e
-# REQUIRED PARAMETERS:
-# REVISION = <revision>
+# OTHER REQUIRED ENVIRONMENT VARIABLES:
+#   REVISION = <revision>
 
 # Check variables correctness
 if [ -z "${REVISION}" ]; then
@@ -8,7 +8,7 @@ if [ -z "${REVISION}" ]; then
 	exit 1
 fi
 
-cd ../generated
+cd ../../generated
 
 mvn -B -Drevision=${REVISION} clean deploy
 

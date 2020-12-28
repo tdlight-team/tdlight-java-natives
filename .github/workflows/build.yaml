@@ -78,7 +78,7 @@ jobs:
           export GH_MATRIX_ARCH=${{ matrix.arch }}
           export IMPLEMENTATION_NAME=${{ matrix.implementation }}
 
-          source ./github-workflows/setup-variables.sh
+          source ./scripts/continuous-integration/github-workflows/setup-variables.sh
 
           echo "REVISION=$REVISION" >> $GITHUB_ENV
           echo "IMPLEMENTATION_NAME=$IMPLEMENTATION_NAME" >> $GITHUB_ENV
@@ -111,13 +111,13 @@ jobs:
         run: |
           echo "REVISION: $REVISION"
 
-          source ./github-workflows/install-dependencies.sh
+          source ./scripts/continuous-integration/github-workflows/install-dependencies.sh
       - name: Build
         shell: bash
         run: |
           echo "REVISION: $REVISION"
 
-          source ./github-workflows/build.sh
+          source ./scripts/continuous-integration/github-workflows/build.sh
       - id: getfilename
         shell: bash
         run: echo "::set-output name=file::$(cd generated/target; ls tdli*-natives-*.jar)"
@@ -134,7 +134,7 @@ jobs:
         run: |
           echo "REVISION: $REVISION"
 
-          source ./github-workflows/deploy-snapshot.sh
+          source ./scripts/continuous-integration/github-workflows/deploy-snapshot.sh
         env:
           MAVEN_USERNAME: ${{ secrets.MCHV_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.MCHV_TOKEN }}
@@ -144,7 +144,7 @@ jobs:
         run: |
           echo "REVISION: $REVISION"
 
-          source ./github-workflows/deploy-release.sh
+          source ./scripts/continuous-integration/github-workflows/deploy-release.sh
         env:
           MAVEN_USERNAME: ${{ secrets.MCHV_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.MCHV_TOKEN }}

@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-cd ../
+cd ../../
 
 rm -r generated
 

@@ -1,5 +1,5 @@
 #!/bin/bash -e
-cd ../generated
+cd ../../generated
 
 mvn -B deploy
 

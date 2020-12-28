@@ -1,10 +1,11 @@
 #!/bin/bash -e
-# REQUIRED PARAMETERS:
-# OPERATING_SYSTEM_NAME = <windows | linux | osx>
-# CPU_ARCHITECTURE_NAME = <amd64 | aarch64>
-# IMPLEMENTATION_NAME = <tdlib | tdlight>
-# CPU_CORES = <cores>
-# CMAKE_EXTRA_ARGUMENTS = <args>
+# MAIN REQUIRED ENVIRONMENT VARIABLES:
+#   OPERATING_SYSTEM_NAME = <windows | linux | osx>
+#   CPU_ARCHITECTURE_NAME = <amd64 | aarch64 | 386 | armv6 | armv7 | ppc64le>
+#   IMPLEMENTATION_NAME = <tdlib | tdlight>
+#   CPU_CORES = "-- -j<cores>" or "-m" on Windows
+# OTHER REQUIRED ENVIRONMENT VARIABLES:
+#   CMAKE_EXTRA_ARGUMENTS = <args>
 
 # Check variables correctness
 if [ -z "${OPERATING_SYSTEM_NAME}" ]; then
@@ -24,7 +25,7 @@ if [ -z "${CPU_CORES}" ]; then
 	exit 1
 fi
 
-cd ../
+cd ../../
 
 # Print details
 echo "Generating TdApi.java..."
@@ -103,7 +104,7 @@ cmake --build . --target td_generate_java_api --config Release ${CPU_CORES}
 cd ..
 
 echo "Patching TdApi.java..."
-${PYTHON_EXECUTABLE} ../tdlib-serializer/ $(realpath -m ./src/main/jni-java-src/it/tdlight/jni/TdApi.java) $(realpath -m ./src/main/jni-java-src/it/tdlight/jni/new_TdApi.java) $(realpath -m ../tdlib-serializer/headers.txt)
+${PYTHON_EXECUTABLE} ../scripts/core/tdlib-serializer/tdlib-serializer/ $(realpath -m ./src/main/jni-java-src/it/tdlight/jni/TdApi.java) $(realpath -m ./src/main/jni-java-src/it/tdlight/jni/new_TdApi.java) $(realpath -m ../scripts/core/tdlib-serializer/tdlib-serializer/headers.txt)
 rm ./src/main/jni-java-src/it/tdlight/jni/TdApi.java
 if [[ "$OPERATING_SYSTEM_NAME" == "osx" ]]; then
 	unexpand --tabs=2 ./src/main/jni-java-src/it/tdlight/jni/new_TdApi.java > ./src/main/jni-java-src/it/tdlight/jni/TdApi.java
