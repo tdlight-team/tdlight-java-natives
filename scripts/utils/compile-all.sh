@@ -1,4 +1,7 @@
 #!/bin/bash -e
+# This script compiles tdlight/tdlib jni binaries for your platform.
+# Fill the variables with your system details.
+#
 # MAIN REQUIRED ENVIRONMENT VARIABLES:
 #   OPERATING_SYSTEM_NAME = <windows | linux | osx>
 #   CPU_ARCHITECTURE_NAME = <amd64 | aarch64 | 386 | armv6 | armv7 | ppc64le>
