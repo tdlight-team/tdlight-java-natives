@@ -19,8 +19,8 @@ jobs:
         - {os: ubuntu-20.04, arch: "linux/arm/v6", implementation: "tdlib"}
         - {os: ubuntu-20.04, arch: "linux/arm/v7", implementation: "tdlight"}
         - {os: ubuntu-20.04, arch: "linux/arm/v7", implementation: "tdlib"}
-        - {os: ubuntu-20.04, arch: "linux/aarch64", implementation: "tdlight"}
-        - {os: ubuntu-20.04, arch: "linux/aarch64", implementation: "tdlib"}
+        - {os: ubuntu-20.04, arch: "linux/arm64", implementation: "tdlight"}
+        - {os: ubuntu-20.04, arch: "linux/arm64", implementation: "tdlib"}
         - {os: ubuntu-20.04, arch: "linux/ppc64le", implementation: "tdlight"}
         - {os: ubuntu-20.04, arch: "linux/ppc64le", implementation: "tdlib"}
         - {os: windows-2019, arch: "amd64", implementation: "tdlight"}
