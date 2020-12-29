@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>it.tdlight</groupId>
 	<artifactId>${IMPLEMENTATION_NAME}-natives-${OPERATING_SYSTEM_NAME}-${CPU_ARCHITECTURE_NAME}</artifactId>
-	<version>3.1.${revision}</version>
+	<version>3.2.${revision}</version>
 	<name>${IMPLEMENTATION_NAME} natives for ${OPERATING_SYSTEM_NAME} (${CPU_ARCHITECTURE_NAME})</name>
 	<packaging>jar</packaging>
 	<properties>
