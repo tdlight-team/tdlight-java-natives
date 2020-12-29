@@ -26,6 +26,7 @@ if [ -z "${CPU_CORES}" ]; then
 fi
 
 cd ../../
+JAVA_PACKAGE_PATH="it/tdlight/jni"
 
 # Print details
 echo "Generating TdApi.java..."
@@ -35,6 +36,7 @@ echo "Architecture: ${CPU_ARCHITECTURE_NAME}"
 echo "Td implementation: ${IMPLEMENTATION_NAME}"
 echo "CPU cores count: ${CPU_CORES}"
 echo "CMake extra arguments: '${CMAKE_EXTRA_ARGUMENTS}'"
+echo "JAVA_PACKAGE_PATH: '${JAVA_PACKAGE_PATH}'"
 
 # Setup constants
 if [[ "$OPERATING_SYSTEM_NAME" == "windows" ]]; then
@@ -43,78 +45,49 @@ else
 	export PYTHON_EXECUTABLE="python3"
 fi
 
-
 # Delete old data
 echo "Deleting old data..."
-[ -d ./generated/tdapi_java_build/ ] && rm -r ./generated/tdapi_java_build/
 [ -d ./generated/tdjni_build/ ] && rm -r ./generated/tdjni_build/
 [ -d ./generated/tdjni_bin/ ] && rm -r ./generated/tdjni_bin/
 [ -d ./generated/tdjni_docs/ ] && rm -r ./generated/tdjni_docs/
-[ -d ./generated/src/main/jni-cpp-src/ ] && rm -r ./generated/src/main/jni-cpp-src/
-[ -d ./generated/src/main/jni-java-src/ ] && rm -r ./generated/src/main/jni-java-src/
-[ -f ./generated/src/main/java/it/tdlight/jni/TdApi.java ] && rm ./generated/src/main/java/it/tdlight/jni/TdApi.java
+[ -f ./generated/src/main/java/${JAVA_PACKAGE_PATH}/TdApi.java ] && rm ./generated/src/main/java/${JAVA_PACKAGE_PATH}/TdApi.java
 
 # Create missing folders
 echo "Creating missing folders..."
-[ -d ./generated/tdapi_java_build/ ] || mkdir ./generated/tdapi_java_build/
+[ -d "./generated/src/main/java/${JAVA_PACKAGE_PATH}/" ] || mkdir -p "./generated/src/main/java/${JAVA_PACKAGE_PATH}/"
 [ -d ./generated/tdjni_build/ ] || mkdir ./generated/tdjni_build/
 [ -d ./generated/tdjni_bin/ ] || mkdir ./generated/tdjni_bin/
 [ -d ./generated/tdjni_docs/ ] || mkdir ./generated/tdjni_docs/
 
-# Copy source files
-echo "Copying source files..."
-cp -r ./src/main/jni-cpp-src/common/. ./generated/src/main/jni-cpp-src
-cp -r ./src/main/jni-cpp-src/${IMPLEMENTATION_NAME}/. ./generated/src/main/jni-cpp-src
-cp -r ./src/main/jni-java-src ./generated/src/main/jni-java-src
-
 # Copy executables
 echo "Copying executables..."
+export TD_GENERATED_BINARIES_DIR;
 if [[ "$OPERATING_SYSTEM_NAME" == "windows" ]]; then
-	export TD_GENERATED_BINARIES_DIR=$(realpath -m ./generated/td_tools/td/generate/Release)
+	TD_GENERATED_BINARIES_DIR="$(realpath -m ./generated/td_tools/td/generate/Release)"
 else
-	export TD_GENERATED_BINARIES_DIR=$(realpath -m ./generated/td_tools/td/generate)
+	TD_GENERATED_BINARIES_DIR="$(realpath -m ./generated/td_tools/td/generate)"
 fi
-
-
 # Configure cmake
 echo "Configuring CMake..."
-cd ./generated/tdapi_java_build/
-echo "Telegram source path: '$(realpath -m ../implementation/)'"
-echo "Td bin path: '$(realpath -m ../td_bin/)'"
-echo "Td bin files: $(ls $(realpath -m ../td_bin/))"
-echo "Td bin/lib path: '$(realpath -m ../td_bin/lib/)'"
-echo "Td bin/lib files: $(ls $(realpath -m ../td_bin/lib/))"
-echo "Td CMake path: '$(realpath -m ../td_bin/lib/cmake/)'"
-echo "Td CMake files: $(ls $(realpath -m ../td_bin/lib/cmake/))"
-echo "Td CMake/td path: '$(realpath -m ../td_bin/lib/cmake/Td/)'"
-echo "Td CMake/td files: $(ls $(realpath -m ../td_bin/lib/cmake/Td/))"
-cmake -DCMAKE_BUILD_TYPE=Release \
- -DTD_SRC_DIR=$(realpath -m ../implementation/) \
- -DTD_GENERATED_BINARIES_DIR=${TD_GENERATED_BINARIES_DIR} \
- -DTd_DIR=$(realpath -m ../td_bin/lib/cmake/Td/) \
- -DTDNATIVES_BIN_DIR=$(realpath -m ../tdjni_bin/) \
- -DTDNATIVES_DOCS_BIN_DIR=$(realpath -m ../tdjni_docs/) \
- -DJAVA_SRC_DIR=$(realpath -m ../src/main/jni-java-src/) \
- ${CMAKE_EXTRA_ARGUMENTS} \
- $(realpath -m ../src/main/jni-cpp-src/)
+cd ./generated/
+echo "Telegram source path: '$(realpath -m ./implementation/)'"
 
 # Run cmake to generate TdApi.java
 echo "Generating TdApi.java..."
-cmake --build . --target td_generate_java_api --config Release ${CPU_CORES}
-cd ..
+./td_tools/td/generate/td_generate_java_api TdApi "./implementation/td/generate/scheme/td_api.tlo" "./src/main/java" "$JAVA_PACKAGE_PATH"
+php ./implementation/td/generate/JavadocTlDocumentationGenerator.php "./implementation/td/generate/scheme/td_api.tl" "./src/main/java/${JAVA_PACKAGE_PATH}/TdApi.java"
 
 echo "Patching TdApi.java..."
-${PYTHON_EXECUTABLE} ../scripts/core/tdlib-serializer/tdlib-serializer/ $(realpath -m ./src/main/jni-java-src/it/tdlight/jni/TdApi.java) $(realpath -m ./src/main/jni-java-src/it/tdlight/jni/new_TdApi.java) $(realpath -m ../scripts/core/tdlib-serializer/tdlib-serializer/headers.txt)
-rm ./src/main/jni-java-src/it/tdlight/jni/TdApi.java
+${PYTHON_EXECUTABLE} ../scripts/core/tdlib-serializer "$(realpath -m  ./src/main/java/${JAVA_PACKAGE_PATH}/TdApi.java)" "$(realpath -m ./src/main/java/${JAVA_PACKAGE_PATH}/new_TdApi.java)" "$(realpath -m ../scripts/core/tdlib-serializer/headers.txt)"
+rm ./src/main/java/${JAVA_PACKAGE_PATH}/TdApi.java
 if [[ "$OPERATING_SYSTEM_NAME" == "osx" ]]; then
-	unexpand --tabs=2 ./src/main/jni-java-src/it/tdlight/jni/new_TdApi.java > ./src/main/jni-java-src/it/tdlight/jni/TdApi.java
+	unexpand --tabs=2 ./src/main/java/${JAVA_PACKAGE_PATH}/new_TdApi.java > ./src/main/java/${JAVA_PACKAGE_PATH}/TdApi.java
 else
-	unexpand -t 2 ./src/main/jni-java-src/it/tdlight/jni/new_TdApi.java > ./src/main/jni-java-src/it/tdlight/jni/TdApi.java
+	unexpand -t 2 ./src/main/java/${JAVA_PACKAGE_PATH}/new_TdApi.java > ./src/main/java/${JAVA_PACKAGE_PATH}/TdApi.java
 fi
-rm ./src/main/jni-java-src/it/tdlight/jni/new_TdApi.java
-cp ./src/main/jni-java-src/it/tdlight/jni/TdApi.java ./src/main/java/it/tdlight/jni/TdApi.java
+rm ./src/main/java/${JAVA_PACKAGE_PATH}/new_TdApi.java
 
-echo "Generated '$(realpath -m ./src/main/java/it/tdlight/jni/TdApi.java)'"
+echo "Generated '$(realpath -m ./src/main/java/${JAVA_PACKAGE_PATH}/TdApi.java)'"
 
 echo "Done."
 exit 0

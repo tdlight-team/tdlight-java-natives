@@ -1,4 +1,4 @@
-name: Build TDLib
+name: Build TDLib natives
 
 on:
   push:
@@ -117,7 +117,7 @@ jobs:
         run: |
           echo "REVISION: $REVISION"
 
-          source ./scripts/continuous-integration/github-workflows/build.sh
+          source ./scripts/continuous-integration/github-workflows/build-natives.sh
       - id: getfilename
         shell: bash
         run: echo "::set-output name=file::$(cd generated/target; ls tdli*-natives-*.jar)"

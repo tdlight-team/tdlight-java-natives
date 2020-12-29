@@ -28,7 +28,7 @@ fi
 cd ../../
 
 # Print details
-echo "Compiling td..."
+echo "Configuring td..."
 echo "Current directory: $(pwd)"
 echo "Operating system: ${OPERATING_SYSTEM_NAME}"
 echo "Architecture: ${CPU_ARCHITECTURE_NAME}"
@@ -38,18 +38,32 @@ echo "CMake extra arguments: '${CMAKE_EXTRA_ARGUMENTS}'"
 
 # Delete old data
 echo "Deleting old data..."
-[ -d ./generated/td_bin/ ] && rm -r ./generated/td_bin/
+[ -d ./generated/td_build/ ] && rm -r ./generated/td_build/
 
 # Create missing folders
 echo "Creating missing folders..."
-[ -d ./generated/td_bin/ ] || mkdir ./generated/td_bin/
+[ -d ./generated/td_build/ ] || mkdir ./generated/td_build/
 
-
-# Build
-echo "Compiling ${IMPLEMENTATION_NAME} td..."
+# Configure cmake
+echo "Configuring CMake..."
 cd ./generated/td_build/
-cmake --build . --target install --config Release ${CPU_CORES}
-
+export CMAKE_EXTRA_ARGUMENTS_TD;
+if [[ "$IMPLEMENTATION_NAME" = "tdlight" ]]; then
+  CMAKE_EXTRA_ARGUMENTS_TD="-DTD_SKIP_BENCHMARK=ON -DTD_SKIP_TEST=ON -DTD_SKIP_TG_CLI=ON"
+else
+  CMAKE_EXTRA_ARGUMENTS_TD=""
+fi
+INSTALL_PREFIX="$(realpath -m ../td_bin/)"
+INSTALL_BINDIR="$(realpath -m ../td_bin/bin)"
+echo "Install prefix: $INSTALL_PREFIX"
+echo "Install bindir: $INSTALL_BINDIR"
+cmake -DCMAKE_BUILD_TYPE=Release \
+ -DCMAKE_INSTALL_PREFIX:PATH="$INSTALL_PREFIX" \
+ -DCMAKE_INSTALL_BINDIR:PATH="$INSTALL_BINDIR" \
+ -DTD_ENABLE_JNI=ON \
+ ${CMAKE_EXTRA_ARGUMENTS_TD} \
+ ${CMAKE_EXTRA_ARGUMENTS} \
+ ../implementation
 
 echo "Done."
 exit 0

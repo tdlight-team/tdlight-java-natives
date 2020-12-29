@@ -3,9 +3,6 @@
 #   OPERATING_SYSTEM_NAME = <windows | linux | osx>
 #   CPU_ARCHITECTURE_NAME = <amd64 | aarch64 | 386 | armv6 | armv7 | ppc64le>
 #   IMPLEMENTATION_NAME = <tdlib | tdlight>
-#   CPU_CORES = "-- -j<cores>" or "-m" on Windows
-# OTHER REQUIRED ENVIRONMENT VARIABLES:
-#   CMAKE_EXTRA_ARGUMENTS = <args>
 
 # Check variables correctness
 if [ -z "${OPERATING_SYSTEM_NAME}" ]; then
@@ -20,36 +17,33 @@ if [ -z "${IMPLEMENTATION_NAME}" ]; then
 	echo "Missing parameter: IMPLEMENTATION_NAME"
 	exit 1
 fi
-if [ -z "${CPU_CORES}" ]; then
-	echo "Missing parameter: CPU_CORES"
-	exit 1
-fi
 
 cd ../../
 
 # Print details
-echo "Compiling td..."
+echo "Generating maven project..."
 echo "Current directory: $(pwd)"
 echo "Operating system: ${OPERATING_SYSTEM_NAME}"
 echo "Architecture: ${CPU_ARCHITECTURE_NAME}"
 echo "Td implementation: ${IMPLEMENTATION_NAME}"
-echo "CPU cores count: ${CPU_CORES}"
-echo "CMake extra arguments: '${CMAKE_EXTRA_ARGUMENTS}'"
 
 # Delete old data
 echo "Deleting old data..."
-[ -d ./generated/td_bin/ ] && rm -r ./generated/td_bin/
+[ -d ./generated/ ] && rm -r ./generated/
 
 # Create missing folders
 echo "Creating missing folders..."
-[ -d ./generated/td_bin/ ] || mkdir ./generated/td_bin/
+[ -d ./generated/ ] || mkdir ./generated/
+[ -d ./generated/src/main ] || mkdir -p ./generated/src/main
 
+# Generate pom.xml
+echo "Generating pom.xml..."
+sed -f "src/main/replacements/replace-${OPERATING_SYSTEM_NAME}-${CPU_ARCHITECTURE_NAME}-${IMPLEMENTATION_NAME}.sed" src/main/tdapi-project-src/pom.template.xml > generated/pom.xml
 
-# Build
-echo "Compiling ${IMPLEMENTATION_NAME} td..."
-cd ./generated/td_build/
-cmake --build . --target install --config Release ${CPU_CORES}
-
+# Copy source files
+echo "Copying source files..."
+cp -r ./src/main/tdapi-java ./generated/src/main/java
+cp -r ./src/main/tdapi-resources ./generated/src/main/resources
 
 echo "Done."
 exit 0

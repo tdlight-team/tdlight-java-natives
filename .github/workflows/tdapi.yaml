@@ -1,0 +1,137 @@
+name: Generate TdApi.java
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '0 0 * * 0' # weekly
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+        - {os: ubuntu-20.04, arch: "linux/amd64", implementation: "tdlight"}
+        - {os: ubuntu-20.04, arch: "linux/amd64", implementation: "tdlib"}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Install sudo package
+        if: runner.os == 'Linux'
+        run: |
+          (apt-get update || true) 2>/dev/null
+          (apt-get install -y sudo || true) 2>/dev/null
+          sudo apt update
+      - uses: actions/checkout@v2
+        with:
+          submodules: "recursive"
+      - name: Setup ccache variables
+        shell: bash
+        run: |
+          ARCH=${{ matrix.arch }}
+          SAFE_ARCH=$(echo $ARCH | sed 's/\//\-/g')
+          echo "CCACHE_SAFE_ARCH=$SAFE_ARCH" >> $GITHUB_ENV
+      - name: Cache ccache
+        if: runner.os == 'Linux'
+        id: cache-ccache
+        uses: actions/cache@v2
+        with:
+          path: ~/.ccache
+          key: ${{ runner.os }}-${{ env.CCACHE_SAFE_ARCH }}-ccache-all
+          restore-keys: |
+            ${{ runner.os }}-${{ env.CCACHE_SAFE_ARCH }}-ccache-
+      - name: Setup Java (Snapshot)
+        if: github.ref != 'refs/heads/master'
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+          server-id: mchv-snapshot-distribution
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
+      - name: Setup Java (Release)
+        if: github.ref == 'refs/heads/master'
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+          server-id: mchv-release-distribution
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
+      - name: Setup variables
+        shell: bash
+        run: |
+          # ====== Variables
+          export REVISION=${{ github.run_number }}
+          export GH_MATRIX_OS=${{ matrix.os }}
+          export GH_MATRIX_ARCH=${{ matrix.arch }}
+          export IMPLEMENTATION_NAME=${{ matrix.implementation }}
+
+          source ./scripts/continuous-integration/github-workflows/setup-variables.sh
+
+          echo "REVISION=$REVISION" >> $GITHUB_ENV
+          echo "IMPLEMENTATION_NAME=$IMPLEMENTATION_NAME" >> $GITHUB_ENV
+          echo "TD_SRC_DIR=$TD_SRC_DIR" >> $GITHUB_ENV
+          echo "TD_BIN_DIR=$TD_BIN_DIR" >> $GITHUB_ENV
+          echo "TDNATIVES_BIN_DIR=$TDNATIVES_BIN_DIR" >> $GITHUB_ENV
+          echo "TDNATIVES_CPP_SRC_DIR=$TDNATIVES_CPP_SRC_DIR" >> $GITHUB_ENV
+          echo "TDNATIVES_DOCS_BIN_DIR=$TDNATIVES_DOCS_BIN_DIR" >> $GITHUB_ENV
+          echo "TD_BUILD_DIR=$TD_BUILD_DIR" >> $GITHUB_ENV
+          echo "TDNATIVES_CPP_BUILD_DIR=$TDNATIVES_CPP_BUILD_DIR" >> $GITHUB_ENV
+          echo "JAVA_SRC_DIR=$JAVA_SRC_DIR" >> $GITHUB_ENV
+          echo "TDLIB_SERIALIZER_DIR=$TDLIB_SERIALIZER_DIR" >> $GITHUB_ENV
+          echo "PATH=$PATH" >> $GITHUB_ENV
+          echo "JAVA_HOME=$JAVA_HOME" >> $GITHUB_ENV
+          echo "JAVA_INCLUDE_PATH=$JAVA_INCLUDE_PATH" >> $GITHUB_ENV
+          echo "CMAKE_EXTRA_ARGUMENTS=$CMAKE_EXTRA_ARGUMENTS" >> $GITHUB_ENV
+          echo "VCPKG_DIR=$VCPKG_DIR" >> $GITHUB_ENV
+          echo "MAVEN_OPTS=$MAVEN_OPTS" >> $GITHUB_ENV
+          echo "GH_CPU_ARCH=$GH_CPU_ARCH" >> $GITHUB_ENV
+          echo "CPU_ARCH_JAVA=$CPU_ARCH_JAVA" >> $GITHUB_ENV
+          echo "CPU_ARCHITECTURE_NAME=$CPU_ARCHITECTURE_NAME" >> $GITHUB_ENV
+          echo "CPU_CORES_NUM=$CPU_CORES_NUM" >> $GITHUB_ENV
+          echo "CPU_CORES=$CPU_CORES" >> $GITHUB_ENV
+          echo "OPERATING_SYSTEM_NAME=$OPERATING_SYSTEM_NAME" >> $GITHUB_ENV
+          echo "OPERATING_SYSTEM_NAME_SHORT=$OPERATING_SYSTEM_NAME_SHORT" >> $GITHUB_ENV
+          echo "SRC_TDJNI_LIBNAME=$SRC_TDJNI_LIBNAME" >> $GITHUB_ENV
+          echo "DEST_TDJNI_LIBNAME=$DEST_TDJNI_LIBNAME" >> $GITHUB_ENV
+      - name: Install dependencies
+        shell: bash
+        run: |
+          echo "REVISION: $REVISION"
+
+          source ./scripts/continuous-integration/github-workflows/install-dependencies.sh
+      - name: Build
+        shell: bash
+        run: |
+          echo "REVISION: $REVISION"
+
+          source ./scripts/continuous-integration/github-workflows/build-tdapi.sh
+      - id: getfilename
+        shell: bash
+        run: echo "::set-output name=file::$(cd generated/target; ls tdli*-api-*.jar)"
+      - id: getfilepath
+        shell: bash
+        run: echo "::set-output name=file::$(ls generated/target/tdli*-api-*.jar)"
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ${{ steps.getfilename.outputs.file }}
+          path: ${{ steps.getfilepath.outputs.file }}
+      - name: Deploy to Maven (Snapshot)
+        if: github.ref != 'refs/heads/master'
+        shell: bash
+        run: |
+          echo "REVISION: $REVISION"
+
+          source ./scripts/continuous-integration/github-workflows/deploy-snapshot.sh
+        env:
+          MAVEN_USERNAME: ${{ secrets.MCHV_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.MCHV_TOKEN }}
+      - name: Deploy to Maven (Release)
+        if: github.ref == 'refs/heads/master'
+        shell: bash
+        run: |
+          echo "REVISION: $REVISION"
+
+          source ./scripts/continuous-integration/github-workflows/deploy-release.sh
+        env:
+          MAVEN_USERNAME: ${{ secrets.MCHV_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.MCHV_TOKEN }}
+
