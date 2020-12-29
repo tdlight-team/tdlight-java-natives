@@ -42,8 +42,8 @@ sed -f "src/main/replacements/replace-${OPERATING_SYSTEM_NAME}-${CPU_ARCHITECTUR
 
 # Copy source files
 echo "Copying source files..."
-cp -r ./src/main/tdapi-java ./generated/src/main/java
-cp -r ./src/main/tdapi-resources ./generated/src/main/resources
+[ -d ./src/main/tdapi-java ] && cp -r ./src/main/tdapi-java ./generated/src/main/java
+[ -d ./src/main/tdapi-resources ] && cp -r ./src/main/tdapi-resources ./generated/src/main/resources
 
 echo "Done."
 exit 0
