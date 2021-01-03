@@ -1,6 +1,7 @@
 #!/bin/bash -e
 # MAIN REQUIRED ENVIRONMENT VARIABLES:
 #   OPERATING_SYSTEM_NAME = <windows | linux | osx>
+#   OPERATING_SYSTEM_NAME_SHORT = <win | linux | osx>
 #   CPU_ARCHITECTURE_NAME = <amd64 | aarch64 | 386 | armv6 | armv7 | ppc64le>
 #   IMPLEMENTATION_NAME = <tdlib | tdlight>
 #   CPU_CORES = "-- -j<cores>" or "-m" on Windows
@@ -10,6 +11,10 @@
 # Check variables correctness
 if [ -z "${OPERATING_SYSTEM_NAME}" ]; then
 	echo "Missing parameter: OPERATING_SYSTEM_NAME"
+	exit 1
+fi
+if [ -z "${OPERATING_SYSTEM_NAME_SHORT}" ]; then
+	echo "Missing parameter: OPERATING_SYSTEM_NAME_SHORT"
 	exit 1
 fi
 if [ -z "${CPU_ARCHITECTURE_NAME}" ]; then

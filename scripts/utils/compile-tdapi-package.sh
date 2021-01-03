@@ -5,6 +5,7 @@
 # MAIN REQUIRED ENVIRONMENT VARIABLES:
 #   OPERATING_SYSTEM_NAME = <windows | linux | osx>
 #   CPU_ARCHITECTURE_NAME = <amd64 | aarch64 | 386 | armv6 | armv7 | ppc64le>
+#   OPERATING_SYSTEM_NAME_SHORT = <win | linux | osx>
 #   IMPLEMENTATION_NAME = <tdlib | tdlight>
 #   CPU_CORES = "-- -j<cores>" or "-m" on Windows
 #   CMAKE_EXTRA_ARGUMENTS = <args>
