@@ -21,6 +21,12 @@ jobs:
           (apt-get update || true) 2>/dev/null
           (apt-get install -y sudo || true) 2>/dev/null
           sudo apt update
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.IG_SSH_KEY }}
+          name: id_rsa
+          known_hosts: ${{ secrets.IG_KNOWN_HOSTS }}
       - uses: actions/checkout@v2
         with:
           submodules: "recursive"
