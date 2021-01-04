@@ -98,13 +98,13 @@ jobs:
         run: |
           echo "REVISION: $REVISION"
 
-          source ./scripts/continuous-integration/github-workflows/install-dependencies.sh
+          ./scripts/continuous-integration/github-workflows/install-dependencies.sh
       - name: Build
         shell: bash
         run: |
           echo "REVISION: $REVISION"
 
-          source ./scripts/continuous-integration/github-workflows/build-tdapi.sh
+          ./scripts/continuous-integration/github-workflows/build-tdapi.sh
       - id: getfilename
         shell: bash
         run: echo "::set-output name=file::$(cd generated/target; ls tdli*-api-*.jar)"
@@ -121,7 +121,7 @@ jobs:
         run: |
           echo "REVISION: $REVISION"
 
-          source ./scripts/continuous-integration/github-workflows/deploy-snapshot.sh
+          ./scripts/continuous-integration/github-workflows/deploy-snapshot.sh
         env:
           MAVEN_USERNAME: ${{ secrets.MCHV_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.MCHV_TOKEN }}
@@ -131,7 +131,8 @@ jobs:
         run: |
           echo "REVISION: $REVISION"
 
-          source ./scripts/continuous-integration/github-workflows/deploy-release.sh
+          ./scripts/continuous-integration/github-workflows/deploy-release.sh
+          ./scripts/continuous-integration/github-workflows/deploy-javadoc.sh
         env:
           MAVEN_USERNAME: ${{ secrets.MCHV_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.MCHV_TOKEN }}

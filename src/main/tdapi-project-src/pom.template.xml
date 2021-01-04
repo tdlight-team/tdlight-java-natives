@@ -53,7 +53,11 @@
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>3.2.0</version>
 				<configuration>
-					<source>8</source>
+					<additionalOptions>-html5</additionalOptions>
+					<additionalOptions>-public</additionalOptions>
+					<release>13</release>
+					<quiet>true</quiet>
+					<notimestamp>true</notimestamp>
 				</configuration>
 				<executions>
 					<execution>
