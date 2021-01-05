@@ -12,7 +12,7 @@ git fetch --all
 git reset --soft "origin/${IMPLEMENTATION_NAME}"
 git add -A
 git commit -m "Update javadocs"
-git push
+git push --set-upstream origin "${IMPLEMENTATION_NAME}"
 
 echo "Done."
 exit 0
