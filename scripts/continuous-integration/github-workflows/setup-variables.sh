@@ -1,6 +1,5 @@
 #!/bin/bash -e
 set -e
-export BUILD_TYPE=Release
 export MAVEN_OPTS="--add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens java.base/java.lang.reflect=ALL-UNNAMED --add-opens java.base/javax.crypto=ALL-UNNAMED --add-opens java.base/java.io=ALL-UNNAMED"
 
 echo "MATRIX_OS: $GH_MATRIX_OS"
@@ -69,15 +68,18 @@ echo "============================="
 
 # ====== OS Variables
 if [[ "$OPERATING_SYSTEM_NAME" == "windows" ]]; then
+	export CMAKE_BUILD_TYPE=MinSizeRel
+	export BUILD_TYPE=MinSizeRel
 	export VCPKG_DIR="$(realpath .)/vcpkg"
 	export CMAKE_EXTRA_ARGUMENTS="-A x64 -DCMAKE_TOOLCHAIN_FILE:FILEPATH=$VCPKG_DIR/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-windows-static -DOPENSSL_USE_STATIC_LIBS=ON"
 	export PATH="/c/Python3:$PATH:/c/tools/php74:/c/PHP:/c/Program Files (x86)/Microsoft Visual Studio/2019/BuildTools/VC/Tools/MSVC/14.27.29110/bin/Hostx64/x64:/c/Program Files/OpenJDK/openjdk-11.0.8_10/bin:/c/Program Files/CMake/bin:/c/ProgramData/chocolatey/bin:/c/Program Files/apache-maven-3.6.3/bin:/c/ProgramData/chocolatey/lib/maven/apache-maven-3.6.3/bin:/c/ProgramData/chocolatey/lib/base64/tools:/c/Program Files/NASM"
 	export CPU_CORES=" -- -m"
-	export CMAKE_BUILD_TYPE=Release
 elif [[ "$OPERATING_SYSTEM_NAME" == "osx" ]]; then
+	export BUILD_TYPE=MinSizeRel
 	export CMAKE_EXTRA_ARGUMENTS="-DOPENSSL_ROOT_DIR=/usr/local/opt/openssl/"
 	export CPU_CORES=" -- -j${CPU_CORES_NUM}"
 elif [[ "$OPERATING_SYSTEM_NAME" == "linux" ]]; then
+	export BUILD_TYPE=MinSizeRel
 	if [[ "$CPU_ARCHITECTURE_NAME" = "aarch64" ]]; then
 		export CMAKE_EXTRA_ARGUMENTS=""
 		export CXXFLAGS="-static-libgcc -static-libstdc++"
