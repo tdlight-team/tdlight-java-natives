@@ -1,5 +1,6 @@
 #!/bin/bash -e
 set -e
+export BUILD_TYPE=Release
 export MAVEN_OPTS="--add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens java.base/java.lang.reflect=ALL-UNNAMED --add-opens java.base/javax.crypto=ALL-UNNAMED --add-opens java.base/java.io=ALL-UNNAMED"
 
 echo "MATRIX_OS: $GH_MATRIX_OS"
@@ -91,6 +92,7 @@ fi
 
 # ====== Print variables
 echo "REVISION=${REVISION}"
+echo "BUILD_TYPE=${BUILD_TYPE}"
 echo "TD_SRC_DIR=${TD_SRC_DIR}"
 echo "TD_BIN_DIR=${TD_BIN_DIR}"
 echo "TDNATIVES_BIN_DIR=${TDNATIVES_BIN_DIR}"
