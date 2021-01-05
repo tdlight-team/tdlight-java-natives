@@ -8,9 +8,11 @@ git checkout -b "${IMPLEMENTATION_NAME}"
 git remote add origin "ssh://git@ssh.git.ignuranza.net/tdlight-team/tdlight-docs"
 git config user.email "andrea@warp.ovh"
 git config user.name "Andrea Cavalli"
+git fetch --all
+git reset --soft "origin/${IMPLEMENTATION_NAME}"
 git add -A
 git commit -m "Update javadocs"
-git push --set-upstream origin "${IMPLEMENTATION_NAME}" --force
+git push
 
 echo "Done."
 exit 0
