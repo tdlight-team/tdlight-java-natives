@@ -74,6 +74,7 @@ jobs:
           source ./scripts/continuous-integration/github-workflows/setup-variables.sh
 
           echo "REVISION=$REVISION" >> $GITHUB_ENV
+          echo "BUILD_TYPE=$BUILD_TYPE" >> $GITHUB_ENV
           echo "IMPLEMENTATION_NAME=$IMPLEMENTATION_NAME" >> $GITHUB_ENV
           echo "TD_SRC_DIR=$TD_SRC_DIR" >> $GITHUB_ENV
           echo "TD_BIN_DIR=$TD_BIN_DIR" >> $GITHUB_ENV
