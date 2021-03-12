@@ -2,9 +2,13 @@ name: Generate TdApi.java
 
 on:
   push:
+    branches:
+      - main
+      - master
   pull_request:
-  schedule:
-    - cron: '0 0 * * 0' # weekly
+    branches:
+      - main
+      - master
 
 jobs:
   build:
