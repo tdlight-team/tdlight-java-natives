@@ -130,7 +130,6 @@ jobs:
           export GH_MATRIX_OS=${{ matrix.os }}
           export GH_MATRIX_ARCH=${{ matrix.arch }}
           export IMPLEMENTATION_NAME=${{ matrix.implementation }}
-
           source ./scripts/continuous-integration/github-workflows/setup-variables.sh
 
           echo "Variables:"
