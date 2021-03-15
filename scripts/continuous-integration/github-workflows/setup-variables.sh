@@ -87,9 +87,16 @@ elif [[ "$OPERATING_SYSTEM_NAME" == "linux" ]]; then
 		export CMAKE_EXTRA_ARGUMENTS="-DOPENSSL_USE_STATIC_LIBS=ON -DCMAKE_FIND_LIBRARY_SUFFIXES=\".a\""
 		export CXXFLAGS="-static-libgcc -static-libstdc++"
 	fi
+
+	if [[ "$CPU_ARCHITECTURE_NAME" = "386" ]]; then
+		export CXXFLAGS="$CXXFLAGS -latomic"
+		export CMAKE_EXE_LINKER_FLAGS="$CMAKE_EXE_LINKER_FLAGS -latomic"
+		export LDFLAGS="$LDFLAGS -latomic"
+	fi
+
 	export CPU_CORES=" -- -j${CPU_CORES_NUM}"
-	export CC="/usr/bin/clang-10"
-	export CXX="/usr/bin/clang++-10"
+	export CC="/usr/bin/clang-11"
+	export CXX="/usr/bin/clang++-11"
 fi
 
 # ====== Print variables
