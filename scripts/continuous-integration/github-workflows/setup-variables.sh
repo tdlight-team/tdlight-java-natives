@@ -88,7 +88,7 @@ elif [[ "$OPERATING_SYSTEM_NAME" == "linux" ]]; then
 		export CXXFLAGS="-static-libgcc -static-libstdc++"
 	fi
 
-	if [[ "$CPU_ARCHITECTURE_NAME" = "386" ]]; then
+	if [[ "$CPU_ARCHITECTURE_NAME" = "386" ]] || [[ "$CPU_ARCHITECTURE_NAME" = "armv6" ]] || [[ "$CPU_ARCHITECTURE_NAME" = "armv7" ]]; then
 		export CXXFLAGS="$CXXFLAGS -latomic"
 		export CMAKE_EXE_LINKER_FLAGS="$CMAKE_EXE_LINKER_FLAGS -latomic"
 		export LDFLAGS="$LDFLAGS -latomic"
