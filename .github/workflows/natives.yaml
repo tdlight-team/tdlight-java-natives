@@ -1,56 +1,36 @@
-name: Build TDLib natives
+name: Docker multi-arch build
 
 on:
   push:
+  pull_request:
+
 
 jobs:
   build:
+    name: Build Docker image (${{ matrix.arch }})
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
         include:
-#        - {os: ubuntu-20.04, arch: "linux/386", implementation: "tdlight"}
-#        - {os: ubuntu-20.04, arch: "linux/386", implementation: "tdlib"}
-        - {os: ubuntu-20.04, arch: "linux/amd64", implementation: "tdlight"}
-        - {os: ubuntu-20.04, arch: "linux/amd64", implementation: "tdlib"}
-#        - {os: ubuntu-20.04, arch: "linux/arm/v6", implementation: "tdlight"}
-#        - {os: ubuntu-20.04, arch: "linux/arm/v6", implementation: "tdlib"}
-#        - {os: ubuntu-20.04, arch: "linux/arm/v7", implementation: "tdlight"}
-#        - {os: ubuntu-20.04, arch: "linux/arm/v7", implementation: "tdlib"}
-#        - {os: ubuntu-20.04, arch: "linux/arm64", implementation: "tdlight"}
-#        - {os: ubuntu-20.04, arch: "linux/arm64", implementation: "tdlib"}
-#        - {os: ubuntu-20.04, arch: "linux/ppc64le", implementation: "tdlight"}
-#        - {os: ubuntu-20.04, arch: "linux/ppc64le", implementation: "tdlib"}
-        - {os: windows-2019, arch: "amd64", implementation: "tdlight"}
-        - {os: windows-2019, arch: "amd64", implementation: "tdlib"}
-        - {os: macos-10.15, arch: "amd64", implementation: "tdlight"}
-        - {os: macos-10.15, arch: "amd64", implementation: "tdlib"}
-    runs-on: ${{ matrix.os }}
+        - {os: ubuntu-20.04, usedocker: true, arch: "linux/386", implementation: "tdlight"}
+        - {os: ubuntu-20.04, usedocker: true, arch: "linux/386", implementation: "tdlib"}
+        - {os: ubuntu-20.04, usedocker: true, arch: "linux/amd64", implementation: "tdlight"}
+        - {os: ubuntu-20.04, usedocker: true, arch: "linux/amd64", implementation: "tdlib"}
+        - {os: ubuntu-20.04, usedocker: true, arch: "linux/arm/v6", implementation: "tdlight"}
+        - {os: ubuntu-20.04, usedocker: true, arch: "linux/arm/v6", implementation: "tdlib"}
+        - {os: ubuntu-20.04, usedocker: true, arch: "linux/arm/v7", implementation: "tdlight"}
+        - {os: ubuntu-20.04, usedocker: true, arch: "linux/arm/v7", implementation: "tdlib"}
+        - {os: ubuntu-20.04, usedocker: true, arch: "linux/arm64", implementation: "tdlight"}
+        - {os: ubuntu-20.04, usedocker: true, arch: "linux/arm64", implementation: "tdlib"}
+        - {os: windows-2019, usedocker: false, arch: "amd64", implementation: "tdlight"}
+        - {os: windows-2019, usedocker: false, arch: "amd64", implementation: "tdlib"}
+        - {os: macos-10.15, usedocker: false, arch: "amd64", implementation: "tdlight"}
+        - {os: macos-10.15, usedocker: false, arch: "amd64", implementation: "tdlib"}
     steps:
-      - name: Install sudo package
-        if: runner.os == 'Linux'
-        run: |
-          (apt-get update || true) 2>/dev/null
-          (apt-get install -y sudo || true) 2>/dev/null
-          sudo apt update
-      - uses: actions/checkout@v2
+      - name: Checkout current repo
+        uses: actions/checkout@v2
         with:
           submodules: "recursive"
-# Caching causes strange behaviours. Disabled.
-#      - name: Setup ccache variables
-#        shell: bash
-#        run: |
-#          ARCH=${{ matrix.arch }}
-#          SAFE_ARCH=$(echo $ARCH | sed 's/\//\-/g')
-#          echo "CCACHE_SAFE_ARCH=$SAFE_ARCH" >> $GITHUB_ENV
-#      - name: Cache ccache
-#        if: runner.os == 'Linux'
-#        id: cache-ccache
-#        uses: actions/cache@v2
-#        with:
-#          path: ~/.ccache
-#          key: ${{ runner.os }}-${{ env.CCACHE_SAFE_ARCH }}-ccache-all
-#          restore-keys: |
-#            ${{ runner.os }}-${{ env.CCACHE_SAFE_ARCH }}-ccache-
       - name: Setup Java (Snapshot)
         if: github.ref != 'refs/heads/master'
         uses: actions/setup-java@v1
@@ -67,7 +47,84 @@ jobs:
           server-id: mchv-release-distribution
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
+      - name: Get version
+        if: matrix.usedocker
+        run: |
+          # Get latest commit short hash
+          HASH_VERSION=$(git rev-parse --short HEAD)
+
+          # Strip git ref prefix from version
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+        
+          # Strip "v" prefix from tag name
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+        
+          # Use Docker `latest` tag convention
+          [ "$VERSION" == "master" ] && VERSION=latest
+
+          HASH_VERSION=$(echo "$HASH_VERSION" | awk '{print tolower($0)}')
+          VERSION=$(echo "$VERSION" | awk '{print tolower($0)}')
+          ARCH=${{ matrix.arch }}
+          SAFE_ARCH=${ARCH///}  # linux/amd64 -> linuxamd64
+
+          # Store variable for future use
+          echo "HASH_VERSION=$HASH_VERSION" >> $GITHUB_ENV
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "SAFE_ARCH=$SAFE_ARCH" >> $GITHUB_ENV
+
+          # Print debug info
+          echo "hash version: $HASH_VERSION"
+          echo "version: $VERSION"
+          echo "safe arch: $SAFE_ARCH"
+
+          # Save env to file
+          cat $GITHUB_ENV > github.env
+
+      - name: Set up QEMU
+        if: matrix.usedocker
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        if: matrix.usedocker
+        uses: docker/setup-buildx-action@v1
+
+      - name: Cache Docker layers
+        if: matrix.usedocker
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ env.SAFE_ARCH }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-${{ env.SAFE_ARCH }}-
+
+      - name: Build image
+        if: matrix.usedocker
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,mode=max,dest=/tmp/.buildx-cache
+          platforms: ${{ matrix.arch }}
+          push: false
+          load: true
+          tags: |
+            tdlight-java-natives:${{ env.HASH_VERSION }}-${{ env.SAFE_ARCH }}
+          build-args: |
+            REVISION=${{ github.run_number }}
+            GH_MATRIX_OS=${{ matrix.os }}
+            GH_MATRIX_ARCH=${{ matrix.arch }}
+            IMPLEMENTATION_NAME=${{ matrix.implementation }}
+
+      - name: Extract jni from docker image
+        if: matrix.usedocker
+        run: |
+          mkdir generated
+          docker cp $(docker create tdlight-java-natives:${{ env.HASH_VERSION }}-${{ env.SAFE_ARCH }}):/usr/src/tdlight-java-natives/generated/. ./generated/.
+
+
       - name: Setup variables
+        if: !matrix.usedocker
         shell: bash
         run: |
           # ====== Variables
@@ -106,17 +163,21 @@ jobs:
           echo "SRC_TDJNI_LIBNAME=$SRC_TDJNI_LIBNAME" >> $GITHUB_ENV
           echo "DEST_TDJNI_LIBNAME=$DEST_TDJNI_LIBNAME" >> $GITHUB_ENV
       - name: Install dependencies
+        if: !matrix.usedocker
         shell: bash
         run: |
           echo "REVISION: $REVISION"
 
           source ./scripts/continuous-integration/github-workflows/install-dependencies.sh
       - name: Build
+        if: !matrix.usedocker
         shell: bash
         run: |
           echo "REVISION: $REVISION"
 
           source ./scripts/continuous-integration/github-workflows/build-natives.sh
+
+
       - id: getfilename
         shell: bash
         run: echo "::set-output name=file::$(cd generated/target; ls tdli*-natives-*.jar)"
@@ -128,7 +189,7 @@ jobs:
           name: ${{ steps.getfilename.outputs.file }}
           path: ${{ steps.getfilepath.outputs.file }}
       - name: Deploy to Maven (Snapshot)
-        if: github.ref != 'refs/heads/master'
+        if: github.ref == 'refs/heads/develop'
         shell: bash
         run: |
           echo "REVISION: $REVISION"
@@ -147,4 +208,3 @@ jobs:
         env:
           MAVEN_USERNAME: ${{ secrets.MCHV_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.MCHV_TOKEN }}
-
