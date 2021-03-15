@@ -1,7 +1,7 @@
 #!/bin/bash -e
 cd ../../generated
 
-mvn clean package
+mvn -B -q clean package
 
 echo "Done."
 exit 0

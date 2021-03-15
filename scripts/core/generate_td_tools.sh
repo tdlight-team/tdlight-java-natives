@@ -70,6 +70,11 @@ cmake --build . --target prepare_cross_compiling --config Release ${CPU_CORES}
 echo "Generating java tools..."
 cmake --build . --target td_generate_java_api --config Release ${CPU_CORES}
 
+# Copy tlo files
+echo "Copying *.tlo files..."
+cp -r ../implementation/td/generate/auto/tlo/. ../implementation/td/generate/scheme/.
+
+
 echo "Generated executable '$(realpath -m ./td/generate/generate_common)'"
 echo "Generated executable '$(realpath -m ./td/generate/td_generate_java_api)'"
 echo "Generated executable '$(realpath -m ./td/generate/td_generate_json)'"

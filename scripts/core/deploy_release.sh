@@ -10,7 +10,7 @@ fi
 
 cd ../../generated
 
-mvn -B -Drevision=${REVISION} clean deploy
+mvn -B -q -Drevision=${REVISION} clean deploy
 
 echo "Done."
 exit 0
