@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    name: Build Docker image (${{ matrix.arch }})
+    name: Build (${{ matrix.implementation }}-${{ matrix.os }}-${{ matrix.arch }})
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
