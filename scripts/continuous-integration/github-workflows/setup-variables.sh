@@ -90,6 +90,10 @@ elif [[ "$OPERATING_SYSTEM_NAME" == "linux" ]]; then
 		export CMAKE_EXE_LINKER_FLAGS="$CMAKE_EXE_LINKER_FLAGS -latomic"
 		export LDFLAGS="$LDFLAGS -latomic"
 		export CXXFLAGS="$CXXFLAGS -latomic"
+
+		if [[ "$IMPLEMENTATION_NAME" == "tdlib" ]]; then
+			export CMAKE_HOST_SYSTEM_NAME="OpenBSD-levlam"
+		fi
 	fi
 
 	export CXXFLAGS="$CXXFLAGS -static-libgcc -static-libstdc++"
