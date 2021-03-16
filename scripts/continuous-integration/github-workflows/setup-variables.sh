@@ -82,21 +82,25 @@ elif [[ "$OPERATING_SYSTEM_NAME" == "linux" ]]; then
 	export BUILD_TYPE=MinSizeRel
 	if [[ "$CPU_ARCHITECTURE_NAME" = "aarch64" ]]; then
 		export CMAKE_EXTRA_ARGUMENTS=""
-		export CXXFLAGS="-static-libgcc -static-libstdc++"
 	else
 		export CMAKE_EXTRA_ARGUMENTS="-DOPENSSL_USE_STATIC_LIBS=ON -DCMAKE_FIND_LIBRARY_SUFFIXES=\".a\""
-		export CXXFLAGS="-static-libgcc -static-libstdc++"
 	fi
 
 	if [[ "$CPU_ARCHITECTURE_NAME" = "386" ]] || [[ "$CPU_ARCHITECTURE_NAME" = "armv6" ]] || [[ "$CPU_ARCHITECTURE_NAME" = "armv7" ]]; then
-		export CXXFLAGS="$CXXFLAGS -latomic"
 		export CMAKE_EXE_LINKER_FLAGS="$CMAKE_EXE_LINKER_FLAGS -latomic"
 		export LDFLAGS="$LDFLAGS -latomic"
+		export CXXFLAGS="$CXXFLAGS -latomic"
+	fi
+
+	if { [[ "$IMPLEMENTATION_NAME" = "tdlib" ]]; } && { [[ "$CPU_ARCHITECTURE_NAME" = "386" ]] || [[ "$CPU_ARCHITECTURE_NAME" = "armv6" ]] || [[ "$CPU_ARCHITECTURE_NAME" = "armv7" ]]; }; then
+		export CXXFLAGS="$CXXFLAGS"
+	else
+		export CXXFLAGS="-static-libgcc -static-libstdc++"
+	  export CC="/usr/bin/clang-11"
+	  export CXX="/usr/bin/clang++-11"
 	fi
 
 	export CPU_CORES=" -- -j${CPU_CORES_NUM}"
-	export CC="/usr/bin/clang-11"
-	export CXX="/usr/bin/clang++-11"
 fi
 
 # ====== Print variables

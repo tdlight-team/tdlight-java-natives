@@ -12,6 +12,8 @@ jobs:
     strategy:
       matrix:
         include:
+        - {os: ubuntu-20.04, usedocker: "true", arch: "linux/386", implementation: "tdlight" }
+        - {os: ubuntu-20.04, usedocker: "true", arch: "linux/386", implementation: "tdlib" }
         - {os: ubuntu-20.04, usedocker: "false", arch: "linux/amd64", implementation: "tdlight"}
         - {os: ubuntu-20.04, usedocker: "false", arch: "linux/amd64", implementation: "tdlib"}
         - {os: ubuntu-20.04, usedocker: "true", arch: "linux/arm/v6", implementation: "tdlight"}
