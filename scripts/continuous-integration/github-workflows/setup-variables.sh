@@ -80,19 +80,19 @@ elif [[ "$OPERATING_SYSTEM_NAME" == "osx" ]]; then
 	export CPU_CORES=" -- -j${CPU_CORES_NUM}"
 elif [[ "$OPERATING_SYSTEM_NAME" == "linux" ]]; then
 	export BUILD_TYPE=MinSizeRel
-	if [[ "$CPU_ARCHITECTURE_NAME" = "aarch64" ]]; then
+	if [[ "$CPU_ARCHITECTURE_NAME" == "aarch64" ]]; then
 		export CMAKE_EXTRA_ARGUMENTS=""
 	else
 		export CMAKE_EXTRA_ARGUMENTS="-DOPENSSL_USE_STATIC_LIBS=ON -DCMAKE_FIND_LIBRARY_SUFFIXES=\".a\""
 	fi
 
-	if [[ "$CPU_ARCHITECTURE_NAME" = "386" ]] || [[ "$CPU_ARCHITECTURE_NAME" = "armv6" ]] || [[ "$CPU_ARCHITECTURE_NAME" = "armv7" ]]; then
+	if [[ "$CPU_ARCHITECTURE_NAME" == "386" ]] || [[ "$CPU_ARCHITECTURE_NAME" == "armv6" ]] || [[ "$CPU_ARCHITECTURE_NAME" == "armv7" ]]; then
 		export CMAKE_EXE_LINKER_FLAGS="$CMAKE_EXE_LINKER_FLAGS -latomic"
 		export LDFLAGS="$LDFLAGS -latomic"
 		export CXXFLAGS="$CXXFLAGS -latomic"
 	fi
 
-	if { [[ "$IMPLEMENTATION_NAME" = "tdlib" ]]; } && { [[ "$CPU_ARCHITECTURE_NAME" = "386" ]] || [[ "$CPU_ARCHITECTURE_NAME" = "armv6" ]] || [[ "$CPU_ARCHITECTURE_NAME" = "armv7" ]]; }; then
+	if { [[ "$IMPLEMENTATION_NAME" == "tdlib" ]]; } && { [[ "$CPU_ARCHITECTURE_NAME" == "386" ]] || [[ "$CPU_ARCHITECTURE_NAME" == "armv6" ]] || [[ "$CPU_ARCHITECTURE_NAME" == "armv7" ]]; }; then
 		export CXXFLAGS="$CXXFLAGS"
 	else
 		export CXXFLAGS="$CXXFLAGS -static-libgcc -static-libstdc++"
