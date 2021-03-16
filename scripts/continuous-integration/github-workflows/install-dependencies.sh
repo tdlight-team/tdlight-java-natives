@@ -4,12 +4,9 @@ set -e
 if [[ "$OPERATING_SYSTEM_NAME" == "linux" ]]; then
 	echo "==Linux===="
 	sudo apt install -y make git zlib1g-dev libssl-dev gperf cmake \
-		ccache maven python3 python3-pip php7.4-cli
-	if { [[ "$IMPLEMENTATION_NAME" == "tdlib" ]]; } && { [[ "$CPU_ARCHITECTURE_NAME" == "386" ]] || [[ "$CPU_ARCHITECTURE_NAME" == "armv6" ]] || [[ "$CPU_ARCHITECTURE_NAME" == "armv7" ]]; }; then
-	  sudo apt install -y build-essential
-	else
-	  sudo apt install -y clang-11 libc++-11-dev libc++abi-11-dev
-	fi
+		ccache maven python3 python3-pip php7.4-cli \
+		clang-11 libc++-11-dev libc++abi-11-dev
+
 elif [[ "$OPERATING_SYSTEM_NAME" == "osx" ]]; then
 	echo "==OSX======"
 	export PYTHON=36
