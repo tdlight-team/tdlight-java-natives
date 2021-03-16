@@ -107,7 +107,7 @@ jobs:
           docker cp $(docker create tdlight-java-natives:${{ env.HASH_VERSION }}-${{ env.SAFE_ARCH }}):/usr/src/tdlight-java-natives/generated/. ./generated/.
 
       - name: Setup Java (Snapshot)
-        if: github.ref == 'refs/heads/develop' && matrix.usedocker == 'false'
+        if: github.ref == 'refs/heads/develop'
         uses: actions/setup-java@v1
         with:
           java-version: 11
@@ -115,7 +115,7 @@ jobs:
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
       - name: Setup Java (Release)
-        if: github.ref == 'refs/heads/master' && matrix.usedocker == 'false'
+        if: github.ref == 'refs/heads/master'
         uses: actions/setup-java@v1
         with:
           java-version: 11
