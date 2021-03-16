@@ -95,7 +95,7 @@ elif [[ "$OPERATING_SYSTEM_NAME" == "linux" ]]; then
 	if { [[ "$IMPLEMENTATION_NAME" = "tdlib" ]]; } && { [[ "$CPU_ARCHITECTURE_NAME" = "386" ]] || [[ "$CPU_ARCHITECTURE_NAME" = "armv6" ]] || [[ "$CPU_ARCHITECTURE_NAME" = "armv7" ]]; }; then
 		export CXXFLAGS="$CXXFLAGS"
 	else
-		export CXXFLAGS="-static-libgcc -static-libstdc++"
+		export CXXFLAGS="$CXXFLAGS -static-libgcc -static-libstdc++"
 	  export CC="/usr/bin/clang-11"
 	  export CXX="/usr/bin/clang++-11"
 	fi
