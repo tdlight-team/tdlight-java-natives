@@ -149,9 +149,9 @@ static jint register_native(JavaVM *vm) {
 #undef TD_FUNCTION
 #undef TD_OBJECT
 
-  td::jni::init_vars(env, PACKAGE_NAME);
-  td::td_api::Object::init_jni_vars(env, PACKAGE_NAME);
-  td::td_api::Function::init_jni_vars(env, PACKAGE_NAME);
+  td::jni::init_vars(env, API_PACKAGE_NAME);
+  td::td_api::Object::init_jni_vars(env, API_PACKAGE_NAME);
+  td::td_api::Function::init_jni_vars(env, API_PACKAGE_NAME);
   td::Log::set_fatal_error_callback(on_fatal_error);
 
   return JAVA_VERSION;
