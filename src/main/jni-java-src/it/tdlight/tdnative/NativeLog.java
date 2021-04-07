@@ -1,7 +1,6 @@
 package it.tdlight.tdnative;
 
-import it.tdlight.jni.TdApi.SetLogStream;
-import it.tdlight.jni.TdApi.SetLogVerbosityLevel;
+import it.tdlight.jni.TdApi;
 import java.util.function.Consumer;
 
 /**

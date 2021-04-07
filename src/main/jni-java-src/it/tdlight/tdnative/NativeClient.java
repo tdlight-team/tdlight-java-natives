@@ -1,7 +1,6 @@
 package it.tdlight.tdnative;
 
-import it.tdlight.jni.TdApi.Function;
-import it.tdlight.jni.TdApi.Object;
+import it.tdlight.jni.TdApi;
 
 public class NativeClient {
 
