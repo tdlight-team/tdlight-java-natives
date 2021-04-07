@@ -129,11 +129,11 @@ static jint register_native(JavaVM *vm) {
 
   auto client_class = td::jni::get_jclass(env, PACKAGE_NAME "/NativeClient");
   log_class = td::jni::get_jclass(env, PACKAGE_NAME "/NativeLog");
-  auto object_class = td::jni::get_jclass(env, PACKAGE_NAME "/TdApi$Object");
-  auto function_class = td::jni::get_jclass(env, PACKAGE_NAME "/TdApi$Function");
+  auto object_class = td::jni::get_jclass(env, API_PACKAGE_NAME "/TdApi$Object");
+  auto function_class = td::jni::get_jclass(env, API_PACKAGE_NAME "/TdApi$Function");
 
-#define TD_OBJECT "L" PACKAGE_NAME "/TdApi$Object;"
-#define TD_FUNCTION "L" PACKAGE_NAME "/TdApi$Function;"
+#define TD_OBJECT "L" API_PACKAGE_NAME "/TdApi$Object;"
+#define TD_FUNCTION "L" API_PACKAGE_NAME "/TdApi$Function;"
   register_method(client_class, "createNativeClient", "()I", Client_createNativeClient);
   register_method(client_class, "nativeClientSend", "(IJ" TD_FUNCTION ")V", Client_nativeClientSend);
   register_method(client_class, "nativeClientReceive", "([I[J[" TD_OBJECT "D)I", Client_nativeClientReceive);
