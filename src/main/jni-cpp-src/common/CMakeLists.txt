@@ -28,14 +28,15 @@ find_program(PHP_EXECUTABLE php)
 
 message(STATUS "PHP Executable: ${PHP_EXECUTABLE}")
 
-set(TD_API_JAVA_PACKAGE "it/tdlight/jni")
+set(TD_API_JAVA_PACKAGE "it/tdlight/tdnative")
+set(TD_API_SPEC_JAVA_PACKAGE "it/tdlight/jni")
 set(TD_API_JAVA_PATH ${JAVA_SRC_DIR})
 set(TD_API_TLO_PATH ${TD_SRC_DIR}/td/generate/scheme/td_api.tlo)
 set(TD_API_TL_PATH ${TD_SRC_DIR}/td/generate/scheme/td_api.tl)
 set(JAVADOC_TL_DOCUMENTATION_GENERATOR_PATH ${TD_SRC_DIR}/td/generate/JavadocTlDocumentationGenerator.php)
-set(GENERATE_JAVA_API_CMD ${TD_GENERATED_BINARIES_DIR}/td_generate_java_api TdApi ${TD_API_TLO_PATH} ${TD_API_JAVA_PATH} ${TD_API_JAVA_PACKAGE})
+set(GENERATE_JAVA_API_CMD ${TD_GENERATED_BINARIES_DIR}/td_generate_java_api TdApi ${TD_API_TLO_PATH} ${TD_API_JAVA_PATH} ${TD_API_SPEC_JAVA_PACKAGE})
 if (PHP_EXECUTABLE)
-  set(GENERATE_JAVA_API_CMD ${GENERATE_JAVA_API_CMD} && ${PHP_EXECUTABLE} ${JAVADOC_TL_DOCUMENTATION_GENERATOR_PATH} ${TD_API_TL_PATH} ${TD_API_JAVA_PATH}/${TD_API_JAVA_PACKAGE}/TdApi.java)
+  set(GENERATE_JAVA_API_CMD ${GENERATE_JAVA_API_CMD} && ${PHP_EXECUTABLE} ${JAVADOC_TL_DOCUMENTATION_GENERATOR_PATH} ${TD_API_TL_PATH} ${TD_API_JAVA_PATH}/${TD_API_SPEC_JAVA_PACKAGE}/TdApi.java)
 endif()
 
 add_custom_target(td_generate_java_api
@@ -65,7 +66,7 @@ add_library(tdjni SHARED
 )
 target_include_directories(tdjni PRIVATE ${JAVA_INCLUDE_PATH} ${JAVA_INCLUDE_PATH2})
 target_link_libraries(tdjni PRIVATE Td::TdStatic ${JAVA_JVM_LIBRARY})
-target_compile_definitions(tdjni PRIVATE PACKAGE_NAME="${TD_API_JAVA_PACKAGE}")
+target_compile_definitions(tdjni PRIVATE PACKAGE_NAME="${TD_API_JAVA_PACKAGE}" API_PACKAGE_NAME="${TD_API_SPEC_JAVA_PACKAGE}")
 set_property(TARGET tdjni PROPERTY CXX_STANDARD 14)
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")

@@ -26,7 +26,8 @@ if [ -z "${CPU_CORES}" ]; then
 fi
 
 cd ../../
-JAVA_PACKAGE_PATH="it/tdlight/jni"
+JAVA_API_PACKAGE_PATH="it/tdlight/jni"
+JAVA_LIB_PACKAGE_PATH="it/tdlight/tdnative"
 
 # Print details
 echo "Generating TdApi.java..."
@@ -36,7 +37,8 @@ echo "Architecture: ${CPU_ARCHITECTURE_NAME}"
 echo "Td implementation: ${IMPLEMENTATION_NAME}"
 echo "CPU cores count: ${CPU_CORES}"
 echo "CMake extra arguments: '${CMAKE_EXTRA_ARGUMENTS}'"
-echo "JAVA_PACKAGE_PATH: '${JAVA_PACKAGE_PATH}'"
+echo "JAVA_API_PACKAGE_PATH: '${JAVA_API_PACKAGE_PATH}'"
+echo "JAVA_LIB_PACKAGE_PATH: '${JAVA_LIB_PACKAGE_PATH}'"
 
 # Setup constants
 if [[ "$OPERATING_SYSTEM_NAME" == "windows" ]]; then
@@ -50,11 +52,12 @@ echo "Deleting old data..."
 [ -d ./generated/tdjni_build/ ] && rm -r ./generated/tdjni_build/
 [ -d ./generated/tdjni_bin/ ] && rm -r ./generated/tdjni_bin/
 [ -d ./generated/tdjni_docs/ ] && rm -r ./generated/tdjni_docs/
-[ -f ./generated/src/main/java/${JAVA_PACKAGE_PATH}/TdApi.java ] && rm ./generated/src/main/java/${JAVA_PACKAGE_PATH}/TdApi.java
+[ -f ./generated/src/main/java/${JAVA_API_PACKAGE_PATH}/TdApi.java ] && rm ./generated/src/main/java/${JAVA_API_PACKAGE_PATH}/TdApi.java
 
 # Create missing folders
 echo "Creating missing folders..."
-[ -d "./generated/src/main/java/${JAVA_PACKAGE_PATH}/" ] || mkdir -p "./generated/src/main/java/${JAVA_PACKAGE_PATH}/"
+[ -d "./generated/src/main/java/${JAVA_API_PACKAGE_PATH}/" ] || mkdir -p "./generated/src/main/java/${JAVA_API_PACKAGE_PATH}/"
+[ -d "./generated/src/main/java/${JAVA_LIB_PACKAGE_PATH}/" ] || mkdir -p "./generated/src/main/java/${JAVA_LIB_PACKAGE_PATH}/"
 [ -d ./generated/tdjni_build/ ] || mkdir ./generated/tdjni_build/
 [ -d ./generated/tdjni_bin/ ] || mkdir ./generated/tdjni_bin/
 [ -d ./generated/tdjni_docs/ ] || mkdir ./generated/tdjni_docs/
@@ -74,20 +77,20 @@ echo "Telegram source path: '$(realpath -m ./implementation/)'"
 
 # Run cmake to generate TdApi.java
 echo "Generating TdApi.java..."
-./td_tools/td/generate/td_generate_java_api TdApi "./implementation/td/generate/scheme/td_api.tlo" "./src/main/java" "$JAVA_PACKAGE_PATH"
-php ./implementation/td/generate/JavadocTlDocumentationGenerator.php "./implementation/td/generate/scheme/td_api.tl" "./src/main/java/${JAVA_PACKAGE_PATH}/TdApi.java"
+./td_tools/td/generate/td_generate_java_api TdApi "./implementation/td/generate/scheme/td_api.tlo" "./src/main/java" "$JAVA_API_PACKAGE_PATH"
+php ./implementation/td/generate/JavadocTlDocumentationGenerator.php "./implementation/td/generate/scheme/td_api.tl" "./src/main/java/${JAVA_API_PACKAGE_PATH}/TdApi.java"
 
 echo "Patching TdApi.java..."
-${PYTHON_EXECUTABLE} ../scripts/core/tdlib-serializer "$(realpath -m  ./src/main/java/${JAVA_PACKAGE_PATH}/TdApi.java)" "$(realpath -m ./src/main/java/${JAVA_PACKAGE_PATH}/new_TdApi.java)" "$(realpath -m ../scripts/core/tdlib-serializer/headers.txt)"
-rm ./src/main/java/${JAVA_PACKAGE_PATH}/TdApi.java
+${PYTHON_EXECUTABLE} ../scripts/core/tdlib-serializer "$(realpath -m  ./src/main/java/${JAVA_API_PACKAGE_PATH}/TdApi.java)" "$(realpath -m ./src/main/java/${JAVA_API_PACKAGE_PATH}/new_TdApi.java)" "$(realpath -m ../scripts/core/tdlib-serializer/headers.txt)"
+rm ./src/main/java/${JAVA_API_PACKAGE_PATH}/TdApi.java
 if [[ "$OPERATING_SYSTEM_NAME" == "osx" ]]; then
-	unexpand --tabs=2 ./src/main/java/${JAVA_PACKAGE_PATH}/new_TdApi.java > ./src/main/java/${JAVA_PACKAGE_PATH}/TdApi.java
+	unexpand --tabs=2 ./src/main/java/${JAVA_API_PACKAGE_PATH}/new_TdApi.java > ./src/main/java/${JAVA_API_PACKAGE_PATH}/TdApi.java
 else
-	unexpand -t 2 ./src/main/java/${JAVA_PACKAGE_PATH}/new_TdApi.java > ./src/main/java/${JAVA_PACKAGE_PATH}/TdApi.java
+	unexpand -t 2 ./src/main/java/${JAVA_API_PACKAGE_PATH}/new_TdApi.java > ./src/main/java/${JAVA_API_PACKAGE_PATH}/TdApi.java
 fi
-rm ./src/main/java/${JAVA_PACKAGE_PATH}/new_TdApi.java
+rm ./src/main/java/${JAVA_API_PACKAGE_PATH}/new_TdApi.java
 
-echo "Generated '$(realpath -m ./src/main/java/${JAVA_PACKAGE_PATH}/TdApi.java)'"
+echo "Generated '$(realpath -m ./src/main/java/${JAVA_API_PACKAGE_PATH}/TdApi.java)'"
 
 echo "Done."
 exit 0
