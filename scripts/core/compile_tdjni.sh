@@ -36,6 +36,8 @@ if [ -z "${CPU_CORES}" ]; then
 fi
 
 cd ../../
+JAVA_API_PACKAGE_PATH="it/tdlight/jni"
+JAVA_LIB_PACKAGE_PATH="it/tdlight/tdnative"
 
 # Print details
 echo "Compiling tdjni..."
@@ -46,6 +48,8 @@ echo "Td implementation: ${IMPLEMENTATION_NAME}"
 echo "Build type: ${BUILD_TYPE}"
 echo "CPU cores count: ${CPU_CORES}"
 echo "CMake extra arguments: '${CMAKE_EXTRA_ARGUMENTS}'"
+echo "JAVA_API_PACKAGE_PATH: '${JAVA_API_PACKAGE_PATH}'"
+echo "JAVA_LIB_PACKAGE_PATH: '${JAVA_LIB_PACKAGE_PATH}'"
 
 # Delete old data
 echo "Deleting old data..."
@@ -66,6 +70,10 @@ echo "Copying source files..."
 cp -r ./src/main/jni-cpp-src/common/. ./generated/src/main/jni-cpp-src
 cp -r ./src/main/jni-cpp-src/${IMPLEMENTATION_NAME}/. ./generated/src/main/jni-cpp-src
 cp -r ./src/main/jni-java-src ./generated/src/main/jni-java-src
+
+# Create missing jni-src folders
+echo "Creating missing jni-src folders..."
+[ -d ./generated/src/main/jni-java-src/${JAVA_API_PACKAGE_PATH} ] || mkdir -p ./generated/src/main/jni-java-src/${JAVA_API_PACKAGE_PATH}
 
 # Copy executables
 echo "Copying executables..."
