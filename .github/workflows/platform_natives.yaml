@@ -12,16 +12,16 @@ jobs:
     strategy:
       matrix:
         include:
-        - {os: ubuntu-20.04, usedocker: "true", arch: "linux/386", implementation: "tdlight"}
-        - {os: ubuntu-20.04, usedocker: "true", arch: "linux/386", implementation: "tdlib"}
-        - {os: ubuntu-20.04, usedocker: "false", arch: "linux/amd64", implementation: "tdlight"}
-        - {os: ubuntu-20.04, usedocker: "false", arch: "linux/amd64", implementation: "tdlib"}
-        - {os: ubuntu-20.04, usedocker: "true", arch: "linux/arm/v6", implementation: "tdlight"}
-        - {os: ubuntu-20.04, usedocker: "true", arch: "linux/arm/v6", implementation: "tdlib"}
-        - {os: ubuntu-20.04, usedocker: "true", arch: "linux/arm/v7", implementation: "tdlight"}
-        - {os: ubuntu-20.04, usedocker: "true", arch: "linux/arm/v7", implementation: "tdlib"}
-        - {os: ubuntu-20.04, usedocker: "true", arch: "linux/arm64", implementation: "tdlight"}
-        - {os: ubuntu-20.04, usedocker: "true", arch: "linux/arm64", implementation: "tdlib"}
+        - {os: ubuntu-18.04, usedocker: "true", arch: "linux/386", implementation: "tdlight"}
+        - {os: ubuntu-18.04, usedocker: "true", arch: "linux/386", implementation: "tdlib"}
+        - {os: ubuntu-18.04, usedocker: "false", arch: "linux/amd64", implementation: "tdlight"}
+        - {os: ubuntu-18.04, usedocker: "false", arch: "linux/amd64", implementation: "tdlib"}
+        - {os: ubuntu-18.04, usedocker: "true", arch: "linux/arm/v6", implementation: "tdlight"}
+        - {os: ubuntu-18.04, usedocker: "true", arch: "linux/arm/v6", implementation: "tdlib"}
+        - {os: ubuntu-18.04, usedocker: "true", arch: "linux/arm/v7", implementation: "tdlight"}
+        - {os: ubuntu-18.04, usedocker: "true", arch: "linux/arm/v7", implementation: "tdlib"}
+        - {os: ubuntu-18.04, usedocker: "true", arch: "linux/arm64", implementation: "tdlight"}
+        - {os: ubuntu-18.04, usedocker: "true", arch: "linux/arm64", implementation: "tdlib"}
         - {os: windows-2019, usedocker: "false", arch: "amd64", implementation: "tdlight"}
         - {os: windows-2019, usedocker: "false", arch: "amd64", implementation: "tdlib"}
         - {os: macos-10.15, usedocker: "false", arch: "amd64", implementation: "tdlight"}

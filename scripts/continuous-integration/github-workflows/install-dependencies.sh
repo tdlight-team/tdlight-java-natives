@@ -4,8 +4,8 @@ set -e
 if [[ "$OPERATING_SYSTEM_NAME" == "linux" ]]; then
 	echo "==Linux===="
 	sudo apt install -y make git zlib1g-dev libssl-dev gperf cmake \
-		ccache maven python3 python3-pip php7.4-cli \
-		clang-11 libc++-11-dev libc++abi-11-dev
+		ccache maven python3 python3-pip php7.2-cli \
+		clang-10 libc++-10-dev libc++abi-10-dev
 
 elif [[ "$OPERATING_SYSTEM_NAME" == "osx" ]]; then
 	echo "==OSX======"

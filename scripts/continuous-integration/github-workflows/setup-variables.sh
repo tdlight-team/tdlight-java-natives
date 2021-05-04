@@ -93,8 +93,8 @@ elif [[ "$OPERATING_SYSTEM_NAME" == "linux" ]]; then
 	fi
 
 	export CXXFLAGS="$CXXFLAGS -static-libgcc -static-libstdc++"
-	export CC="/usr/bin/clang-11"
-	export CXX="/usr/bin/clang++-11"
+	export CC="/usr/bin/clang"
+	export CXX="/usr/bin/clang++"
 
 	export CPU_CORES=" -- -j${CPU_CORES_NUM}"
 fi
