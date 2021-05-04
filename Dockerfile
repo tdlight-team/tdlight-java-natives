@@ -1,4 +1,4 @@
-FROM debian:bullseye
+FROM debian:bionic
 
 ARG REVISION
 ARG GH_MATRIX_OS
