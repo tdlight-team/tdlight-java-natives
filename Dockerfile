@@ -1,4 +1,4 @@
-FROM debian:bionic
+FROM debian:buster
 
 ARG REVISION
 ARG GH_MATRIX_OS
