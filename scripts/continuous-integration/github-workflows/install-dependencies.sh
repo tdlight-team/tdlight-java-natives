@@ -44,7 +44,7 @@ elif [[ "$OPERATING_SYSTEM_NAME" == "windows" ]]; then
 	#choco install windows-sdk-10.1
 	choco install visualstudio2019buildtools --version=16.7.0.0 --package-parameters "--add Microsoft.VisualStudio.Component.VC.Tools.x86.x64"
 	#choco install openjdk11 --version=11.0.8.10
-	choco install maven --version=3.6.3
+	choco install maven --version=3.6.3 --allow-downgrade
 	choco install base64
 	choco install gperf
 	choco install strawberryperl
