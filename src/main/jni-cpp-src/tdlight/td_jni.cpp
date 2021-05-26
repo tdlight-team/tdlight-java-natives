@@ -102,7 +102,10 @@ static constexpr jint JAVA_VERSION = JNI_VERSION_1_6;
 static JavaVM *java_vm;
 static jclass log_class;
 
-static void on_fatal_error(const char *error_message) {
+static void on_log_message_(int verbosity_level, const char *error_message) {
+  if (verbosity_level != 0) {
+    return;
+  }
   auto env = td::jni::get_jni_env(java_vm, JAVA_VERSION);
   jmethodID on_fatal_error_method = env->GetStaticMethodID(log_class, "onFatalError", "(Ljava/lang/String;)V");
   if (env && on_fatal_error_method) {
@@ -152,7 +155,7 @@ static jint register_native(JavaVM *vm) {
   td::jni::init_vars(env, API_PACKAGE_NAME);
   td::td_api::Object::init_jni_vars(env, API_PACKAGE_NAME);
   td::td_api::Function::init_jni_vars(env, API_PACKAGE_NAME);
-  td::Log::set_fatal_error_callback(on_fatal_error);
+  td::Log::set_log_message_callback(0, on_fatal_error);
 
   return JAVA_VERSION;
 }
