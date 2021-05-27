@@ -102,7 +102,7 @@ static constexpr jint JAVA_VERSION = JNI_VERSION_1_6;
 static JavaVM *java_vm;
 static jclass log_class;
 
-static void on_log_message_(int verbosity_level, const char *error_message) {
+static void on_log_message(int verbosity_level, const char *error_message) {
   if (verbosity_level != 0) {
     return;
   }
