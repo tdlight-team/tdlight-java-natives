@@ -155,7 +155,7 @@ static jint register_native(JavaVM *vm) {
   td::jni::init_vars(env, API_PACKAGE_NAME);
   td::td_api::Object::init_jni_vars(env, API_PACKAGE_NAME);
   td::td_api::Function::init_jni_vars(env, API_PACKAGE_NAME);
-  td::Log::set_log_message_callback(0, on_log_message);
+  td::ClientManager::set_log_message_callback(0, on_log_message);
 
   return JAVA_VERSION;
 }
