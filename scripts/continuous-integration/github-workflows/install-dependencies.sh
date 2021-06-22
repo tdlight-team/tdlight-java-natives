@@ -3,7 +3,7 @@ set -e
 
 if [[ "$OPERATING_SYSTEM_NAME" == "linux" ]]; then
 	echo "==Linux===="
-	sudp apt-get update
+	sudo apt-get update
 	sudo apt-get install -y make git zlib1g-dev libssl-dev gperf cmake \
 		ccache maven python3 python3-pip php-cli \
 		clang libc++-dev libc++abi-dev
