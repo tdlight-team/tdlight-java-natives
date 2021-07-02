@@ -45,8 +45,8 @@ echo "Deleting old data..."
 echo "Copying implementation files..."
 cp -r implementations/${IMPLEMENTATION_NAME} ./generated/implementation
 
-# Patch implementation files
-echo "Patching implementation files..."
+# Patch implementation files (sed replacements)
+echo "Patching implementation files using sed replacements..."
 #Fix bug: https://github.com/tdlib/td/issues/1238
 if [[ "$IMPLEMENTATION_NAME" = "tdlib" ]]; then
 	if [[ "$OPERATING_SYSTEM_NAME" = "osx" ]]; then
@@ -54,6 +54,19 @@ if [[ "$IMPLEMENTATION_NAME" = "tdlib" ]]; then
 	else
 		sed -f "src/main/replacements/fix-tdlib-tdutils-windows-cmake.sed" -i"" ./generated/implementation/tdutils/CMakeLists.txt
 	fi
+fi
+
+# Patch implementation files (git patches)
+echo "Patching implementation files using git patches..."
+if [[ "$IMPLEMENTATION_NAME" = "tdlib" ]]; then
+  if [[ -d "src/main/patches/tdlib" && "$(ls -A src/main/patches/tdlib)" ]]; then
+    git apply "src/main/patches/tdlib/*.patch"
+  fi
+fi
+if [[ "$IMPLEMENTATION_NAME" = "tdlight" ]]; then
+  if [[ -d "src/main/patches/tdlight" && "$(ls -A src/main/patches/tdlight)" ]]; then
+    git apply "src/main/patches/tdlight/*.patch"
+  fi
 fi
 
 # Configure cmake
