@@ -60,12 +60,12 @@ fi
 echo "Patching implementation files using git patches..."
 if [[ "$IMPLEMENTATION_NAME" = "tdlib" ]]; then
   if [[ -d "src/main/patches/tdlib" && "$(ls -A src/main/patches/tdlib)" ]]; then
-    git apply "src/main/patches/tdlib/*.patch"
+    git apply --directory="generated/implementation" src/main/patches/tdlib/*.patch
   fi
 fi
 if [[ "$IMPLEMENTATION_NAME" = "tdlight" ]]; then
   if [[ -d "src/main/patches/tdlight" && "$(ls -A src/main/patches/tdlight)" ]]; then
-    git apply "src/main/patches/tdlight/*.patch"
+    git apply --directory="generated/implementation" src/main/patches/tdlight/*.patch
   fi
 fi
 
