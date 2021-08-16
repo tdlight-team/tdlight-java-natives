@@ -43,8 +43,8 @@ elif [[ "$OPERATING_SYSTEM_NAME" == "windows" ]]; then
 	choco install ccache
 	choco install make
 	#choco install windows-sdk-10.1
-	choco install visualstudio2019-workload-vctools
-	#choco install visualstudio2019buildtools --version=16.10.4.0 --allow-downgrade --package-parameters "--add Microsoft.VisualStudio.Component.VC.Tools.x86.x64"
+	#choco install visualstudio2019-workload-vctools
+	choco install visualstudio2019buildtools --version=16.10.4.0 --allow-downgrade --passive --package-parameters "--add Microsoft.VisualStudio.Component.VC.Tools.x86.x64"
 	#choco install openjdk11 --version=11.0.8.10
 	choco install maven --version=3.8.2 --allow-downgrade
 	choco install base64
