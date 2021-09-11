@@ -2,7 +2,7 @@
 
 echo "====== Setup variables ======"
 echo "Current root directory:"
-realpath .
+realpath . || grealpath .
 echo "============================="
 
 # ====== CPU Architecture Variables
@@ -70,7 +70,7 @@ if [[ "$OPERATING_SYSTEM_NAME" == "linux" ]]; then
 	export CROSS_CC="${CPU_ARCH_CMAKE}-linux-gnu-gcc"
 	export CROSS_CXX="${CPU_ARCH_CMAKE}-linux-gnu-g++"
 
-  CROSS_BUILD_DEPS_DIR="$(realpath ../../)/.cache/tdlib-build-cross-${CPU_ARCH_DPKG}/"
+  CROSS_BUILD_DEPS_DIR="$(realpath ../../ || grealpath ../../)/.cache/tdlib-build-cross-${CPU_ARCH_DPKG}/"
 fi
 
 # ====== Print variables
