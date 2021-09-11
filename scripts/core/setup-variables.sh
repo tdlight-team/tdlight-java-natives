@@ -1,8 +1,16 @@
 #!/bin/bash -e
 
+safe_realpath() {
+  if [[ "$OPERATING_SYSTEM_NAME" == "osx" ]]; then
+    return "$(grealpath "$1")"
+  else
+    return "$(realpath "$1")"
+  fi
+}
+
 echo "====== Setup variables ======"
 echo "Current root directory:"
-realpath . || grealpath .
+safe_realpath "."
 echo "============================="
 
 # ====== CPU Architecture Variables
@@ -70,7 +78,7 @@ if [[ "$OPERATING_SYSTEM_NAME" == "linux" ]]; then
 	export CROSS_CC="${CPU_ARCH_CMAKE}-linux-gnu-gcc"
 	export CROSS_CXX="${CPU_ARCH_CMAKE}-linux-gnu-g++"
 
-  CROSS_BUILD_DEPS_DIR="$(realpath ../../ || grealpath ../../)/.cache/tdlib-build-cross-${CPU_ARCH_DPKG}/"
+  CROSS_BUILD_DEPS_DIR="$(safe_realpath "../../")/.cache/tdlib-build-cross-${CPU_ARCH_DPKG}/"
 fi
 
 # ====== Print variables
