@@ -5,10 +5,6 @@ export MAVEN_OPTS="--add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.
 echo "MATRIX_OS: $GH_MATRIX_OS"
 echo "MATRIX_ARCH: $GH_MATRIX_ARCH"
 
-cd ./scripts/core/
-source ./setup-variables.sh
-cd ../../
-
 if [ "$GH_MATRIX_OS" == "macos-10.15" ]; then
 	export PCRE="E"
 else
@@ -81,6 +77,10 @@ elif [[ "$OPERATING_SYSTEM_NAME" == "linux" ]]; then
 
 	export CPU_CORES=" -- -j${CPU_CORES_NUM}"
 fi
+
+cd ./scripts/core/
+source ./setup-variables.sh
+cd ../../
 
 # ====== Print variables
 echo "REVISION=${REVISION}"
