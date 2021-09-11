@@ -2,9 +2,9 @@
 
 safe_realpath() {
   if [[ "$OPERATING_SYSTEM_NAME" == "osx" ]]; then
-    return "$(grealpath "$1")"
+    grealpath "$1"
   else
-    return "$(realpath "$1")"
+    realpath "$1"
   fi
 }
 
