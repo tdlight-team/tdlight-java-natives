@@ -13,6 +13,8 @@
 
 cd ../core
 
+source ./setup-variables.sh
+./install-dependencies.sh
 ./generate_maven_project.sh
 ./generate_td_tools.sh
 ./configure_td.sh

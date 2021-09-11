@@ -18,6 +18,8 @@ if [ -z "${IMPLEMENTATION_NAME}" ]; then
 	exit 1
 fi
 
+source ./setup-variables.sh
+
 cd ../../
 
 # Print details

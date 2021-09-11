@@ -4,9 +4,10 @@ set -e
 if [[ "$OPERATING_SYSTEM_NAME" == "linux" ]]; then
 	echo "==Linux===="
 	sudo apt-get update
-	sudo apt-get install -y make git zlib1g-dev libssl-dev gperf cmake \
+	sudo apt-get install -y make git gperf cmake \
 		ccache maven python3 python3-pip php-cli \
-		clang libc++-dev libc++abi-dev
+		build-essential gcc-multilib g++-multilib
+	mkdir -p ""
 
 elif [[ "$OPERATING_SYSTEM_NAME" == "osx" ]]; then
 	echo "==OSX======"
@@ -40,26 +41,26 @@ elif [[ "$OPERATING_SYSTEM_NAME" == "osx" ]]; then
 	#echo "Done .tlo"
 elif [[ "$OPERATING_SYSTEM_NAME" == "windows" ]]; then
 	echo "==Windows=="
-	choco install ccache
-	choco install make
+	#choco install ccache
+	#choco install make
 	#choco install windows-sdk-10.1
-	choco install visualstudio2019buildtools --version=16.10.4.0 --allow-downgrade --package-parameters "--passive"
-	choco install visualstudio2019-workload-vctools
+	#choco install visualstudio2019buildtools --version=16.10.4.0 --allow-downgrade --package-parameters "--passive"
+	#choco install visualstudio2019-workload-vctools
 	#choco install openjdk11 --version=11.0.8.10
 	choco install maven --version=3.8.2 --allow-downgrade
 	choco install base64
-	choco install gperf
+	#choco install gperf
 	choco install strawberryperl
 	choco install nasm
 	#choco install php --version=7.4.9 --package-parameters='"/ThreadSafe ""/InstallDir:C:\PHP"""'
 	#choco install python3 --params "/InstallDir:C:\Python3"
 
 	[ -d ./windowsenv/ ] && $(yes | rm -rf ./windowsenv/)
-	[ -d $VCPKG_DIR ] && $(yes | rm -rf $VCPKG_DIR)
-	git clone --depth=1 https://github.com/tdlight-team/windows-amd64-prebuilt-libraries.git windowsenv
-	mv windowsenv/vcpkg $VCPKG_DIR
-	cd $VCPKG_DIR
-	./vcpkg integrate install
+	#[ -d $VCPKG_DIR ] && $(yes | rm -rf $VCPKG_DIR)
+	#git clone --depth=1 https://github.com/tdlight-team/windows-amd64-prebuilt-libraries.git windowsenv
+	#mv windowsenv/vcpkg $VCPKG_DIR
+	#cd $VCPKG_DIR
+	#./vcpkg integrate install
 else
 	echo "Unrecognized os: $OPERATING_SYSTEM_NAME"
 	exit 1

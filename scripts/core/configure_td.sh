@@ -30,6 +30,8 @@ if [ -z "${CPU_CORES}" ]; then
 	exit 1
 fi
 
+source ./setup-variables.sh
+
 cd ../../
 
 # Print details
@@ -63,10 +65,12 @@ INSTALL_PREFIX="$(realpath -m ../td_bin/)"
 INSTALL_BINDIR="$(realpath -m ../td_bin/bin)"
 echo "Install prefix: $INSTALL_PREFIX"
 echo "Install bindir: $INSTALL_BINDIR"
+# shellcheck disable=SC2086
 cmake "-DCMAKE_BUILD_TYPE=${BUILD_TYPE}" \
  -DCMAKE_INSTALL_PREFIX:PATH="$INSTALL_PREFIX" \
  -DCMAKE_INSTALL_BINDIR:PATH="$INSTALL_BINDIR" \
  -DTD_ENABLE_JNI=ON \
+ "-DCMAKE_TOOLCHAIN_FILE=$CROSS_BUILD_DEPS_DIR/toolchain.cmake" \
  ${CMAKE_EXTRA_ARGUMENTS_TD} \
  ${CMAKE_EXTRA_ARGUMENTS} \
  ../implementation

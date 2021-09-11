@@ -8,6 +8,8 @@ if [ -z "${REVISION}" ]; then
 	exit 1
 fi
 
+source ./setup-variables.sh
+
 cd ../../generated
 
 mvn -B -q -Drevision=${REVISION} clean deploy

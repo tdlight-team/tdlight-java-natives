@@ -25,6 +25,8 @@ if [ -z "${CPU_CORES}" ]; then
 	exit 1
 fi
 
+source ./setup-variables.sh
+
 cd ../../
 
 # Print details

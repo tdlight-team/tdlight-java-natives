@@ -5,6 +5,8 @@ export MAVEN_OPTS="--add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.
 echo "MATRIX_OS: $GH_MATRIX_OS"
 echo "MATRIX_ARCH: $GH_MATRIX_ARCH"
 
+source ../../core/setup-variables.sh
+
 if [ "$GH_MATRIX_OS" == "macos-10.15" ]; then
 	export PCRE="E"
 else
@@ -20,27 +22,21 @@ fi
 
 if [[ "$GH_CPU_ARCH" == "arm64" ]]; then
 	export CPU_ARCHITECTURE_NAME="aarch64"
-	export CPU_ARCH_JAVA="arm64"
 	export CPU_CORES_NUM="2"
 elif [[ "$GH_CPU_ARCH" == "armv6" ]]; then
 	export CPU_ARCHITECTURE_NAME="armv6"
-	export CPU_ARCH_JAVA="armv6"
 	export CPU_CORES_NUM="2"
 elif [[ "$GH_CPU_ARCH" == "armv7" ]]; then
 	export CPU_ARCHITECTURE_NAME="armv7"
-	export CPU_ARCH_JAVA="armv7"
 	export CPU_CORES_NUM="2"
 elif [[ "$GH_CPU_ARCH" == "386" ]]; then
 	export CPU_ARCHITECTURE_NAME="386"
-	export CPU_ARCH_JAVA="386"
 	export CPU_CORES_NUM="2"
 elif [[ "$GH_CPU_ARCH" == "amd64" ]]; then
 	export CPU_ARCHITECTURE_NAME="amd64"
-	export CPU_ARCH_JAVA="amd64"
 	export CPU_CORES_NUM="2"
 elif [[ "$GH_CPU_ARCH" == "ppc64le" ]]; then
 	export CPU_ARCHITECTURE_NAME="ppc64le"
-	export CPU_ARCH_JAVA="ppc64le"
 	export CPU_CORES_NUM="2"
 else
 	echo "Unrecognized cpu arch: $GH_CPU_ARCH"
@@ -63,7 +59,7 @@ fi
 
 echo "====== Setup variables ======"
 echo "Current root directory:"
-echo "$(realpath .)"
+realpath .
 echo "============================="
 
 # ====== OS Variables
@@ -80,21 +76,6 @@ elif [[ "$OPERATING_SYSTEM_NAME" == "osx" ]]; then
 	export CPU_CORES=" -- -j${CPU_CORES_NUM}"
 elif [[ "$OPERATING_SYSTEM_NAME" == "linux" ]]; then
 	export BUILD_TYPE=MinSizeRel
-	if [[ "$CPU_ARCHITECTURE_NAME" == "aarch64" ]]; then
-		export CMAKE_EXTRA_ARGUMENTS=""
-	else
-		export CMAKE_EXTRA_ARGUMENTS="-DOPENSSL_USE_STATIC_LIBS=ON -DCMAKE_FIND_LIBRARY_SUFFIXES=\".a\""
-	fi
-
-	if [[ "$CPU_ARCHITECTURE_NAME" == "386" ]] || [[ "$CPU_ARCHITECTURE_NAME" == "armv6" ]] || [[ "$CPU_ARCHITECTURE_NAME" == "armv7" ]]; then
-		export CMAKE_EXE_LINKER_FLAGS="$CMAKE_EXE_LINKER_FLAGS -latomic"
-		export LDFLAGS="$LDFLAGS -latomic"
-		export CXXFLAGS="$CXXFLAGS -latomic"
-	fi
-
-	export CXXFLAGS="$CXXFLAGS -static-libgcc -static-libstdc++"
-	export CC="/usr/bin/clang"
-	export CXX="/usr/bin/clang++"
 
 	export CPU_CORES=" -- -j${CPU_CORES_NUM}"
 fi
@@ -118,7 +99,6 @@ echo "CMAKE_EXTRA_ARGUMENTS=${CMAKE_EXTRA_ARGUMENTS}"
 echo "VCPKG_DIR=${VCPKG_DIR}"
 echo "MAVEN_OPTS=${MAVEN_OPTS}"
 echo "GH_CPU_ARCH=${GH_CPU_ARCH}"
-echo "CPU_ARCH_JAVA=${CPU_ARCH_JAVA}"
 echo "CPU_ARCHITECTURE_NAME=${CPU_ARCHITECTURE_NAME}"
 echo "CPU_CORES_NUM=${CPU_CORES_NUM}"
 echo "CPU_CORES=${CPU_CORES}"

@@ -25,6 +25,8 @@ if [ -z "${CPU_CORES}" ]; then
 	exit 1
 fi
 
+source ./setup-variables.sh
+
 cd ../../
 JAVA_API_PACKAGE_PATH="it/tdlight/jni"
 JAVA_LIB_PACKAGE_PATH="it/tdlight/tdnative"
