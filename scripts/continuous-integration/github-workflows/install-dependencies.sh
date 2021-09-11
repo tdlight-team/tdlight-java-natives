@@ -7,7 +7,6 @@ if [[ "$OPERATING_SYSTEM_NAME" == "linux" ]]; then
 	sudo apt-get install -y make git gperf cmake \
 		ccache maven python3 python3-pip php-cli \
 		build-essential gcc-multilib g++-multilib
-	mkdir -p ""
 
 elif [[ "$OPERATING_SYSTEM_NAME" == "osx" ]]; then
 	echo "==OSX======"
