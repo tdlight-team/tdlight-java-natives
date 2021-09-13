@@ -1,14 +1,6 @@
 #!/bin/bash -e
 set -e
 
-safe_realpath() {
-  if [[ "$OPERATING_SYSTEM_NAME" == "osx" ]]; then
-    grealpath "$1"
-  else
-    realpath "$1"
-  fi
-}
-
 export MAVEN_OPTS="--add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens java.base/java.lang.reflect=ALL-UNNAMED --add-opens java.base/javax.crypto=ALL-UNNAMED --add-opens java.base/java.io=ALL-UNNAMED"
 
 echo "MATRIX_OS: $GH_MATRIX_OS"
@@ -66,7 +58,10 @@ fi
 
 echo "====== Setup variables ======"
 echo "Current root directory:"
-safe_realpath .
+if [[ "$OPERATING_SYSTEM_NAME" == "osx" ]]; then
+else
+  realpath .
+fi
 echo "============================="
 
 # ====== OS Variables
