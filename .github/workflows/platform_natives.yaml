@@ -162,9 +162,14 @@ jobs:
           echo "OPERATING_SYSTEM_NAME_SHORT=$OPERATING_SYSTEM_NAME_SHORT" >> $GITHUB_ENV
           echo "SRC_TDJNI_LIBNAME=$SRC_TDJNI_LIBNAME" >> $GITHUB_ENV
           echo "DEST_TDJNI_LIBNAME=$DEST_TDJNI_LIBNAME" >> $GITHUB_ENV
-      - name: Install latest CMake
-        if: matrix.os == 'windows-2019'
-        uses: lukka/get-cmake@latest
+
+      - name: Install dependencies
+        if: matrix.usedocker == 'false'
+        shell: bash
+        run: |
+          echo "REVISION: $REVISION"
+
+          source ./scripts/continuous-integration/github-workflows/install-dependencies.sh
       - name: Restore artifacts, or setup vcpkg (do not install any package)
         if: matrix.os == 'windows-2019'
         uses: lukka/run-vcpkg@v7
@@ -183,14 +188,6 @@ jobs:
         run: |
           $VCPKG_DIR/vcpkg install gperf openssl:x64-windows-static zlib:x64-windows-static
         shell: bash
-
-      - name: Install dependencies
-        if: matrix.usedocker == 'false'
-        shell: bash
-        run: |
-          echo "REVISION: $REVISION"
-
-          source ./scripts/continuous-integration/github-workflows/install-dependencies.sh
       - name: Build
         if: matrix.usedocker == 'false'
         shell: bash

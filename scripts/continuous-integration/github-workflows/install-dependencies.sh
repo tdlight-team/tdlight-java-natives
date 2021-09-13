@@ -40,15 +40,15 @@ elif [[ "$OPERATING_SYSTEM_NAME" == "osx" ]]; then
 	#echo "Done .tlo"
 elif [[ "$OPERATING_SYSTEM_NAME" == "windows" ]]; then
 	echo "==Windows=="
-	#choco install ccache
-	#choco install make
+	choco install ccache
+	choco install make
 	#choco install windows-sdk-10.1
-	#choco install visualstudio2019buildtools --version=16.10.4.0 --allow-downgrade --package-parameters "--passive"
-	#choco install visualstudio2019-workload-vctools
+	choco install visualstudio2019buildtools --version=16.10.4.0 --allow-downgrade --package-parameters "--passive"
+	choco install visualstudio2019-workload-vctools
 	#choco install openjdk11 --version=11.0.8.10
 	choco install maven --version=3.8.2 --allow-downgrade
 	choco install base64
-	#choco install gperf
+	choco install gperf
 	choco install strawberryperl
 	choco install nasm
 	#choco install php --version=7.4.9 --package-parameters='"/ThreadSafe ""/InstallDir:C:\PHP"""'
