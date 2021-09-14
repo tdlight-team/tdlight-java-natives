@@ -55,16 +55,18 @@ echo "Creating missing folders..."
 # Configure cmake
 echo "Configuring CMake..."
 cd ./generated/td_build/
-export CMAKE_EXTRA_ARGUMENTS_TD;
+
 if [[ "$IMPLEMENTATION_NAME" = "tdlight" ]]; then
   CMAKE_EXTRA_ARGUMENTS_TD="-DTD_SKIP_BENCHMARK=ON -DTD_SKIP_TEST=ON -DTD_SKIP_TG_CLI=ON"
 else
   CMAKE_EXTRA_ARGUMENTS_TD=""
 fi
-if [[ -z "$CROSS_BUILD_DEPS_DIR" ]]; then
+if [[ ! -z "$CROSS_BUILD_DEPS_DIR" ]]; then
  # shellcheck disable=SC2089
  CMAKE_EXTRA_ARGUMENTS_TD="${CMAKE_EXTRA_ARGUMENTS_TD} -DCMAKE_TOOLCHAIN_FILE=${CROSS_BUILD_DEPS_DIR}/toolchain.cmake"
 fi
+export CMAKE_EXTRA_ARGUMENTS_TD
+
 INSTALL_PREFIX="$(realpath -m ../td_bin/)"
 INSTALL_BINDIR="$(realpath -m ../td_bin/bin)"
 echo "Install prefix: $INSTALL_PREFIX"

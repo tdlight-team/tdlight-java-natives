@@ -66,12 +66,14 @@ echo "Creating missing folders..."
 
 # Copy executables
 echo "Copying executables..."
-export TD_GENERATED_BINARIES_DIR;
+
 if [[ "$OPERATING_SYSTEM_NAME" == "windows" ]]; then
 	TD_GENERATED_BINARIES_DIR="$(realpath -m ./generated/td_tools/td/generate/Release)"
 else
 	TD_GENERATED_BINARIES_DIR="$(realpath -m ./generated/td_tools/td/generate)"
 fi
+export TD_GENERATED_BINARIES_DIR
+
 # Configure cmake
 echo "Configuring CMake..."
 cd ./generated/

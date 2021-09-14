@@ -50,7 +50,6 @@ else
 fi
 
 unset CROSS_BUILD_DEPS_DIR
-export CROSS_BUILD_DEPS_DIR
 if [[ "$OPERATING_SYSTEM_NAME" == "linux" ]]; then
 	if [[ "$CPU_ARCHITECTURE_NAME" == "aarch64" ]]; then
 		export CMAKE_EXTRA_ARGUMENTS="$CMAKE_EXTRA_ARGUMENTS"
@@ -73,6 +72,7 @@ if [[ "$OPERATING_SYSTEM_NAME" == "linux" ]]; then
 	export CROSS_CXX="${CPU_ARCH_CMAKE}-linux-gnu-g++"
 
   CROSS_BUILD_DEPS_DIR="$(realpath "../../")/.cache/tdlib-build-cross-${CPU_ARCH_DPKG}/"
+  export CROSS_BUILD_DEPS_DIR
 fi
 
 # ====== Print variables

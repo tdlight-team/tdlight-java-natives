@@ -54,7 +54,7 @@ elif [[ "$OPERATING_SYSTEM_NAME" == "windows" ]]; then
 	#choco install php --version=7.4.9 --package-parameters='"/ThreadSafe ""/InstallDir:C:\PHP"""'
 	#choco install python3 --params "/InstallDir:C:\Python3"
 
-	[ -d ./windowsenv/ ] && $(yes | rm -rf ./windowsenv/)
+	#[ -d ./windowsenv/ ] && $(yes | rm -rf ./windowsenv/)
 	#[ -d $VCPKG_DIR ] && $(yes | rm -rf $VCPKG_DIR)
 	#git clone --depth=1 https://github.com/tdlight-team/windows-amd64-prebuilt-libraries.git windowsenv
 	#mv windowsenv/vcpkg $VCPKG_DIR
