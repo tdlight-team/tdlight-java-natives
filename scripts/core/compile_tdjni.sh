@@ -2,7 +2,7 @@
 # MAIN REQUIRED ENVIRONMENT VARIABLES:
 #   OPERATING_SYSTEM_NAME = <windows | linux | osx>
 #   OPERATING_SYSTEM_NAME_SHORT = <win | linux | osx>
-#   CPU_ARCHITECTURE_NAME = <amd64 | aarch64 | 386 | armv6 | armv7 | ppc64le>
+#   CPU_ARCHITECTURE_NAME = <amd64 | aarch64 | 386 | s390x | armhf | ppc64le>
 #   IMPLEMENTATION_NAME = <tdlib | tdlight>
 #   BUILD_TYPE = <Debug | Release | RelWithDebInfo | MinSizeRel>
 #   CPU_CORES = "-- -j<cores>" or "-m" on Windows

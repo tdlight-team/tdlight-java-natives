@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # MAIN REQUIRED ENVIRONMENT VARIABLES:
 #   OPERATING_SYSTEM_NAME = <windows | linux | osx>
-#   CPU_ARCHITECTURE_NAME = <amd64 | aarch64 | 386 | armv6 | armv7 | ppc64le>
+#   CPU_ARCHITECTURE_NAME = <amd64 | aarch64 | 386 | s390x | armhf | ppc64le>
 #   IMPLEMENTATION_NAME = <tdlib | tdlight>
 
 # Check variables correctness

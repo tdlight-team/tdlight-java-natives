@@ -12,24 +12,22 @@ else
 	export PCRE="r"
 fi
 
-GH_CPU_ARCH=$(echo "$GH_MATRIX_ARCH" | sed -$PCRE 's/^(linux\/|windows\/|macos\/)?(386|amd64|arm64|ppc64le|arm)(\/(v6|v7))?$/\2\4/g')
+GH_CPU_ARCH=$(echo "$GH_MATRIX_ARCH" | sed -$PCRE 's/^(linux\/|windows\/|macos\/)?(386|amd64|arm64|ppc64le|armhf|s390x)$/\2/g')
 export GH_CPU_ARCH
-GH_OS_NAME=$(echo "$GH_MATRIX_ARCH" | sed -$PCRE 's/^((linux)\/|(windows)\/|(macos)\/)?(386|amd64|arm64|ppc64le|arm)(\/(v6|v7))?$/\2\3\4/g')
-export GH_OS_NAME
-
-if [[ -z "$GH_OS_NAME" ]]; then
-	GH_OS_NAME=$(echo "$GH_MATRIX_OS" | sed -$PCRE 's/^([^-]+).*$/\1/g')
-	export GH_OS_NAME
+GH_OS_NAME=$(echo "$GH_MATRIX_OS" | sed -$PCRE 's/^(linux|ubuntu|windows|macos).*$/\1/g')
+if [[ $GH_OS_NAME == "ubuntu" ]]; then
+  GH_OS_NAME="linux"
 fi
+export GH_OS_NAME
 
 if [[ "$GH_CPU_ARCH" == "arm64" ]]; then
 	export CPU_ARCHITECTURE_NAME="aarch64"
 	export CPU_CORES_NUM="2"
-elif [[ "$GH_CPU_ARCH" == "armv6" ]]; then
-	export CPU_ARCHITECTURE_NAME="armv6"
+elif [[ "$GH_CPU_ARCH" == "armhf" ]]; then
+	export CPU_ARCHITECTURE_NAME="armhf"
 	export CPU_CORES_NUM="2"
-elif [[ "$GH_CPU_ARCH" == "armv7" ]]; then
-	export CPU_ARCHITECTURE_NAME="armv7"
+elif [[ "$GH_CPU_ARCH" == "s390x" ]]; then
+	export CPU_ARCHITECTURE_NAME="s390x"
 	export CPU_CORES_NUM="2"
 elif [[ "$GH_CPU_ARCH" == "386" ]]; then
 	export CPU_ARCHITECTURE_NAME="386"

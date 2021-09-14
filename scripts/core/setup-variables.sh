@@ -1,5 +1,9 @@
 #!/bin/bash -e
 
+if [[ "$CORE_VARIABLES_SET" == "YES" ]]; then
+  exit 0
+fi
+
 echo "====== Setup variables ======"
 if [[ "$OPERATING_SYSTEM_NAME" != "osx" ]]; then
   echo "Current root directory:"
@@ -13,36 +17,42 @@ if [[ "$CPU_ARCHITECTURE_NAME" == "aarch64" ]]; then
 	export CPU_ARCH_DPKG="arm64"
 	export CPU_ARCH_CMAKE="aarch64"
 	export CLANG_TRIPLE="aarch64-linux-gnu"
+	export CPU_COMPILATION_TOOL="gnu"
 	export CPU_CORES_NUM="2"
-elif [[ "$CPU_ARCHITECTURE_NAME" == "armv6" ]]; then
-	export CPU_ARCH_JAVA="armv6"
-	export CPU_ARCH_DPKG="armhf"
-	export CPU_ARCH_CMAKE="arm"
-	export CLANG_TRIPLE="arm-linux-gnu"
-	export CPU_CORES_NUM="2"
-elif [[ "$CPU_ARCHITECTURE_NAME" == "armv7" ]]; then
-	export CPU_ARCH_JAVA="armv7"
+elif [[ "$CPU_ARCHITECTURE_NAME" == "armhf" ]]; then
+	export CPU_ARCH_JAVA="armhf"
 	export CPU_ARCH_DPKG="armhf"
 	export CPU_ARCH_CMAKE="arm"
 	export CLANG_TRIPLE="arm-linux-gnueabihf"
+	export CPU_COMPILATION_TOOL="gnueabihf"
+	export CPU_CORES_NUM="2"
+elif [[ "$CPU_ARCHITECTURE_NAME" == "s390x" ]]; then
+	export CPU_ARCH_JAVA="s390x"
+	export CPU_ARCH_DPKG="s390x"
+	export CPU_ARCH_CMAKE="s390x"
+	export CLANG_TRIPLE="s390x-linux-gnu"
+	export CPU_COMPILATION_TOOL="gnu"
 	export CPU_CORES_NUM="2"
 elif [[ "$CPU_ARCHITECTURE_NAME" == "386" ]]; then
 	export CPU_ARCH_JAVA="386"
 	export CPU_ARCH_DPKG="i386"
 	export CPU_ARCH_CMAKE="i386"
 	export CLANG_TRIPLE="i386-linux-gnu"
+	export CPU_COMPILATION_TOOL="gnu"
 	export CPU_CORES_NUM="2"
 elif [[ "$CPU_ARCHITECTURE_NAME" == "amd64" ]]; then
 	export CPU_ARCH_JAVA="amd64"
 	export CPU_ARCH_DPKG="amd64"
 	export CPU_ARCH_CMAKE="x86_64"
 	export CLANG_TRIPLE="x86_64-linux-gnu"
+	export CPU_COMPILATION_TOOL="gnu"
 	export CPU_CORES_NUM="2"
 elif [[ "$CPU_ARCHITECTURE_NAME" == "ppc64le" ]]; then
 	export CPU_ARCH_JAVA="ppc64le"
 	export CPU_ARCH_DPKG="ppc64el"
 	export CPU_ARCH_CMAKE="ppc64el"
 	export CLANG_TRIPLE="powerpc64-linux-gnu"
+	export CPU_COMPILATION_TOOL="gnu"
 	export CPU_CORES_NUM="2"
 else
 	echo "Unrecognized cpu arch: $CPU_ARCHITECTURE_NAME"
@@ -57,7 +67,7 @@ if [[ "$OPERATING_SYSTEM_NAME" == "linux" ]]; then
 		export CMAKE_EXTRA_ARGUMENTS="$CMAKE_EXTRA_ARGUMENTS -DOPENSSL_USE_STATIC_LIBS=ON -DCMAKE_FIND_LIBRARY_SUFFIXES=\".a\""
 	fi
 
-	if [[ "$CPU_ARCHITECTURE_NAME" == "386" ]] || [[ "$CPU_ARCHITECTURE_NAME" == "armv6" ]] || [[ "$CPU_ARCHITECTURE_NAME" == "armv7" ]]; then
+	if [[ "$CPU_ARCHITECTURE_NAME" == "386" ]] || [[ "$CPU_ARCHITECTURE_NAME" == "armhf" ]]; then
 		export CMAKE_EXE_LINKER_FLAGS="$CMAKE_EXE_LINKER_FLAGS -latomic"
 		export LDFLAGS="$LDFLAGS -latomic"
 		export CXXFLAGS="$CXXFLAGS -latomic"
@@ -68,8 +78,8 @@ if [[ "$OPERATING_SYSTEM_NAME" == "linux" ]]; then
 	export CXX="g++"
 
 	export CROSS_CXXFLAGS="$CXXFLAGS -static-libgcc -static-libstdc++"
-	export CROSS_CC="${CPU_ARCH_CMAKE}-linux-gnu-gcc"
-	export CROSS_CXX="${CPU_ARCH_CMAKE}-linux-gnu-g++"
+	export CROSS_CC="${CPU_ARCH_CMAKE}-linux-${CPU_COMPILATION_TOOL}-gcc"
+	export CROSS_CXX="${CPU_ARCH_CMAKE}-linux-${CPU_COMPILATION_TOOL}-g++"
 
   CROSS_BUILD_DEPS_DIR="$(realpath "../../")/.cache/tdlib-build-cross-${CPU_ARCH_DPKG}/"
   export CROSS_BUILD_DEPS_DIR
@@ -89,3 +99,5 @@ echo "CMAKE_EXE_LINKER_FLAGS=${CMAKE_EXE_LINKER_FLAGS}"
 echo "CMAKE_EXTRA_ARGUMENTS=${CMAKE_EXTRA_ARGUMENTS}"
 echo "CROSS_BUILD_DEPS_DIR=${CROSS_BUILD_DEPS_DIR}"
 echo "============================="
+
+export CORE_VARIABLES_SET="YES"

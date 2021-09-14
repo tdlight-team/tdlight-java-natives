@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # MAIN REQUIRED ENVIRONMENT VARIABLES:
 #   OPERATING_SYSTEM_NAME = <windows | linux | osx>
-#   CPU_ARCHITECTURE_NAME = <amd64 | aarch64 | 386 | armv6 | armv7 | ppc64le>
+#   CPU_ARCHITECTURE_NAME = <amd64 | aarch64 | 386 | s390x | armhf | ppc64le>
 #   IMPLEMENTATION_NAME = <tdlib | tdlight>
 #   BUILD_TYPE = <Debug | Release | RelWithDebInfo | MinSizeRel>
 #   CPU_CORES = "-- -j<cores>" or "-m" on Windows
@@ -145,19 +145,19 @@ deb [arch=arm64,armhf,ppc64el,s390x] http://ports.ubuntu.com/ubuntu-ports/ bioni
   cd "$ROOT_DIR"
   {
     echo "set(CMAKE_SYSTEM_PROCESSOR ${CPU_ARCH_CMAKE})";
-    echo "set(CMAKE_C_COMPILER ${CPU_ARCH_CMAKE}-linux-gnu-gcc)";
+    echo "set(CMAKE_C_COMPILER ${CPU_ARCH_CMAKE}-linux-${CPU_COMPILATION_TOOL}-gcc)";
     echo "set(CMAKE_C_COMPILER_TARGET ${CLANG_TRIPLE})";
-    echo "set(CMAKE_CXX_COMPILER ${CPU_ARCH_CMAKE}-linux-gnu-g++)";
+    echo "set(CMAKE_CXX_COMPILER ${CPU_ARCH_CMAKE}-linux-${CPU_COMPILATION_TOOL}-g++)";
     echo "set(CMAKE_CXX_COMPILER_TARGET ${CLANG_TRIPLE})";
-    echo "set(CMAKE_ASM_COMPILER ${CPU_ARCH_CMAKE}-linux-gnu-g++)";
+    echo "set(CMAKE_ASM_COMPILER ${CPU_ARCH_CMAKE}-linux-${CPU_COMPILATION_TOOL}-g++)";
     echo "set(CMAKE_ASM_COMPILER_TARGET ${CLANG_TRIPLE})";
     echo "set(CMAKE_LIBRARY_PATH \"$CROSS_BUILD_DEPS_DIR/\")";
     #echo "include_directories(\"${CROSS_BUILD_DEPS_DIR}\")";
     #echo "include_directories(\"${CROSS_BUILD_DEPS_DIR}/usr/include/\")";
-    echo "include_directories(\"${CROSS_BUILD_DEPS_DIR}/usr/include/${CPU_ARCH_CMAKE}-linux-gnu/\")";
+    echo "include_directories(\"${CROSS_BUILD_DEPS_DIR}/usr/include/${CPU_ARCH_CMAKE}-linux-${CPU_COMPILATION_TOOL}/\")";
     echo "include_directories(\"${CROSS_OPENJDK_PATH}/include\")";
     echo "include_directories(\"${CROSS_OPENJDK_PATH}/include/linux\")";
-    #echo "set(CMAKE_CXX_STANDARD_INCLUDE_DIRECTORIES \"$CROSS_BUILD_DEPS_DIR/usr/include/\" \"${CROSS_BUILD_DEPS_DIR}/usr/include/${CPU_ARCH_CMAKE}-linux-gnu/\")";
+    #echo "set(CMAKE_CXX_STANDARD_INCLUDE_DIRECTORIES \"$CROSS_BUILD_DEPS_DIR/usr/include/\" \"${CROSS_BUILD_DEPS_DIR}/usr/include/${CPU_ARCH_CMAKE}-linux-${CPU_COMPILATION_TOOL}/\")";
 
     echo "SET(CMAKE_FIND_ROOT_PATH \"$CROSS_BUILD_DEPS_DIR\" \"$JAVA_HOME\")";
     #echo "SET(JAVA_HOME \"$CROSS_OPENJDK_PATH\")";
@@ -183,7 +183,7 @@ SET(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 SET(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 SET(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 EOF
-   if [[ ${CPU_ARCHITECTURE_NAME} == "aarch64" || ${CPU_ARCHITECTURE_NAME} == "armv6" || ${CPU_ARCHITECTURE_NAME} == "armv7" ]]; then
+   if [[ ${CPU_ARCHITECTURE_NAME} == "aarch64" || ${CPU_ARCHITECTURE_NAME} == "armhf" ]]; then
      cat <<EOF
 set(CMAKE_THREAD_LIBS_INIT "-lpthread")
 set(CMAKE_HAVE_THREADS_LIBRARY 1)
