@@ -57,9 +57,8 @@ else
 fi
 
 echo "====== Setup variables ======"
-echo "Current root directory:"
-if [[ "$OPERATING_SYSTEM_NAME" == "osx" ]]; then
-else
+if [[ "$OPERATING_SYSTEM_NAME" != "osx" ]]; then
+  echo "Current root directory:"
   realpath .
 fi
 echo "============================="
