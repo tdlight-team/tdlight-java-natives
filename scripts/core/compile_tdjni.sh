@@ -85,34 +85,17 @@ else
 	export TD_GENERATED_BINARIES_DIR=$(realpath -m ./generated/td_tools/td/generate)
 fi
 
-# Create toolchain
-echo "Creating toolchain file..."
-{
-  echo "set(CMAKE_SYSTEM_PROCESSOR ${CPU_ARCH_CMAKE})";
-  echo "set(CMAKE_C_COMPILER ${CPU_ARCH_CMAKE}-linux-gnu-gcc)";
-  echo "set(CMAKE_C_COMPILER_TARGET ${CLANG_TRIPLE})";
-  echo "set(CMAKE_CXX_COMPILER ${CPU_ARCH_CMAKE}-linux-gnu-g++)";
-  echo "set(CMAKE_CXX_COMPILER_TARGET ${CLANG_TRIPLE})";
-  echo "set(CMAKE_ASM_COMPILER ${CPU_ARCH_CMAKE}-linux-gnu-g++)";
-  echo "set(CMAKE_ASM_COMPILER_TARGET ${CLANG_TRIPLE})";
-  echo "set(CMAKE_LIBRARY_PATH /usr/${CPU_ARCH_CMAKE}-linux-gnu/include)";
-  cat <<EOF
-SET(CMAKE_SYSTEM_NAME Linux)
-EOF
-  if [[ ${CPU_ARCHITECTURE_NAME} == "aarch64" || ${CPU_ARCHITECTURE_NAME} == "armv6" || ${CPU_ARCHITECTURE_NAME} == "armv7" ]]; then
-    cat <<EOF
-set(CMAKE_THREAD_LIBS_INIT "-lpthread")
-set(CMAKE_HAVE_THREADS_LIBRARY 1)
-set(CMAKE_USE_WIN32_THREADS_INIT 0)
-set(CMAKE_USE_PTHREADS_INIT 1)
-set(THREADS_PREFER_PTHREAD_FLAG ON)
-EOF
-  fi
-} > ./generated/tdjni_build/toolchain.cmake
-
 # Configure cmake
 echo "Configuring CMake..."
 cd ./generated/tdjni_build/
+
+CMAKE_EXTRA_ARGUMENTS_TDJNI=""
+if [[ -z "$CROSS_BUILD_DEPS_DIR" ]]; then
+ # shellcheck disable=SC2089
+ CMAKE_EXTRA_ARGUMENTS_TDJNI="${CMAKE_EXTRA_ARGUMENTS_TDJNI} -DCMAKE_TOOLCHAIN_FILE=${CROSS_BUILD_DEPS_DIR}/toolchain.cmake"
+fi
+
+# shellcheck disable=SC2086
 cmake \
  "-DCMAKE_BUILD_TYPE=${BUILD_TYPE}" \
  -DTD_GENERATED_BINARIES_DIR=${TD_GENERATED_BINARIES_DIR} \
@@ -123,7 +106,7 @@ cmake \
  -DJAVA_SRC_DIR=$(realpath -m ../src/main/jni-java-src/) \
  -DTDNATIVES_CPP_SRC_DIR:PATH=$(realpath -m ../src/main/jni-cpp-src/) \
  -DOPENSSL_USE_STATIC_LIBS=True \
- "-DCMAKE_TOOLCHAIN_FILE=$CROSS_BUILD_DEPS_DIR/toolchain.cmake" \
+ ${CMAKE_EXTRA_ARGUMENTS_TDJNI} \
  ${CMAKE_EXTRA_ARGUMENTS} \
  $(realpath -m ../src/main/jni-cpp-src/)
 

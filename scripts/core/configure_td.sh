@@ -61,6 +61,10 @@ if [[ "$IMPLEMENTATION_NAME" = "tdlight" ]]; then
 else
   CMAKE_EXTRA_ARGUMENTS_TD=""
 fi
+if [[ -z "$CROSS_BUILD_DEPS_DIR" ]]; then
+ # shellcheck disable=SC2089
+ CMAKE_EXTRA_ARGUMENTS_TD="${CMAKE_EXTRA_ARGUMENTS_TD} -DCMAKE_TOOLCHAIN_FILE=${CROSS_BUILD_DEPS_DIR}/toolchain.cmake"
+fi
 INSTALL_PREFIX="$(realpath -m ../td_bin/)"
 INSTALL_BINDIR="$(realpath -m ../td_bin/bin)"
 echo "Install prefix: $INSTALL_PREFIX"
@@ -70,7 +74,6 @@ cmake "-DCMAKE_BUILD_TYPE=${BUILD_TYPE}" \
  -DCMAKE_INSTALL_PREFIX:PATH="$INSTALL_PREFIX" \
  -DCMAKE_INSTALL_BINDIR:PATH="$INSTALL_BINDIR" \
  -DTD_ENABLE_JNI=ON \
- "-DCMAKE_TOOLCHAIN_FILE=$CROSS_BUILD_DEPS_DIR/toolchain.cmake" \
  ${CMAKE_EXTRA_ARGUMENTS_TD} \
  ${CMAKE_EXTRA_ARGUMENTS} \
  ../implementation

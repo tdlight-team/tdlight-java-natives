@@ -63,10 +63,23 @@ if [[ "$OPERATING_SYSTEM_NAME" == "linux" ]]; then
   if [[ ! -f "$CROSS_BUILD_DEPS_DIR/ok-012" ]]; then
     rm -rf "$CROSS_BUILD_DEPS_DIR" || true
     mkdir -p "$CROSS_BUILD_DEPS_DIR"
+    echo "
+deb [arch=amd64,i386] http://us.archive.ubuntu.com/ubuntu/ bionic main restricted universe multiverse
+deb [arch=amd64,i386] http://us.archive.ubuntu.com/ubuntu/ bionic-updates main restricted universe multiverse
+deb [arch=amd64,i386] http://us.archive.ubuntu.com/ubuntu/ bionic-backports main restricted universe multiverse
+deb [arch=amd64,i386] http://security.ubuntu.com/ubuntu bionic-security main restricted universe multiverse
+
+deb [arch=arm64,armhf,ppc64el,s390x] http://ports.ubuntu.com/ubuntu-ports/ bionic main restricted universe multiverse
+deb [arch=arm64,armhf,ppc64el,s390x] http://ports.ubuntu.com/ubuntu-ports/ bionic-updates main restricted universe multiverse
+deb [arch=arm64,armhf,ppc64el,s390x] http://ports.ubuntu.com/ubuntu-ports/ bionic-backports main restricted universe multiverse
+deb [arch=arm64,armhf,ppc64el,s390x] http://ports.ubuntu.com/ubuntu-ports/ bionic-security main restricted universe multiverse
+" | sudo tee /etc/apt/sources.list
     sudo dpkg --add-architecture "${CPU_ARCH_DPKG}"
     sudo apt-get update || true
-    sudo apt-get install -y "libstdc++-11-dev-${CPU_ARCH_DPKG}-cross" \
-      "crossbuild-essential-${CPU_ARCH_DPKG}" "libstdc++-11-pic-${CPU_ARCH_DPKG}-cross"
+    sudo apt-get install -y "libstdc++-8-dev-${CPU_ARCH_DPKG}-cross" "libstdc++-8-pic-${CPU_ARCH_DPKG}-cross"
+    if [[ "${CPU_ARCHITECTURE_NAME}" != "amd64" && "${CPU_ARCHITECTURE_NAME}" != "386" ]]; then
+      sudo apt-get install -y "crossbuild-essential-${CPU_ARCH_DPKG}"
+    fi
     cd "$CROSS_BUILD_DEPS_DIR"
     # LibZ-Dev
     apt-get download "zlib1g-dev:${CPU_ARCH_DPKG}"
@@ -94,23 +107,23 @@ if [[ "$OPERATING_SYSTEM_NAME" == "linux" ]]; then
     dpkg -x "$JC_DEB" "$CROSS_BUILD_DEPS_DIR"
     rm "$JC_DEB"
     # OpenJDK-JRE-Headless
-    apt-get download "openjdk-11-jre-headless:${CPU_ARCH_DPKG}"
-    OJDKRH_DEB="$(find "$CROSS_BUILD_DEPS_DIR" -maxdepth 1 -type f -iname "openjdk-11-jre-headless*.deb" | head -n 1)"
+    apt-get download "openjdk-8-jre-headless:${CPU_ARCH_DPKG}"
+    OJDKRH_DEB="$(find "$CROSS_BUILD_DEPS_DIR" -maxdepth 1 -type f -iname "openjdk-8-jre-headless*.deb" | head -n 1)"
     dpkg -x "$OJDKRH_DEB" "$CROSS_BUILD_DEPS_DIR"
     rm "$OJDKRH_DEB"
     # OpenJDK-JRE
-    apt-get download "openjdk-11-jre:${CPU_ARCH_DPKG}"
-    OJDKR_DEB="$(find "$CROSS_BUILD_DEPS_DIR" -maxdepth 1 -type f -iname "openjdk-11-jre*.deb" | head -n 1)"
+    apt-get download "openjdk-8-jre:${CPU_ARCH_DPKG}"
+    OJDKR_DEB="$(find "$CROSS_BUILD_DEPS_DIR" -maxdepth 1 -type f -iname "openjdk-8-jre*.deb" | head -n 1)"
     dpkg -x "$OJDKR_DEB" "$CROSS_BUILD_DEPS_DIR"
     rm "$OJDKR_DEB"
     # OpenJDK-JDK
-    apt-get download "openjdk-11-jdk-headless:${CPU_ARCH_DPKG}"
-    OJDKJ_DEB="$(find "$CROSS_BUILD_DEPS_DIR" -maxdepth 1 -type f -iname "openjdk-11-jdk-headless*.deb" | head -n 1)"
+    apt-get download "openjdk-8-jdk-headless:${CPU_ARCH_DPKG}"
+    OJDKJ_DEB="$(find "$CROSS_BUILD_DEPS_DIR" -maxdepth 1 -type f -iname "openjdk-8-jdk-headless*.deb" | head -n 1)"
     dpkg -x "$OJDKJ_DEB" "$CROSS_BUILD_DEPS_DIR"
     rm "$OJDKJ_DEB"
     # OpenJDK-GUI
-    apt-get download "openjdk-11-jdk:${CPU_ARCH_DPKG}"
-    OJDKG_DEB="$(find "$CROSS_BUILD_DEPS_DIR" -maxdepth 1 -type f -iname "openjdk-11-jdk*.deb" | head -n 1)"
+    apt-get download "openjdk-8-jdk:${CPU_ARCH_DPKG}"
+    OJDKG_DEB="$(find "$CROSS_BUILD_DEPS_DIR" -maxdepth 1 -type f -iname "openjdk-8-jdk*.deb" | head -n 1)"
     dpkg -x "$OJDKG_DEB" "$CROSS_BUILD_DEPS_DIR"
     rm "$OJDKG_DEB"
 

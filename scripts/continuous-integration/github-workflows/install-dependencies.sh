@@ -64,3 +64,7 @@ else
 	echo "Unrecognized os: $OPERATING_SYSTEM_NAME"
 	exit 1
 fi
+
+cd ./scripts/core/
+./install-dependencies.sh
+cd ../../
