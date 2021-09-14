@@ -24,8 +24,8 @@ jobs:
         - {os: ubuntu-18.04, usedocker: "false", arch: "linux/s390x", implementation: "tdlib"}
         - {os: ubuntu-18.04, usedocker: "false", arch: "linux/ppc64le", implementation: "tdlight"}
         - {os: ubuntu-18.04, usedocker: "false", arch: "linux/ppc64le", implementation: "tdlib"}
-        - {os: windows-2019, usedocker: "false", arch: "amd64", implementation: "tdlight", triplet: "x64-windows-static"}
-        - {os: windows-2019, usedocker: "false", arch: "amd64", implementation: "tdlib", triplet: "x64-windows-static"}
+        - {os: windows-2019, usedocker: "false", arch: "amd64", implementation: "tdlight", vcpkgCommitId: "30124253eecff36bc90f73341edbfb4f845e2a1e", triplet: "x64-windows-static"}
+        - {os: windows-2019, usedocker: "false", arch: "amd64", implementation: "tdlib", vcpkgCommitId: "30124253eecff36bc90f73341edbfb4f845e2a1e", triplet: "x64-windows-static"}
         - {os: macos-10.15, usedocker: "false", arch: "amd64", implementation: "tdlight"}
         - {os: macos-10.15, usedocker: "false", arch: "amd64", implementation: "tdlib"}
     steps:
@@ -149,7 +149,9 @@ jobs:
           echo "TDNATIVES_CPP_BUILD_DIR=$TDNATIVES_CPP_BUILD_DIR" >> $GITHUB_ENV
           echo "JAVA_SRC_DIR=$JAVA_SRC_DIR" >> $GITHUB_ENV
           echo "TDLIB_SERIALIZER_DIR=$TDLIB_SERIALIZER_DIR" >> $GITHUB_ENV
-          echo "PATH=$PATH" >> $GITHUB_ENV
+          if [[ ! -z "$PATH" && "$OPERATING_SYSTEM_NAME" != "windows" ]]; then
+            echo "PATH=$PATH" >> $GITHUB_ENV
+          fi
           echo "JAVA_HOME=$JAVA_HOME" >> $GITHUB_ENV
           echo "JAVA_INCLUDE_PATH=$JAVA_INCLUDE_PATH" >> $GITHUB_ENV
           echo "CMAKE_EXTRA_ARGUMENTS=$CMAKE_EXTRA_ARGUMENTS" >> $GITHUB_ENV
@@ -172,6 +174,28 @@ jobs:
           echo "REVISION: $REVISION"
 
           source ./scripts/continuous-integration/github-workflows/install-dependencies.sh
+      - name: Setup PHP with Readline extension
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.0'
+          extensions: readline
+      - name: Install MSVC
+        if: matrix.os == 'windows-2019'
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          vs-version: '[16.4,16.5)'
+      - name: Setup cmake
+        if: matrix.os == 'windows-2019'
+        uses: jwlawson/actions-setup-cmake@v1.9
+        with:
+          cmake-version: '3.16.x'
+      - name: Set up Maven
+        uses: stCarolas/setup-maven@v4.2
+        with:
+          maven-version: 3.8.2
+      - name: Setup NASM
+        if: matrix.os == 'windows-2019'
+        uses: ilammy/setup-nasm@v1
       - name: Restore artifacts, or setup vcpkg (do not install any package)
         if: matrix.os == 'windows-2019'
         uses: lukka/run-vcpkg@v7
@@ -179,12 +203,14 @@ jobs:
           # Just install vcpkg for now, do not install any ports in this step yet.
           setupOnly: true
           # Location of the vcpkg submodule in the Git repository.
-          vcpkgDirectory: '${{ env.VCPKG_DIR }}'
+          vcpkgDirectory: '${{ github.workspace }}/vcpkg'
+          vcpkgGitCommitId: '${{ matrix.vcpkgCommitId}}'
           # Since the cache must be invalidated when content of the vcpkg.json file changes, let's
           # compute its hash and append this to the computed cache's key.
           appendedCacheKey: ${{ hashFiles( '**/vcpkg_manifest/vcpkg.json' ) }}
           vcpkgTriplet: ${{ matrix.triplet }}
           # Ensure the vcpkg artifacts are cached, they are generated in the 'CMAKE_BINARY_DIR/vcpkg_installed' directory.
+          additionalCachedPaths: ${{ github.workspace }}/vcpkg
       - name: Install vcpkg deps
         if: matrix.os == 'windows-2019'
         run: |

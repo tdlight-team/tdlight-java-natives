@@ -82,7 +82,9 @@ jobs:
           echo "TDNATIVES_CPP_BUILD_DIR=$TDNATIVES_CPP_BUILD_DIR" >> $GITHUB_ENV
           echo "JAVA_SRC_DIR=$JAVA_SRC_DIR" >> $GITHUB_ENV
           echo "TDLIB_SERIALIZER_DIR=$TDLIB_SERIALIZER_DIR" >> $GITHUB_ENV
-          echo "PATH=$PATH" >> $GITHUB_ENV
+          if [[ ! -z "$PATH" ]]; then
+            echo "PATH=$PATH" >> $GITHUB_ENV
+          fi
           echo "JAVA_HOME=$JAVA_HOME" >> $GITHUB_ENV
           echo "JAVA_INCLUDE_PATH=$JAVA_INCLUDE_PATH" >> $GITHUB_ENV
           echo "CMAKE_EXTRA_ARGUMENTS=$CMAKE_EXTRA_ARGUMENTS" >> $GITHUB_ENV

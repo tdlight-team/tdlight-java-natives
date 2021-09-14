@@ -60,3 +60,5 @@ linux-generate-tdapi.sh
 win-build.sh
 win-deps.sh
 /.cache/
+
+.idea/
