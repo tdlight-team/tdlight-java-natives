@@ -64,23 +64,21 @@ if [[ "$OPERATING_SYSTEM_NAME" == "linux" ]]; then
     rm -rf "$CROSS_BUILD_DEPS_DIR" || true
     mkdir -p "$CROSS_BUILD_DEPS_DIR"
     echo "
-deb [arch=amd64,i386] http://us.archive.ubuntu.com/ubuntu/ bionic main restricted universe multiverse
-deb [arch=amd64,i386] http://us.archive.ubuntu.com/ubuntu/ bionic-updates main restricted universe multiverse
-deb [arch=amd64,i386] http://us.archive.ubuntu.com/ubuntu/ bionic-backports main restricted universe multiverse
-deb [arch=amd64,i386] http://security.ubuntu.com/ubuntu bionic-security main restricted universe multiverse
+deb [arch=amd64,i386] http://us.archive.ubuntu.com/ubuntu/ focal main restricted universe multiverse
+deb [arch=amd64,i386] http://us.archive.ubuntu.com/ubuntu/ focal-updates main restricted universe multiverse
+deb [arch=amd64,i386] http://us.archive.ubuntu.com/ubuntu/ focal-backports main restricted universe multiverse
+deb [arch=amd64,i386] http://security.ubuntu.com/ubuntu focal-security main restricted universe multiverse
 
-deb [arch=arm64,armhf,ppc64el,s390x] http://ports.ubuntu.com/ubuntu-ports/ bionic main restricted universe multiverse
-deb [arch=arm64,armhf,ppc64el,s390x] http://ports.ubuntu.com/ubuntu-ports/ bionic-updates main restricted universe multiverse
-deb [arch=arm64,armhf,ppc64el,s390x] http://ports.ubuntu.com/ubuntu-ports/ bionic-backports main restricted universe multiverse
-deb [arch=arm64,armhf,ppc64el,s390x] http://ports.ubuntu.com/ubuntu-ports/ bionic-security main restricted universe multiverse
+deb [arch=arm64,armhf,ppc64el,s390x] http://ports.ubuntu.com/ubuntu-ports/ focal main restricted universe multiverse
+deb [arch=arm64,armhf,ppc64el,s390x] http://ports.ubuntu.com/ubuntu-ports/ focal-updates main restricted universe multiverse
+deb [arch=arm64,armhf,ppc64el,s390x] http://ports.ubuntu.com/ubuntu-ports/ focal-backports main restricted universe multiverse
+deb [arch=arm64,armhf,ppc64el,s390x] http://ports.ubuntu.com/ubuntu-ports/ focal-security main restricted universe multiverse
 " | sudo tee /etc/apt/sources.list
     sudo dpkg --add-architecture "${CPU_ARCH_DPKG}"
     sudo apt-get update || true
     sudo apt-get install -y openjdk-8-jdk
     sudo apt-get install -y "libstdc++-8-dev-${CPU_ARCH_DPKG}-cross" "libstdc++-8-pic-${CPU_ARCH_DPKG}-cross"
-    if [[ "${CPU_ARCHITECTURE_NAME}" != "amd64" && "${CPU_ARCHITECTURE_NAME}" != "386" ]]; then
-      sudo apt-get install -y "crossbuild-essential-${CPU_ARCH_DPKG}"
-    fi
+    sudo apt-get install -y "crossbuild-essential-${CPU_ARCH_DPKG}"
     cd "$CROSS_BUILD_DEPS_DIR"
     # LibZ-Dev
     apt-get download "zlib1g-dev:${CPU_ARCH_DPKG}"
@@ -145,22 +143,15 @@ deb [arch=arm64,armhf,ppc64el,s390x] http://ports.ubuntu.com/ubuntu-ports/ bioni
   echo "Creating toolchain file..."
   cd "$ROOT_DIR"
   {
-    echo "set(CMAKE_SYSTEM_PROCESSOR ${CPU_ARCH_CMAKE})";
-	  if [[ "$CPU_ARCHITECTURE_NAME" == "386" ]] || [[ "$CPU_ARCHITECTURE_NAME" == "amd64" ]]; then
-      echo "set(CMAKE_C_COMPILER gcc)";
-      echo "set(CMAKE_C_COMPILER_TARGET ${CLANG_TRIPLE})";
-      echo "set(CMAKE_CXX_COMPILER g++)";
-      echo "set(CMAKE_CXX_COMPILER_TARGET ${CLANG_TRIPLE})";
-	  else
-      echo "set(CMAKE_C_COMPILER ${CPU_ARCH_CMAKE}-linux-${CPU_COMPILATION_TOOL}-gcc)";
-      echo "set(CMAKE_C_COMPILER_TARGET ${CLANG_TRIPLE})";
-      echo "set(CMAKE_CXX_COMPILER ${CPU_ARCH_CMAKE}-linux-${CPU_COMPILATION_TOOL}-g++)";
-      echo "set(CMAKE_CXX_COMPILER_TARGET ${CLANG_TRIPLE})";
-      echo "set(CMAKE_ASM_COMPILER ${CPU_ARCH_CMAKE}-linux-${CPU_COMPILATION_TOOL}-g++)";
-      echo "set(CMAKE_ASM_COMPILER_TARGET ${CLANG_TRIPLE})";
-	  fi
+    echo "set(CMAKE_SYSTEM_PROCESSOR ${CPU_ARCH_LINUX})";
+    echo "set(CMAKE_C_COMPILER ${CPU_ARCH_CMAKE}-linux-${CPU_COMPILATION_TOOL}-gcc)";
+    echo "set(CMAKE_C_COMPILER_TARGET ${CLANG_TRIPLE})";
+    echo "set(CMAKE_CXX_COMPILER ${CPU_ARCH_CMAKE}-linux-${CPU_COMPILATION_TOOL}-g++)";
+    echo "set(CMAKE_CXX_COMPILER_TARGET ${CLANG_TRIPLE})";
+    echo "set(CMAKE_ASM_COMPILER ${CPU_ARCH_CMAKE}-linux-${CPU_COMPILATION_TOOL}-g++)";
+    echo "set(CMAKE_ASM_COMPILER_TARGET ${CLANG_TRIPLE})";
     echo "set(CMAKE_LIBRARY_PATH \"$CROSS_BUILD_DEPS_DIR/\")";
-    echo "include_directories(\"${CROSS_BUILD_DEPS_DIR}/usr/include/${CPU_ARCH_CMAKE}-linux-${CPU_COMPILATION_TOOL}/\")";
+    echo "include_directories(\"${CROSS_BUILD_DEPS_DIR}/usr/include/${CPU_ARCH_LINUX}-linux-${CPU_COMPILATION_TOOL}/\")";
     echo "SET(CMAKE_FIND_ROOT_PATH \"$CROSS_BUILD_DEPS_DIR\" \"$JAVA_HOME\" \"/\" \"/usr/lib/jvm/java-8-openjdk-amd64/include\")";
     echo "include_directories(\"${CROSS_OPENJDK_PATH}/include\")";
     echo "include_directories(\"${CROSS_OPENJDK_PATH}/include/linux\")";
@@ -169,19 +160,19 @@ deb [arch=arm64,armhf,ppc64el,s390x] http://ports.ubuntu.com/ubuntu-ports/ bioni
     echo "SET(JAVA_INCLUDE_PATH \"/usr/lib/jvm/java-8-openjdk-amd64/include\")";
     echo "SET(JAVA_AWT_INCLUDE_PATH \"/usr/lib/jvm/java-8-openjdk-amd64/include\")";
     echo "SET(JAVA_INCLUDE_PATH2 \"/usr/lib/jvm/java-8-openjdk-amd64/include/linux\")";
-    #echo "SET(JAVA_JVM_LIBRARY \"/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/server/libjvm.so\")";
+    #echo "SET(JAVA_JVM_LIBRARY \"/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/${JAVA_INSTALLATION_TYPE}/libjvm.so\")";
     #echo "SET(JAVA_AWT_LIBRARY \"/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libawt.so\")";
 
     #echo "SET(JAVA_HOME \"$CROSS_OPENJDK_PATH\")";
     #echo "SET(JAVA_INCLUDE_PATH \"$CROSS_OPENJDK_PATH/include\")";
     #echo "SET(JAVA_INCLUDE_PATH2 \"$CROSS_OPENJDK_PATH/include/linux\")";
-    echo "SET(JAVA_JVM_LIBRARY \"$CROSS_OPENJDK_PATH/jre/lib/${CPU_ARCH_JAVA_INTERNAL}/server/libjvm.so\")";
+    echo "SET(JAVA_JVM_LIBRARY \"$CROSS_OPENJDK_PATH/jre/lib/${CPU_ARCH_JAVA_INTERNAL}/${JAVA_INSTALLATION_TYPE}/libjvm.so\")";
     echo "SET(JAVA_AWT_LIBRARY \"$CROSS_OPENJDK_PATH/jre/lib/${CPU_ARCH_JAVA_INTERNAL}/libawt.so\")";
     #echo "SET(JNI_INCLUDE_DIRS \"$CROSS_OPENJDK_PATH/include\" \"$CROSS_OPENJDK_PATH/include/linux\")";
     #echo "SET(Java_JAR_EXECUTABLE \"$CROSS_OPENJDK_PATH/bin/java\")";
     #echo "SET(Java_JAVAC_EXECUTABLE \"$CROSS_OPENJDK_PATH/bin/javac\")";
     #echo "SET(Java_JAVADOC_EXECUTABLE \"$CROSS_OPENJDK_PATH/bin/javadoc\")";
-    #echo "SET(JNI_LIBRARIES \"$CROSS_OPENJDK_PATH/jre/lib/${CPU_ARCH_JAVA_INTERNAL}/server/libjvm.so\" \"$CROSS_OPENJDK_PATH/jre/lib/${CPU_ARCH_JAVA_INTERNAL}/libawt.so\")";
+    #echo "SET(JNI_LIBRARIES \"$CROSS_OPENJDK_PATH/jre/lib/${CPU_ARCH_JAVA_INTERNAL}/${JAVA_INSTALLATION_TYPE}/libjvm.so\" \"$CROSS_OPENJDK_PATH/jre/lib/${CPU_ARCH_JAVA_INTERNAL}/libawt.so\")";
     #echo "SET(JNI_FOUND True)";
     #echo "MESSAGE(STATUS \"JNI INCLUDE DIRS: \${JNI_INCLUDE_DIRS}\")";
     #echo "MESSAGE(STATUS \"JNI LIBS: \${JNI_LIBRARIES}\")";
