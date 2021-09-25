@@ -63,66 +63,50 @@ if [[ "$OPERATING_SYSTEM_NAME" == "linux" ]]; then
   if [[ ! -f "$CROSS_BUILD_DEPS_DIR/ok-012" ]]; then
     rm -rf "$CROSS_BUILD_DEPS_DIR" || true
     mkdir -p "$CROSS_BUILD_DEPS_DIR"
-    echo "
-deb [arch=amd64,i386] http://us.archive.ubuntu.com/ubuntu/ focal main restricted universe multiverse
-deb [arch=amd64,i386] http://us.archive.ubuntu.com/ubuntu/ focal-updates main restricted universe multiverse
-deb [arch=amd64,i386] http://us.archive.ubuntu.com/ubuntu/ focal-backports main restricted universe multiverse
-deb [arch=amd64,i386] http://security.ubuntu.com/ubuntu focal-security main restricted universe multiverse
-
-deb [arch=arm64,armhf,ppc64el,s390x] http://ports.ubuntu.com/ubuntu-ports/ focal main restricted universe multiverse
-deb [arch=arm64,armhf,ppc64el,s390x] http://ports.ubuntu.com/ubuntu-ports/ focal-updates main restricted universe multiverse
-deb [arch=arm64,armhf,ppc64el,s390x] http://ports.ubuntu.com/ubuntu-ports/ focal-backports main restricted universe multiverse
-deb [arch=arm64,armhf,ppc64el,s390x] http://ports.ubuntu.com/ubuntu-ports/ focal-security main restricted universe multiverse
-" | sudo tee /etc/apt/sources.list
-    sudo dpkg --add-architecture "${CPU_ARCH_DPKG}"
-    sudo apt-get update || true
-    sudo apt-get install -y openjdk-8-jdk
-    sudo apt-get install -y "libstdc++-8-dev-${CPU_ARCH_DPKG}-cross" "libstdc++-8-pic-${CPU_ARCH_DPKG}-cross"
-    sudo apt-get install -y "crossbuild-essential-${CPU_ARCH_DPKG}"
     cd "$CROSS_BUILD_DEPS_DIR"
     # LibZ-Dev
-    apt-get download "zlib1g-dev:${CPU_ARCH_DPKG}"
-    ZLIB1G_DEV_DEB="$(find "$CROSS_BUILD_DEPS_DIR" -maxdepth 1 -type f -iname "zlib1g-dev*.deb" | head -n 1)"
+    wget "http://ftp.debian.org/debian/pool/main/z/zlib/zlib1g-dev_1.2.11.dfsg-1_${CPU_ARCH_DPKG}.deb" -O zlib1g-dev.deb
+    ZLIB1G_DEV_DEB=zlib1g-dev.deb
     dpkg -x "$ZLIB1G_DEV_DEB" "$CROSS_BUILD_DEPS_DIR"
     rm "$ZLIB1G_DEV_DEB"
     # LibZ
-    apt-get download "zlib1g:${CPU_ARCH_DPKG}"
-    ZLIB1G_DEB="$(find "$CROSS_BUILD_DEPS_DIR" -maxdepth 1 -type f -iname "zlib1g*.deb" | head -n 1)"
+    wget "http://ftp.debian.org/debian/pool/main/z/zlib/zlib1g_1.2.11.dfsg-1_${CPU_ARCH_DPKG}.deb" -O zlib1g.deb
+    ZLIB1G_DEB=zlib1g.deb
     dpkg -x "$ZLIB1G_DEB" "$CROSS_BUILD_DEPS_DIR"
     rm "$ZLIB1G_DEB"
     # LibSSL-Dev
-    apt-get download "libssl-dev:${CPU_ARCH_DPKG}"
-    LIBSSL_DEV_DEB="$(find "$CROSS_BUILD_DEPS_DIR" -maxdepth 1 -type f -iname "libssl-dev*.deb" | head -n 1)"
+    wget "http://security.debian.org/debian-security/pool/updates/main/o/openssl/libssl-dev_1.1.1d-0+deb10u7_${CPU_ARCH_DPKG}.deb" -O libssl-dev.deb
+    LIBSSL_DEV_DEB=libssl-dev.deb
     dpkg -x "$LIBSSL_DEV_DEB" "$CROSS_BUILD_DEPS_DIR"
     rm "$LIBSSL_DEV_DEB"
     # LibSSL
-    apt-get download "libssl1.1:${CPU_ARCH_DPKG}"
-    LIBSSL_DEB="$(find "$CROSS_BUILD_DEPS_DIR" -maxdepth 1 -type f -iname "libssl1.1*.deb" | head -n 1)"
+    wget "http://security.debian.org/debian-security/pool/updates/main/o/openssl/libssl1.1_1.1.1d-0+deb10u7_${CPU_ARCH_DPKG}.deb" -O libssl.deb
+    LIBSSL_DEB=libssl.deb
     dpkg -x "$LIBSSL_DEB" "$CROSS_BUILD_DEPS_DIR"
     rm "$LIBSSL_DEB"
     # Java Common
-    apt-get download "java-common"
-    JC_DEB="$(find "$CROSS_BUILD_DEPS_DIR" -maxdepth 1 -type f -iname "java-common*.deb" | head -n 1)"
+    wget "http://ftp.debian.org/debian/pool/main/j/java-common/java-common_0.71_all.deb" -O java-common.deb
+    JC_DEB=java-common.deb
     dpkg -x "$JC_DEB" "$CROSS_BUILD_DEPS_DIR"
     rm "$JC_DEB"
     # OpenJDK-JRE-Headless
-    apt-get download "openjdk-8-jre-headless:${CPU_ARCH_DPKG}"
-    OJDKRH_DEB="$(find "$CROSS_BUILD_DEPS_DIR" -maxdepth 1 -type f -iname "openjdk-8-jre-headless*.deb" | head -n 1)"
+    wget "http://security.debian.org/debian-security/pool/updates/main/o/openjdk-11/openjdk-11-jre-headless_11.0.12+7-2~deb10u1_${CPU_ARCH_DPKG}.deb" -O jdk-11-jre-headless.deb
+    OJDKRH_DEB=jdk-11-jre-headless.deb
     dpkg -x "$OJDKRH_DEB" "$CROSS_BUILD_DEPS_DIR"
     rm "$OJDKRH_DEB"
     # OpenJDK-JRE
-    apt-get download "openjdk-8-jre:${CPU_ARCH_DPKG}"
-    OJDKR_DEB="$(find "$CROSS_BUILD_DEPS_DIR" -maxdepth 1 -type f -iname "openjdk-8-jre*.deb" | head -n 1)"
+    wget "http://security.debian.org/debian-security/pool/updates/main/o/openjdk-11/openjdk-11-jre_11.0.12+7-2~deb10u1_${CPU_ARCH_DPKG}.deb" -O jdk-11-jre.deb
+    OJDKR_DEB=jdk-11-jre.deb
     dpkg -x "$OJDKR_DEB" "$CROSS_BUILD_DEPS_DIR"
     rm "$OJDKR_DEB"
     # OpenJDK-JDK
-    apt-get download "openjdk-8-jdk-headless:${CPU_ARCH_DPKG}"
-    OJDKJ_DEB="$(find "$CROSS_BUILD_DEPS_DIR" -maxdepth 1 -type f -iname "openjdk-8-jdk-headless*.deb" | head -n 1)"
+    wget "http://security.debian.org/debian-security/pool/updates/main/o/openjdk-11/openjdk-11-jdk-headless_11.0.12+7-2~deb10u1_${CPU_ARCH_DPKG}.deb" -O jdk-11-jdk-headless.deb
+    OJDKJ_DEB=jdk-11-jdk-headless.deb
     dpkg -x "$OJDKJ_DEB" "$CROSS_BUILD_DEPS_DIR"
     rm "$OJDKJ_DEB"
     # OpenJDK-GUI
-    apt-get download "openjdk-8-jdk:${CPU_ARCH_DPKG}"
-    OJDKG_DEB="$(find "$CROSS_BUILD_DEPS_DIR" -maxdepth 1 -type f -iname "openjdk-8-jdk*.deb" | head -n 1)"
+    wget "http://security.debian.org/debian-security/pool/updates/main/o/openjdk-11/openjdk-11-jdk_11.0.12+7-2~deb10u1_${CPU_ARCH_DPKG}.deb" -O jdk-11-jdk.deb
+    OJDKG_DEB=jdk-11-jdk.deb
     dpkg -x "$OJDKG_DEB" "$CROSS_BUILD_DEPS_DIR"
     rm "$OJDKG_DEB"
 
@@ -152,16 +136,16 @@ deb [arch=arm64,armhf,ppc64el,s390x] http://ports.ubuntu.com/ubuntu-ports/ focal
     echo "set(CMAKE_ASM_COMPILER_TARGET ${CLANG_TRIPLE})";
     echo "set(CMAKE_LIBRARY_PATH \"$CROSS_BUILD_DEPS_DIR/\")";
     echo "include_directories(\"${CROSS_BUILD_DEPS_DIR}/usr/include/${CPU_ARCH_LINUX}-linux-${CPU_COMPILATION_TOOL}/\")";
-    echo "SET(CMAKE_FIND_ROOT_PATH \"$CROSS_BUILD_DEPS_DIR\" \"$JAVA_HOME\" \"/\" \"/usr/lib/jvm/java-8-openjdk-amd64/include\")";
+    echo "SET(CMAKE_FIND_ROOT_PATH \"$CROSS_BUILD_DEPS_DIR\" \"$JAVA_HOME\" \"/\" \"/usr/lib/jvm/java-11-openjdk-amd64/include\")";
     echo "include_directories(\"${CROSS_OPENJDK_PATH}/include\")";
     echo "include_directories(\"${CROSS_OPENJDK_PATH}/include/linux\")";
 
-    echo "SET(JAVA_HOME \"/usr/lib/jvm/java-8-openjdk-amd64/\")";
-    echo "SET(JAVA_INCLUDE_PATH \"/usr/lib/jvm/java-8-openjdk-amd64/include\")";
-    echo "SET(JAVA_AWT_INCLUDE_PATH \"/usr/lib/jvm/java-8-openjdk-amd64/include\")";
-    echo "SET(JAVA_INCLUDE_PATH2 \"/usr/lib/jvm/java-8-openjdk-amd64/include/linux\")";
-    #echo "SET(JAVA_JVM_LIBRARY \"/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/${JAVA_INSTALLATION_TYPE}/libjvm.so\")";
-    #echo "SET(JAVA_AWT_LIBRARY \"/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64/libawt.so\")";
+    echo "SET(JAVA_HOME \"/usr/lib/jvm/java-11-openjdk-amd64/\")";
+    echo "SET(JAVA_INCLUDE_PATH \"/usr/lib/jvm/java-11-openjdk-amd64/include\")";
+    echo "SET(JAVA_AWT_INCLUDE_PATH \"/usr/lib/jvm/java-11-openjdk-amd64/include\")";
+    echo "SET(JAVA_INCLUDE_PATH2 \"/usr/lib/jvm/java-11-openjdk-amd64/include/linux\")";
+    #echo "SET(JAVA_JVM_LIBRARY \"/usr/lib/jvm/java-11-openjdk-amd64/jre/lib/amd64/${JAVA_INSTALLATION_TYPE}/libjvm.so\")";
+    #echo "SET(JAVA_AWT_LIBRARY \"/usr/lib/jvm/java-11-openjdk-amd64/jre/lib/amd64/libawt.so\")";
 
     #echo "SET(JAVA_HOME \"$CROSS_OPENJDK_PATH\")";
     #echo "SET(JAVA_INCLUDE_PATH \"$CROSS_OPENJDK_PATH/include\")";
