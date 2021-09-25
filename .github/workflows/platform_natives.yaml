@@ -12,22 +12,22 @@ jobs:
     strategy:
       matrix:
         include:
-        - {os: ubuntu-20.04, usedocker: "false", arch: "linux/386", implementation: "tdlight"}
-        - {os: ubuntu-20.04, usedocker: "false", arch: "linux/386", implementation: "tdlib"}
-        - {os: ubuntu-20.04, usedocker: "false", arch: "linux/amd64", implementation: "tdlight"}
-        - {os: ubuntu-20.04, usedocker: "false", arch: "linux/amd64", implementation: "tdlib"}
-        - {os: ubuntu-20.04, usedocker: "false", arch: "linux/armhf", implementation: "tdlight"}
-        - {os: ubuntu-20.04, usedocker: "false", arch: "linux/armhf", implementation: "tdlib"}
-        - {os: ubuntu-20.04, usedocker: "false", arch: "linux/arm64", implementation: "tdlight"}
-        - {os: ubuntu-20.04, usedocker: "false", arch: "linux/arm64", implementation: "tdlib"}
-        - {os: ubuntu-20.04, usedocker: "false", arch: "linux/s390x", implementation: "tdlight"}
-        - {os: ubuntu-20.04, usedocker: "false", arch: "linux/s390x", implementation: "tdlib"}
-        - {os: ubuntu-20.04, usedocker: "false", arch: "linux/ppc64le", implementation: "tdlight"}
-        - {os: ubuntu-20.04, usedocker: "false", arch: "linux/ppc64le", implementation: "tdlib"}
-        - {os: windows-2019, usedocker: "false", arch: "amd64", implementation: "tdlight", vcpkgCommitId: "30124253eecff36bc90f73341edbfb4f845e2a1e", triplet: "x64-windows-static"}
-        - {os: windows-2019, usedocker: "false", arch: "amd64", implementation: "tdlib", vcpkgCommitId: "30124253eecff36bc90f73341edbfb4f845e2a1e", triplet: "x64-windows-static"}
-        - {os: macos-10.15, usedocker: "false", arch: "amd64", implementation: "tdlight"}
-        - {os: macos-10.15, usedocker: "false", arch: "amd64", implementation: "tdlib"}
+        - {os: ubuntu-20.04, usedocker: "true", useqemu: "false", arch: "linux/386", implementation: "tdlight"}
+        - {os: ubuntu-20.04, usedocker: "true", useqemu: "false", arch: "linux/386", implementation: "tdlib"}
+        - {os: ubuntu-20.04, usedocker: "true", useqemu: "false", arch: "linux/amd64", implementation: "tdlight"}
+        - {os: ubuntu-20.04, usedocker: "true", useqemu: "false", arch: "linux/amd64", implementation: "tdlib"}
+        - {os: ubuntu-20.04, usedocker: "true", useqemu: "false", arch: "linux/armhf", implementation: "tdlight"}
+        - {os: ubuntu-20.04, usedocker: "true", useqemu: "false", arch: "linux/armhf", implementation: "tdlib"}
+        - {os: ubuntu-20.04, usedocker: "true", useqemu: "false", arch: "linux/arm64", implementation: "tdlight"}
+        - {os: ubuntu-20.04, usedocker: "true", useqemu: "false", arch: "linux/arm64", implementation: "tdlib"}
+        - {os: ubuntu-20.04, usedocker: "true", useqemu: "false", arch: "linux/s390x", implementation: "tdlight"}
+        - {os: ubuntu-20.04, usedocker: "true", useqemu: "false", arch: "linux/s390x", implementation: "tdlib"}
+        - {os: ubuntu-20.04, usedocker: "true", useqemu: "false", arch: "linux/ppc64le", implementation: "tdlight"}
+        - {os: ubuntu-20.04, usedocker: "true", useqemu: "false", arch: "linux/ppc64le", implementation: "tdlib"}
+        - {os: windows-2019, usedocker: "false", useqemu: "false", arch: "amd64", implementation: "tdlight", vcpkgCommitId: "30124253eecff36bc90f73341edbfb4f845e2a1e", triplet: "x64-windows-static"}
+        - {os: windows-2019, usedocker: "false", useqemu: "false", arch: "amd64", implementation: "tdlib", vcpkgCommitId: "30124253eecff36bc90f73341edbfb4f845e2a1e", triplet: "x64-windows-static"}
+        - {os: macos-10.15, usedocker: "false", useqemu: "false", arch: "amd64", implementation: "tdlight"}
+        - {os: macos-10.15, usedocker: "false", useqemu: "false", arch: "amd64", implementation: "tdlib"}
     steps:
       - name: Checkout current repo
         uses: actions/checkout@v2
@@ -69,7 +69,7 @@ jobs:
           cat $GITHUB_ENV > github.env
 
       - name: Set up QEMU
-        if: matrix.usedocker == 'true'
+        if: matrix.usedocker == 'true' && matrix.useqemu == 'true'
         uses: docker/setup-qemu-action@v1
 
       - name: Set up Docker Buildx
