@@ -21,7 +21,7 @@ if [[ "$CORE_VARIABLES_SET" != "YES" ]]; then
   elif [[ "$CPU_ARCHITECTURE_NAME" == "armhf" ]]; then
     export CPU_ARCH_JAVA="armhf"
     export CPU_ARCH_JAVA_INTERNAL="arm"
-    export JAVA_INSTALLATION_TYPE="client"
+    export JAVA_INSTALLATION_TYPE="server"
     export CPU_ARCH_DPKG="armhf"
     export CPU_ARCH_CMAKE="arm"
     export CPU_ARCH_LINUX="arm"

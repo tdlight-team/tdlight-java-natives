@@ -150,8 +150,8 @@ if [[ "$OPERATING_SYSTEM_NAME" == "linux" ]]; then
     #echo "SET(JAVA_HOME \"$CROSS_OPENJDK_PATH\")";
     #echo "SET(JAVA_INCLUDE_PATH \"$CROSS_OPENJDK_PATH/include\")";
     #echo "SET(JAVA_INCLUDE_PATH2 \"$CROSS_OPENJDK_PATH/include/linux\")";
-    echo "SET(JAVA_JVM_LIBRARY \"$CROSS_OPENJDK_PATH/jre/lib/${CPU_ARCH_JAVA_INTERNAL}/${JAVA_INSTALLATION_TYPE}/libjvm.so\")";
-    echo "SET(JAVA_AWT_LIBRARY \"$CROSS_OPENJDK_PATH/jre/lib/${CPU_ARCH_JAVA_INTERNAL}/libawt.so\")";
+    echo "SET(JAVA_JVM_LIBRARY \"$CROSS_OPENJDK_PATH/jre/lib/${JAVA_INSTALLATION_TYPE}/libjvm.so\")";
+    echo "SET(JAVA_AWT_LIBRARY \"$CROSS_OPENJDK_PATH/jre/lib/libawt.so\")";
     #echo "SET(JNI_INCLUDE_DIRS \"$CROSS_OPENJDK_PATH/include\" \"$CROSS_OPENJDK_PATH/include/linux\")";
     #echo "SET(Java_JAR_EXECUTABLE \"$CROSS_OPENJDK_PATH/bin/java\")";
     #echo "SET(Java_JAVAC_EXECUTABLE \"$CROSS_OPENJDK_PATH/bin/javac\")";
