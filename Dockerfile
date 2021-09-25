@@ -27,12 +27,7 @@ ADD src /usr/src/tdlight-java-natives/src
 
 WORKDIR /usr/src/tdlight-java-natives/
 
-RUN /bin/bash -c "export JAVA_HOME=\"/usr/lib/jvm/$(ls /usr/lib/jvm/ | grep openjdk | head -n 1)/\"; \
-    export JAVA_INCLUDE_PATH=\"$JAVA_HOME/include\"; \
-    source ./scripts/continuous-integration/github-workflows/setup-variables.sh; \
-    sudo apt install -y crossbuild-essential-${CPU_ARCH_DPKG}; \
-    source ./scripts/continuous-integration/github-workflows/install-dependencies.sh; \
-    source ./scripts/continuous-integration/github-workflows/build-natives.sh"
+RUN /bin/bash /usr/src/tdlight-java-natives/scripts/continuous-integration/docker/build-natives.sh
 
 #WORKDIR /usr/src/tdlight-java-natives/generated/
 #RUN echo "aaaa" > test.txt
