@@ -93,7 +93,7 @@ jobs:
           file: ./Dockerfile
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache
-          platforms: ${{ matrix.arch }}
+          platforms: linux/amd64
           push: false
           load: true
           tags: |
