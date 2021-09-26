@@ -80,14 +80,34 @@ jobs:
         if: matrix.usedocker == 'true'
         uses: actions/cache@v2
         with:
-          path: |
-          /tmp/.buildx-cache
-          ~/.cache
-          ~/.ccache
-          ~/tdlight-java-natives/tdlight-java-natives/.cache
+          path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-cache-${{ env.SAFE_ARCH }}-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-buildx-cache-${{ env.SAFE_ARCH }}-
+
+      - name: Cache Maven
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ env.SAFE_ARCH }}-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-${{ env.SAFE_ARCH }}-
+
+      - name: Cache packages cache
+        uses: actions/cache@v2
+        with:
+          path:  ~/tdlight-java-natives/tdlight-java-natives/.cache
+          key: ${{ runner.os }}-maven-${{ env.SAFE_ARCH }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-maven-${{ env.SAFE_ARCH }}-
+
+      - name: Cache ccache
+        uses: actions/cache@v2
+        with:
+          path: ~/.ccache
+          key: ${{ runner.os }}-maven-${{ env.SAFE_ARCH }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-maven-${{ env.SAFE_ARCH }}-
 
       - name: Build image
         if: matrix.usedocker == 'true'
