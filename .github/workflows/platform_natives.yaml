@@ -247,9 +247,6 @@ jobs:
           echo "REVISION: $REVISION"
 
           source ./scripts/continuous-integration/github-workflows/build-natives.sh
-        env:
-          MAVEN_USERNAME: ${{ secrets.MCHV_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.MCHV_TOKEN }}
       - id: getfilename
         shell: bash
         run: echo "::set-output name=file::$(cd generated/target; ls tdli*-natives-*.jar)"
@@ -261,7 +258,6 @@ jobs:
           name: ${{ steps.getfilename.outputs.file }}
           path: ${{ steps.getfilepath.outputs.file }}
       - name: Deploy to Maven (Snapshot)
-        concurrency: deploy
         if: github.ref == 'refs/heads/develop'
         shell: bash
         run: |
@@ -273,7 +269,6 @@ jobs:
           MAVEN_PASSWORD: ${{ secrets.MCHV_TOKEN }}
       - name: Deploy to Maven (Release)
         if: github.ref == 'refs/heads/master'
-        concurrency: deploy
         shell: bash
         run: |
           echo "REVISION: $REVISION"
