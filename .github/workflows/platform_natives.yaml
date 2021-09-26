@@ -80,10 +80,14 @@ jobs:
         if: matrix.usedocker == 'true'
         uses: actions/cache@v2
         with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ env.SAFE_ARCH }}-${{ github.sha }}
+          path: |
+          /tmp/.buildx-cache
+          ~/.cache
+          ~/.ccache
+          ~/tdlight-java-natives/tdlight-java-natives/.cache
+          key: ${{ runner.os }}-buildx-cache-${{ env.SAFE_ARCH }}-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-buildx-${{ env.SAFE_ARCH }}-
+            ${{ runner.os }}-buildx-cache-${{ env.SAFE_ARCH }}-
 
       - name: Build image
         if: matrix.usedocker == 'true'
