@@ -97,17 +97,17 @@ jobs:
         uses: actions/cache@v2
         with:
           path:  ~/tdlight-java-natives/tdlight-java-natives/.cache
-          key: ${{ runner.os }}-maven-${{ env.SAFE_ARCH }}-${{ github.sha }}
+          key: ${{ runner.os }}-packages-${{ env.SAFE_ARCH }}-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-maven-${{ env.SAFE_ARCH }}-
+            ${{ runner.os }}-packages-${{ env.SAFE_ARCH }}-
 
       - name: Cache ccache
         uses: actions/cache@v2
         with:
           path: ~/.ccache
-          key: ${{ runner.os }}-maven-${{ env.SAFE_ARCH }}-${{ github.sha }}
+          key: ${{ runner.os }}-ccache-${{ env.SAFE_ARCH }}-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-maven-${{ env.SAFE_ARCH }}-
+            ${{ runner.os }}-ccache-${{ env.SAFE_ARCH }}-
 
       - name: Build image
         if: matrix.usedocker == 'true'
