@@ -223,8 +223,9 @@ jobs:
           echo "REVISION: $REVISION"
 
           source ./scripts/continuous-integration/github-workflows/build-natives.sh
-
-
+        env:
+          MAVEN_USERNAME: ${{ secrets.MCHV_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.MCHV_TOKEN }}
       - id: getfilename
         shell: bash
         run: echo "::set-output name=file::$(cd generated/target; ls tdli*-natives-*.jar)"
