@@ -21,7 +21,8 @@ jobs:
         - {os: ubuntu-20.04, usedocker: "true", useqemu: "false", arch: "linux/arm64", implementation: "tdlight"}
         - {os: ubuntu-20.04, usedocker: "true", useqemu: "false", arch: "linux/arm64", implementation: "tdlib"}
         - {os: ubuntu-20.04, usedocker: "true", useqemu: "false", arch: "linux/s390x", implementation: "tdlight"}
-        - {os: ubuntu-20.04, usedocker: "true", useqemu: "false", arch: "linux/s390x", implementation: "tdlib"}
+        # Can't build original tdlib for big endian architectures
+        # - {os: ubuntu-20.04, usedocker: "true", useqemu: "false", arch: "linux/s390x", implementation: "tdlib"}
         - {os: ubuntu-20.04, usedocker: "true", useqemu: "false", arch: "linux/ppc64le", implementation: "tdlight"}
         - {os: ubuntu-20.04, usedocker: "true", useqemu: "false", arch: "linux/ppc64le", implementation: "tdlib"}
         - {os: windows-2019, usedocker: "false", useqemu: "false", arch: "amd64", implementation: "tdlight", vcpkgCommitId: "30124253eecff36bc90f73341edbfb4f845e2a1e", triplet: "x64-windows-static"}
