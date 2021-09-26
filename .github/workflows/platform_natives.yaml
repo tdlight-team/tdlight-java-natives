@@ -261,6 +261,7 @@ jobs:
           name: ${{ steps.getfilename.outputs.file }}
           path: ${{ steps.getfilepath.outputs.file }}
       - name: Deploy to Maven (Snapshot)
+        concurrency: deploy
         if: github.ref == 'refs/heads/develop'
         shell: bash
         run: |
@@ -272,6 +273,7 @@ jobs:
           MAVEN_PASSWORD: ${{ secrets.MCHV_TOKEN }}
       - name: Deploy to Maven (Release)
         if: github.ref == 'refs/heads/master'
+        concurrency: deploy
         shell: bash
         run: |
           echo "REVISION: $REVISION"
