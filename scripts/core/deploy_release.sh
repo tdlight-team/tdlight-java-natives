@@ -12,7 +12,7 @@ source ./setup-variables.sh
 
 cd ../../generated
 
-mvn -B -q -Drevision=${REVISION} clean deploy
+mvn -B -Drevision=${REVISION} clean deploy
 
 echo "Done."
 exit 0

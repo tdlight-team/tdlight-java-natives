@@ -1,7 +1,7 @@
 #!/bin/bash -e
 cd ../../generated
 
-mvn -B -q deploy
+mvn -B deploy
 
 echo "Done."
 exit 0
