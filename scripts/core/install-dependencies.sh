@@ -128,22 +128,22 @@ if [[ "$OPERATING_SYSTEM_NAME" == "linux" ]]; then
   cd "$ROOT_DIR"
   {
     echo "set(CMAKE_SYSTEM_PROCESSOR ${CPU_ARCH_LINUX})";
-    echo "set(CMAKE_C_COMPILER ${CPU_ARCH_CMAKE}-linux-${CPU_COMPILATION_TOOL}-gcc)";
+    echo "set(CMAKE_C_COMPILER ${CROSS_CC})";
     echo "set(CMAKE_C_COMPILER_TARGET ${CLANG_TRIPLE})";
-    echo "set(CMAKE_CXX_COMPILER ${CPU_ARCH_CMAKE}-linux-${CPU_COMPILATION_TOOL}-g++)";
+    echo "set(CMAKE_CXX_COMPILER ${CROSS_CXX})";
     echo "set(CMAKE_CXX_COMPILER_TARGET ${CLANG_TRIPLE})";
-    echo "set(CMAKE_ASM_COMPILER ${CPU_ARCH_CMAKE}-linux-${CPU_COMPILATION_TOOL}-g++)";
+    echo "set(CMAKE_ASM_COMPILER ${CROSS_CXX})";
     echo "set(CMAKE_ASM_COMPILER_TARGET ${CLANG_TRIPLE})";
     echo "set(CMAKE_LIBRARY_PATH \"$CROSS_BUILD_DEPS_DIR/\")";
     echo "include_directories(\"${CROSS_BUILD_DEPS_DIR}/usr/include/${CPU_ARCH_LINUX}-linux-${CPU_COMPILATION_TOOL}/\")";
-    echo "SET(CMAKE_FIND_ROOT_PATH \"$CROSS_BUILD_DEPS_DIR\" \"$JAVA_HOME\" \"/\" \"/usr/lib/jvm/java-11-openjdk-amd64/include\")";
+    echo "SET(CMAKE_FIND_ROOT_PATH \"$CROSS_BUILD_DEPS_DIR\" \"$JAVA_HOME\" \"/\" \"$JAVA_HOME/include\")";
     echo "include_directories(\"${CROSS_OPENJDK_PATH}/include\")";
     echo "include_directories(\"${CROSS_OPENJDK_PATH}/include/linux\")";
 
-    echo "SET(JAVA_HOME \"/usr/lib/jvm/java-11-openjdk-amd64/\")";
-    echo "SET(JAVA_INCLUDE_PATH \"/usr/lib/jvm/java-11-openjdk-amd64/include\")";
-    echo "SET(JAVA_AWT_INCLUDE_PATH \"/usr/lib/jvm/java-11-openjdk-amd64/include\")";
-    echo "SET(JAVA_INCLUDE_PATH2 \"/usr/lib/jvm/java-11-openjdk-amd64/include/linux\")";
+    echo "SET(JAVA_HOME \"$JAVA_HOME/\")";
+    echo "SET(JAVA_INCLUDE_PATH \"$JAVA_HOME/include\")";
+    echo "SET(JAVA_AWT_INCLUDE_PATH \"$JAVA_HOME/include\")";
+    echo "SET(JAVA_INCLUDE_PATH2 \"$JAVA_HOME/include/linux\")";
     #echo "SET(JAVA_JVM_LIBRARY \"/usr/lib/jvm/java-11-openjdk-amd64/jre/lib/amd64/${JAVA_INSTALLATION_TYPE}/libjvm.so\")";
     #echo "SET(JAVA_AWT_LIBRARY \"/usr/lib/jvm/java-11-openjdk-amd64/jre/lib/amd64/libawt.so\")";
 
