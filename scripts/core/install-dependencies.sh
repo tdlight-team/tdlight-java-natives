@@ -144,22 +144,9 @@ if [[ "$OPERATING_SYSTEM_NAME" == "linux" ]]; then
     echo "SET(JAVA_INCLUDE_PATH \"$JAVA_HOME/include\")";
     echo "SET(JAVA_AWT_INCLUDE_PATH \"$JAVA_HOME/include\")";
     echo "SET(JAVA_INCLUDE_PATH2 \"$JAVA_HOME/include/linux\")";
-    #echo "SET(JAVA_JVM_LIBRARY \"/usr/lib/jvm/java-11-openjdk-amd64/jre/lib/amd64/${JAVA_INSTALLATION_TYPE}/libjvm.so\")";
-    #echo "SET(JAVA_AWT_LIBRARY \"/usr/lib/jvm/java-11-openjdk-amd64/jre/lib/amd64/libawt.so\")";
 
-    #echo "SET(JAVA_HOME \"$CROSS_OPENJDK_PATH\")";
-    #echo "SET(JAVA_INCLUDE_PATH \"$CROSS_OPENJDK_PATH/include\")";
-    #echo "SET(JAVA_INCLUDE_PATH2 \"$CROSS_OPENJDK_PATH/include/linux\")";
     echo "SET(JAVA_JVM_LIBRARY \"$CROSS_OPENJDK_PATH/lib/${JAVA_INSTALLATION_TYPE}/libjvm.so\")";
     echo "SET(JAVA_AWT_LIBRARY \"$CROSS_OPENJDK_PATH/lib/libawt.so\")";
-    #echo "SET(JNI_INCLUDE_DIRS \"$CROSS_OPENJDK_PATH/include\" \"$CROSS_OPENJDK_PATH/include/linux\")";
-    #echo "SET(Java_JAR_EXECUTABLE \"$CROSS_OPENJDK_PATH/bin/java\")";
-    #echo "SET(Java_JAVAC_EXECUTABLE \"$CROSS_OPENJDK_PATH/bin/javac\")";
-    #echo "SET(Java_JAVADOC_EXECUTABLE \"$CROSS_OPENJDK_PATH/bin/javadoc\")";
-    #echo "SET(JNI_LIBRARIES \"$CROSS_OPENJDK_PATH/jre/lib/${CPU_ARCH_JAVA_INTERNAL}/${JAVA_INSTALLATION_TYPE}/libjvm.so\" \"$CROSS_OPENJDK_PATH/jre/lib/${CPU_ARCH_JAVA_INTERNAL}/libawt.so\")";
-    #echo "SET(JNI_FOUND True)";
-    #echo "MESSAGE(STATUS \"JNI INCLUDE DIRS: \${JNI_INCLUDE_DIRS}\")";
-    #echo "MESSAGE(STATUS \"JNI LIBS: \${JNI_LIBRARIES}\")";
     cat <<EOF
 SET(CMAKE_SYSTEM_NAME Linux)
 
