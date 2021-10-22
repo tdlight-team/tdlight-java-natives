@@ -2,12 +2,14 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>it.tdlight</groupId>
 	<artifactId>${IMPLEMENTATION_NAME}-natives-${OPERATING_SYSTEM_NAME}-${CPU_ARCHITECTURE_NAME}</artifactId>
-	<version>3.3.${revision}</version>
+  <!-- Don't change the version! (or change it also in <shadedPattern>) -->
+	<version>4.0.${revisionNumber}${revisionSuffix}</version>
 	<name>${IMPLEMENTATION_NAME} natives for ${OPERATING_SYSTEM_NAME} (${CPU_ARCHITECTURE_NAME})</name>
 	<packaging>jar</packaging>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<revision>0-SNAPSHOT</revision>
+    <revisionNumber>0</revisionNumber>
+    <revisionSuffix>-SNAPSHOT</revisionSuffix>
 	</properties>
 	<distributionManagement>
 		<repository>
@@ -42,8 +44,8 @@
 				<version>3.8.1</version>
 				<configuration>
 					<encoding>UTF-8</encoding>
-					<source>1.8</source>
-					<target>1.8</target>
+					<source>8</source>
+					<target>8</target>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -96,8 +98,8 @@
 						<configuration>
 							<relocations>
 								<relocation>
-									<pattern>it.tdlight.jni.implementation_name.operating_system_name.cpu_architecture_name</pattern>
-									<shadedPattern>it.tdlight.jni.${IMPLEMENTATION_NAME}.${OPERATING_SYSTEM_NAME_SHORT}.${CPU_ARCHITECTURE_NAME}</shadedPattern>
+									<pattern>it.tdlight.jni.implementation_name.operating_system_name.cpu_architecture_name.version</pattern>
+									<shadedPattern>it.tdlight.jni.${IMPLEMENTATION_NAME}.${OPERATING_SYSTEM_NAME_SHORT}.${CPU_ARCHITECTURE_NAME}.v_4_0_${revisionNumber}</shadedPattern>
 								</relocation>
 							</relocations>
 						</configuration>

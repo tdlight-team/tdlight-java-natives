@@ -2,12 +2,13 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>it.tdlight</groupId>
 	<artifactId>${IMPLEMENTATION_NAME}-api</artifactId>
-	<version>3.3.${revision}</version>
+  <version>4.0.${revisionNumber}${revisionSuffix}</version>
 	<name>${IMPLEMENTATION_NAME} API</name>
 	<packaging>jar</packaging>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<revision>0-SNAPSHOT</revision>
+    <revisionNumber>0</revisionNumber>
+    <revisionSuffix>-SNAPSHOT</revisionSuffix>
 	</properties>
 	<distributionManagement>
 		<repository>
@@ -55,7 +56,7 @@
 				<configuration>
 					<additionalOptions>-html5</additionalOptions>
 					<additionalOptions>-public</additionalOptions>
-					<release>13</release>
+					<release>17</release>
 					<quiet>true</quiet>
 					<notimestamp>true</notimestamp>
 				</configuration>
