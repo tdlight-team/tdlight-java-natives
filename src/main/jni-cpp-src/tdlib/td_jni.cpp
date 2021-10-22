@@ -51,10 +51,10 @@ static jint Client_nativeClientReceive(JNIEnv *env, jclass clazz, jintArray clie
   auto *manager = get_manager();
   auto response = manager->receive(timeout);
   while (response.object) {
-    jint client_id = static_cast<jint>(response.client_id);
+    auto client_id = static_cast<jint>(response.client_id);
     env->SetIntArrayRegion(client_ids, result_size, 1, &client_id);
 
-    jlong request_id = static_cast<jlong>(response.request_id);
+    auto request_id = static_cast<jlong>(response.request_id);
     env->SetLongArrayRegion(ids, result_size, 1, &request_id);
 
     jobject object;
@@ -78,18 +78,6 @@ static jobject Client_nativeClientExecute(JNIEnv *env, jclass clazz, jobject fun
   return result;
 }
 
-static void Log_setVerbosityLevel(JNIEnv *env, jclass clazz, jint new_log_verbosity_level) {
-  td::Log::set_verbosity_level(static_cast<int>(new_log_verbosity_level));
-}
-
-static jboolean Log_setFilePath(JNIEnv *env, jclass clazz, jstring file_path) {
-  return td::Log::set_file_path(td::jni::from_jstring(env, file_path)) ? JNI_TRUE : JNI_FALSE;
-}
-
-static void Log_setMaxFileSize(JNIEnv *env, jclass clazz, jlong max_file_size) {
-  td::Log::set_max_file_size(max_file_size);
-}
-
 static jstring Object_toString(JNIEnv *env, jobject object) {
   return td::jni::to_jstring(env, to_string(td::td_api::Object::fetch(env, object)));
 }
@@ -107,8 +95,11 @@ static void on_log_message(int verbosity_level, const char *error_message) {
     return;
   }
   auto env = td::jni::get_jni_env(java_vm, JAVA_VERSION);
+  if (env == nullptr) {
+    return;
+  }
   jmethodID on_fatal_error_method = env->GetStaticMethodID(log_class, "onFatalError", "(Ljava/lang/String;)V");
-  if (env && on_fatal_error_method) {
+  if (on_fatal_error_method) {
     jstring error_str = td::jni::to_jstring(env.get(), error_message);
     env->CallStaticVoidMethod(log_class, on_fatal_error_method, error_str);
     if (error_str) {
@@ -141,10 +132,6 @@ static jint register_native(JavaVM *vm) {
   register_method(client_class, "nativeClientSend", "(IJ" TD_FUNCTION ")V", Client_nativeClientSend);
   register_method(client_class, "nativeClientReceive", "([I[J[" TD_OBJECT "D)I", Client_nativeClientReceive);
   register_method(client_class, "nativeClientExecute", "(" TD_FUNCTION ")" TD_OBJECT, Client_nativeClientExecute);
-
-  register_method(log_class, "setVerbosityLevel", "(I)V", Log_setVerbosityLevel);
-  register_method(log_class, "setFilePath", "(Ljava/lang/String;)Z", Log_setFilePath);
-  register_method(log_class, "setMaxFileSize", "(J)V", Log_setMaxFileSize);
 
   register_method(object_class, "toString", "()Ljava/lang/String;", Object_toString);
 
