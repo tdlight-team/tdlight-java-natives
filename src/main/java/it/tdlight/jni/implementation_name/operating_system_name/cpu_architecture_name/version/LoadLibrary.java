@@ -7,7 +7,7 @@ import java.io.File;
 public class LoadLibrary {
 	public static InputStream getLibraryAsStream() {
 		return LoadLibrary.class.getResourceAsStream("/libs/" + getOsName() + "/" + getArchName() + "/"
-				+ getFileName() + "/" + getVersionName() + getExtension());
+				+ getFileName() + getExtension());
 	}
 
 	private static String getOsName() {
