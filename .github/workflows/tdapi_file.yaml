@@ -27,22 +27,6 @@ jobs:
       - uses: actions/checkout@v2
         with:
           submodules: "recursive"
-# Caching causes strange behaviours. Disabled.
-#      - name: Setup ccache variables
-#        shell: bash
-#        run: |
-#          ARCH=${{ matrix.arch }}
-#          SAFE_ARCH=$(echo $ARCH | sed 's/\//\-/g')
-#          echo "CCACHE_SAFE_ARCH=$SAFE_ARCH" >> $GITHUB_ENV
-#      - name: Cache ccache
-#        if: runner.os == 'Linux'
-#        id: cache-ccache
-#        uses: actions/cache@v2
-#        with:
-#          path: ~/.ccache
-#          key: ${{ runner.os }}-${{ env.CCACHE_SAFE_ARCH }}-ccache-all
-#          restore-keys: |
-#            ${{ runner.os }}-${{ env.CCACHE_SAFE_ARCH }}-ccache-
       - name: Setup Java (Snapshot)
         if: github.ref != 'refs/heads/master'
         uses: actions/setup-java@v1
