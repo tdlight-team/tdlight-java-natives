@@ -2,7 +2,7 @@
 cd ../../generated
 
 [ -f ./src/main/java/it/tdlight/jni/TdApi.java ] && rm ./src/main/java/it/tdlight/jni/TdApi.java
-mvn -B -q clean package
+mvn -B clean install
 
 echo "Done."
 exit 0
