@@ -54,10 +54,12 @@ echo "Deleting old data..."
 [ -d ./generated/tdjni_build/ ] && rm -r ./generated/tdjni_build/
 [ -d ./generated/tdjni_bin/ ] && rm -r ./generated/tdjni_bin/
 [ -d ./generated/tdjni_docs/ ] && rm -r ./generated/tdjni_docs/
+[ -f ./generated/src/main/java17/${JAVA_API_PACKAGE_PATH}/TdApi.java ] && rm ./generated/src/main/java17/${JAVA_API_PACKAGE_PATH}/TdApi.java
 [ -f ./generated/src/main/java/${JAVA_API_PACKAGE_PATH}/TdApi.java ] && rm ./generated/src/main/java/${JAVA_API_PACKAGE_PATH}/TdApi.java
 
 # Create missing folders
 echo "Creating missing folders..."
+[ -d "./generated/src/main/java17/${JAVA_API_PACKAGE_PATH}/" ] || mkdir -p "./generated/src/main/java17/${JAVA_API_PACKAGE_PATH}/"
 [ -d "./generated/src/main/java/${JAVA_API_PACKAGE_PATH}/" ] || mkdir -p "./generated/src/main/java/${JAVA_API_PACKAGE_PATH}/"
 [ -d "./generated/src/main/java/${JAVA_LIB_PACKAGE_PATH}/" ] || mkdir -p "./generated/src/main/java/${JAVA_LIB_PACKAGE_PATH}/"
 [ -d ./generated/tdjni_build/ ] || mkdir ./generated/tdjni_build/
@@ -83,18 +85,32 @@ echo "Telegram source path: '$(realpath -m ./implementation/)'"
 echo "Generating TdApi.java..."
 ./td_tools/td/generate/td_generate_java_api TdApi "./implementation/td/generate/scheme/td_api.tlo" "./src/main/java" "$JAVA_API_PACKAGE_PATH"
 php ./implementation/td/generate/JavadocTlDocumentationGenerator.php "./implementation/td/generate/scheme/td_api.tl" "./src/main/java/${JAVA_API_PACKAGE_PATH}/TdApi.java"
+mv "./src/main/java/${JAVA_API_PACKAGE_PATH}/TdApi.java" "./src/main/java/${JAVA_API_PACKAGE_PATH}/php_TdApi.java"
 
-echo "Patching TdApi.java..."
-${PYTHON_EXECUTABLE} ../scripts/core/tdlib-serializer "$(realpath -m  ./src/main/java/${JAVA_API_PACKAGE_PATH}/TdApi.java)" "$(realpath -m ./src/main/java/${JAVA_API_PACKAGE_PATH}/new_TdApi.java)" "$(realpath -m ../scripts/core/tdlib-serializer/headers.txt)"
-rm ./src/main/java/${JAVA_API_PACKAGE_PATH}/TdApi.java
+echo "Patching TdApi.java for Java 17..."
+${PYTHON_EXECUTABLE} ../scripts/core/tdlib-serializer "$(realpath -m  ./src/main/java/${JAVA_API_PACKAGE_PATH}/php_TdApi.java)" "$(realpath -m ./src/main/java17/${JAVA_API_PACKAGE_PATH}/unexpanded_TdApi.java)" "$(realpath -m ../scripts/core/tdlib-serializer/headers.txt)" true
 if [[ "$OPERATING_SYSTEM_NAME" == "osx" ]]; then
-	unexpand --tabs=2 ./src/main/java/${JAVA_API_PACKAGE_PATH}/new_TdApi.java > ./src/main/java/${JAVA_API_PACKAGE_PATH}/TdApi.java
+	unexpand --tabs=2 ./src/main/java17/${JAVA_API_PACKAGE_PATH}/unexpanded_TdApi.java > ./src/main/java17/${JAVA_API_PACKAGE_PATH}/TdApi.java
 else
-	unexpand -t 2 ./src/main/java/${JAVA_API_PACKAGE_PATH}/new_TdApi.java > ./src/main/java/${JAVA_API_PACKAGE_PATH}/TdApi.java
+	unexpand -t 2 ./src/main/java17/${JAVA_API_PACKAGE_PATH}/unexpanded_TdApi.java > ./src/main/java17/${JAVA_API_PACKAGE_PATH}/TdApi.java
 fi
-rm ./src/main/java/${JAVA_API_PACKAGE_PATH}/new_TdApi.java
+rm ./src/main/java17/${JAVA_API_PACKAGE_PATH}/unexpanded_TdApi.java
 
-echo "Generated '$(realpath -m ./src/main/java/${JAVA_API_PACKAGE_PATH}/TdApi.java)'"
+echo "Generated '$(realpath -m ./src/main/java17/${JAVA_API_PACKAGE_PATH}/TdApi.java)'"
+
+echo "Patching TdApi.java for Java 8..."
+${PYTHON_EXECUTABLE} ../scripts/core/tdlib-serializer "$(realpath -m  ./src/main/java/${JAVA_API_PACKAGE_PATH}/php_TdApi.java)" "$(realpath -m ./src/main/java/${JAVA_API_PACKAGE_PATH}/unexpanded_TdApi.java)" "$(realpath -m ../scripts/core/tdlib-serializer/headers.txt)" false
+if [[ "$OPERATING_SYSTEM_NAME" == "osx" ]]; then
+	unexpand --tabs=2 ./src/main/java/${JAVA_API_PACKAGE_PATH}/unexpanded_TdApi.java > ./src/main/java/${JAVA_API_PACKAGE_PATH}/TdApi.java
+else
+	unexpand -t 2 ./src/main/java/${JAVA_API_PACKAGE_PATH}/unexpanded_TdApi.java > ./src/main/java/${JAVA_API_PACKAGE_PATH}/TdApi.java
+fi
+rm ./src/main/java/${JAVA_API_PACKAGE_PATH}/unexpanded_TdApi.java
+
+echo "Generated '$(realpath -m ./src/main/java17/${JAVA_API_PACKAGE_PATH}/TdApi.java)'"
+
+
+rm ./src/main/java/${JAVA_API_PACKAGE_PATH}/php_TdApi.java
 
 echo "Done."
 exit 0

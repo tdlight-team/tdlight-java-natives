@@ -134,6 +134,20 @@
 							<release>9</release>
 						</configuration>
 					</execution>
+					<!-- compile sources with Java 17 -->
+					<execution>
+						<id>java-17-module-compile</id>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+						<configuration>
+							<release>17</release>
+							<compileSourceRoots>
+								<compileSourceRoot>${project.basedir}/src/main/java17</compileSourceRoot>
+							</compileSourceRoots>
+							<multiReleaseOutput>true</multiReleaseOutput>
+						</configuration>
+					</execution>
 					<!-- compile sources with Java 9 to generate and validate module-info.java -->
 					<execution>
 						<id>java-9-module-compile</id>
