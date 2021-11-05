@@ -53,19 +53,18 @@
 			<plugin>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>3.2.0</version>
-				<configuration>
-					<additionalOptions>-html5</additionalOptions>
-					<additionalOptions>-public</additionalOptions>
-					<release>17</release>
-					<quiet>true</quiet>
-					<notimestamp>true</notimestamp>
-				</configuration>
 				<executions>
 					<execution>
-						<id>attach-javadocs</id>
+						<id>main-javadoc</id>
+						<phase>package</phase>
 						<goals>
 							<goal>jar</goal>
 						</goals>
+						<configuration>
+							<release>17</release>
+							<quiet>true</quiet>
+							<notimestamp>true</notimestamp>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
