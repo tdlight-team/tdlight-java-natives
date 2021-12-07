@@ -43,7 +43,7 @@ echo "Creating missing folders..."
 
 # Generate pom.xml
 echo "Generating pom.xml..."
-sed -f "src/main/replacements/replace-${OPERATING_SYSTEM_NAME}-${CPU_ARCHITECTURE_NAME}-${IMPLEMENTATION_NAME}.sed" src/main/jni-project-src/pom.template.xml > generated/pom.xml
+sed -f "src/main/replacements/replace-${OPERATING_SYSTEM_NAME}-${CPU_ARCHITECTURE_NAME}-${IMPLEMENTATION_NAME}-sealed.sed" src/main/jni-project-src/pom.template.xml > generated/pom.xml
 
 # Copy source files
 echo "Copying source files..."

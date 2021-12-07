@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>it.tdlight</groupId>
-	<artifactId>${IMPLEMENTATION_NAME}-api</artifactId>
+	<artifactId>${IMPLEMENTATION_NAME}-api-${API_TYPE}</artifactId>
   <version>4.0.${revisionNumber}${revisionSuffix}</version>
 	<name>${IMPLEMENTATION_NAME} API</name>
 	<packaging>jar</packaging>
@@ -10,6 +10,124 @@
     <revisionNumber>0</revisionNumber>
     <revisionSuffix>-SNAPSHOT</revisionSuffix>
 	</properties>
+	<profiles>
+		<profile>
+			<id>legacy</id>
+			<activation>
+				<property>
+					<name>!sealed</name>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<!-- ensure the project is compiling with JDK 9+ -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-enforcer-plugin</artifactId>
+						<version>3.0.0-M3</version>
+						<executions>
+							<execution>
+								<id>enforce-jdk9</id>
+								<goals>
+									<goal>enforce</goal>
+								</goals>
+								<configuration>
+									<rules>
+										<requireJavaVersion>
+											<version>[1.9,)</version>
+											<message>JDK 9+ is required for compilation</message>
+										</requireJavaVersion>
+									</rules>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<!-- compile sources -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-compiler-plugin</artifactId>
+						<version>3.8.1</version>
+						<configuration>
+							<encoding>UTF-8</encoding>
+						</configuration>
+						<executions>
+							<!-- disable default phase due to fixed id and position in lifecycle -->
+							<execution>
+								<id>default-compile</id>
+								<phase>none</phase>
+								<!-- specify source/target for IDE integration -->
+								<configuration>
+									<release>9</release>
+								</configuration>
+							</execution>
+							<!-- compile sources with Java 9 to generate and validate module-info.java -->
+							<execution>
+								<id>java-9-module-compile</id>
+								<goals>
+									<goal>compile</goal>
+								</goals>
+								<configuration>
+									<release>9</release>
+								</configuration>
+							</execution>
+							<!-- recompile sources as Java 8 to overwrite Java 9 class files, except module-info.java -->
+							<execution>
+								<id>java-8-compile</id>
+								<goals>
+									<goal>compile</goal>
+								</goals>
+								<configuration>
+									<!-- specify JDK 9+ release flag to ensure no classes/methods later than Java 8 are used accidentally -->
+									<release>8</release>
+									<!-- exclude module-info.java from the compilation, as it is unsupported by Java 8 -->
+									<excludes>
+										<exclude>module-info.java</exclude>
+									</excludes>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<artifactId>maven-jar-plugin</artifactId>
+						<version>3.2.0</version>
+						<configuration>
+							<archive>
+								<manifestEntries>
+									<Multi-Release>true</Multi-Release>
+								</manifestEntries>
+							</archive>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>sealed</id>
+			<activation>
+				<property>
+					<name>sealed</name>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<!-- compile sources -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-compiler-plugin</artifactId>
+						<version>3.8.1</version>
+						<configuration>
+							<encoding>UTF-8</encoding>
+							<release>17</release>
+						</configuration>
+					</plugin>
+					<plugin>
+						<artifactId>maven-jar-plugin</artifactId>
+						<version>3.2.0</version>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 	<distributionManagement>
 		<repository>
 			<id>mchv-release-distribution</id>
@@ -92,98 +210,6 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
-			<!-- ensure the project is compiling with JDK 9+ -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-enforcer-plugin</artifactId>
-				<version>3.0.0-M3</version>
-				<executions>
-					<execution>
-						<id>enforce-jdk9</id>
-						<goals>
-							<goal>enforce</goal>
-						</goals>
-						<configuration>
-							<rules>
-								<requireJavaVersion>
-									<version>[1.9,)</version>
-									<message>JDK 9+ is required for compilation</message>
-								</requireJavaVersion>
-							</rules>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<!-- compile sources -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.1</version>
-				<configuration>
-					<encoding>UTF-8</encoding>
-				</configuration>
-				<executions>
-					<!-- disable default phase due to fixed id and position in lifecycle -->
-					<execution>
-						<id>default-compile</id>
-						<phase>none</phase>
-						<!-- specify source/target for IDE integration -->
-						<configuration>
-							<release>9</release>
-						</configuration>
-					</execution>
-					<!-- compile sources with Java 17 -->
-					<execution>
-						<id>java-17-module-compile</id>
-						<goals>
-							<goal>compile</goal>
-						</goals>
-						<configuration>
-							<release>17</release>
-							<compileSourceRoots>
-								<compileSourceRoot>${project.basedir}/src/main/java17</compileSourceRoot>
-							</compileSourceRoots>
-							<multiReleaseOutput>true</multiReleaseOutput>
-						</configuration>
-					</execution>
-					<!-- compile sources with Java 9 to generate and validate module-info.java -->
-					<execution>
-						<id>java-9-module-compile</id>
-						<goals>
-							<goal>compile</goal>
-						</goals>
-						<configuration>
-							<release>9</release>
-						</configuration>
-					</execution>
-					<!-- recompile sources as Java 8 to overwrite Java 9 class files, except module-info.java -->
-					<execution>
-						<id>java-8-compile</id>
-						<goals>
-							<goal>compile</goal>
-						</goals>
-						<configuration>
-							<!-- specify JDK 9+ release flag to ensure no classes/methods later than Java 8 are used accidentally -->
-							<release>8</release>
-							<!-- exclude module-info.java from the compilation, as it is unsupported by Java 8 -->
-							<excludes>
-								<exclude>module-info.java</exclude>
-							</excludes>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.2.0</version>
-				<configuration>
-					<archive>
-						<manifestEntries>
-							<Multi-Release>true</Multi-Release>
-						</manifestEntries>
-					</archive>
-				</configuration>
 			</plugin>
 			<plugin>
 				<artifactId>maven-install-plugin</artifactId>
