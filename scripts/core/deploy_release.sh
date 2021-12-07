@@ -13,7 +13,11 @@ fi
 source ./setup-variables.sh
 FALLBACK_API_TYPE="sealed"
 
-cd ../../generated
+if [ -z "${API_TYPE}" ]; then
+	cd ../../generated
+else
+	cd "../../generated-${API_TYPE}"
+fi
 
 mvn -B -DrevisionNumber="${REVISION}" "-D${API_TYPE:-${FALLBACK_API_TYPE}}" -DrevisionSuffix="" clean deploy
 

@@ -43,6 +43,10 @@ echo "Deleting old data..."
 [ -d ./generated/implementation/ ] && rm -r ./generated/implementation/
 [ -d ./generated/td_tools/ ] && rm -r ./generated/td_tools/
 
+# Create missing folders
+echo "Creating missing folders..."
+[ -d "./generated" ] || mkdir "./generated"
+
 # Copy implementation files
 echo "Copying implementation files..."
 cp -r implementations/${IMPLEMENTATION_NAME} ./generated/implementation

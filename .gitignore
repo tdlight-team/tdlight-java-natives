@@ -52,6 +52,8 @@ buildNumber.properties
 .mvn/wrapper/maven-wrapper.jar
 
 /generated/
+/generated-sealed/
+/generated-legacy/
 /vcpkg/
 linux-build.sh
 linux-deploy-release.sh

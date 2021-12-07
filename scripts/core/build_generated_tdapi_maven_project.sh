@@ -13,7 +13,7 @@ echo "Building TdApi package..."
 echo "Current directory: $(pwd)"
 echo "API type: ${API_TYPE}"
 
-cd ../../generated
+cd ../../generated-"$API_TYPE"
 
 mvn -B "-D${API_TYPE}" clean install
 

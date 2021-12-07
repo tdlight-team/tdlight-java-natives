@@ -2,7 +2,11 @@
 # OTHER ENVIRONMENT VARIABLES:
 #   API_TYPE = <legacy|sealed>
 
-cd ../../generated
+if [ -z "${API_TYPE}" ]; then
+	cd ../../generated
+else
+	cd "../../generated-${API_TYPE}"
+fi
 
 FALLBACK_API_TYPE="sealed"
 

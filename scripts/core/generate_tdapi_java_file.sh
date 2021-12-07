@@ -67,19 +67,19 @@ fi
 
 # Delete old data
 echo "Deleting old data..."
-[ -d ./generated/tdjni_build/ ] && rm -r ./generated/tdjni_build/
-[ -d ./generated/tdjni_bin/ ] && rm -r ./generated/tdjni_bin/
-[ -d ./generated/tdjni_docs/ ] && rm -r ./generated/tdjni_docs/
-[ -f ./generated/src/main/java17/${JAVA_API_PACKAGE_PATH}/TdApi.java ] && rm ./generated/src/main/java17/${JAVA_API_PACKAGE_PATH}/TdApi.java
-[ -f ./generated/src/main/java/${JAVA_API_PACKAGE_PATH}/TdApi.java ] && rm ./generated/src/main/java/${JAVA_API_PACKAGE_PATH}/TdApi.java
+[ -d ./generated-"$API_TYPE"/tdjni_build/ ] && rm -r ./generated-"$API_TYPE"/tdjni_build/
+[ -d ./generated-"$API_TYPE"/tdjni_bin/ ] && rm -r ./generated-"$API_TYPE"/tdjni_bin/
+[ -d ./generated-"$API_TYPE"/tdjni_docs/ ] && rm -r ./generated-"$API_TYPE"/tdjni_docs/
+[ -f ./generated-"$API_TYPE"/src/main/java17/${JAVA_API_PACKAGE_PATH}/TdApi.java ] && rm ./generated-"$API_TYPE"/src/main/java17/${JAVA_API_PACKAGE_PATH}/TdApi.java
+[ -f ./generated-"$API_TYPE"/src/main/java/${JAVA_API_PACKAGE_PATH}/TdApi.java ] && rm ./generated-"$API_TYPE"/src/main/java/${JAVA_API_PACKAGE_PATH}/TdApi.java
 
 # Create missing folders
 echo "Creating missing folders..."
-[ -d "./generated/src/main/java/${JAVA_API_PACKAGE_PATH}/" ] || mkdir -p "./generated/src/main/java/${JAVA_API_PACKAGE_PATH}/"
-[ -d "./generated/src/main/java/${JAVA_LIB_PACKAGE_PATH}/" ] || mkdir -p "./generated/src/main/java/${JAVA_LIB_PACKAGE_PATH}/"
-[ -d ./generated/tdjni_build/ ] || mkdir ./generated/tdjni_build/
-[ -d ./generated/tdjni_bin/ ] || mkdir ./generated/tdjni_bin/
-[ -d ./generated/tdjni_docs/ ] || mkdir ./generated/tdjni_docs/
+[ -d "./generated-$API_TYPE/src/main/java/${JAVA_API_PACKAGE_PATH}/" ] || mkdir -p "./generated-$API_TYPE/src/main/java/${JAVA_API_PACKAGE_PATH}/"
+[ -d "./generated-$API_TYPE/src/main/java/${JAVA_LIB_PACKAGE_PATH}/" ] || mkdir -p "./generated-$API_TYPE/src/main/java/${JAVA_LIB_PACKAGE_PATH}/"
+[ -d ./generated-"$API_TYPE"/tdjni_build/ ] || mkdir ./generated-"$API_TYPE"/tdjni_build/
+[ -d ./generated-"$API_TYPE"/tdjni_bin/ ] || mkdir ./generated-"$API_TYPE"/tdjni_bin/
+[ -d ./generated-"$API_TYPE"/tdjni_docs/ ] || mkdir ./generated-"$API_TYPE"/tdjni_docs/
 
 # Copy executables
 echo "Copying executables..."
@@ -98,23 +98,23 @@ echo "Telegram source path: '$(realpath -m ./implementation/)'"
 
 # Run cmake to generate TdApi.java
 echo "Generating TdApi.java..."
-./td_tools/td/generate/td_generate_java_api TdApi "./implementation/td/generate/scheme/td_api.tlo" "./src/main/java" "$JAVA_API_PACKAGE_PATH"
-php ./implementation/td/generate/JavadocTlDocumentationGenerator.php "./implementation/td/generate/scheme/td_api.tl" "./src/main/java/${JAVA_API_PACKAGE_PATH}/TdApi.java"
-mv "./src/main/java/${JAVA_API_PACKAGE_PATH}/TdApi.java" "./src/main/java/${JAVA_API_PACKAGE_PATH}/php_TdApi.java"
+./td_tools/td/generate/td_generate_java_api TdApi "./implementation/td/generate/scheme/td_api.tlo" "../generated-$API_TYPE/src/main/java" "$JAVA_API_PACKAGE_PATH"
+php ./implementation/td/generate/JavadocTlDocumentationGenerator.php "./implementation/td/generate/scheme/td_api.tl" "../generated-$API_TYPE/src/main/java/${JAVA_API_PACKAGE_PATH}/TdApi.java"
+mv "../generated-$API_TYPE/src/main/java/${JAVA_API_PACKAGE_PATH}/TdApi.java" "../generated-$API_TYPE/src/main/java/${JAVA_API_PACKAGE_PATH}/php_TdApi.java"
 
 echo "Patching TdApi.java for Java ${MIN_JDK_VERSION}..."
-${PYTHON_EXECUTABLE} ../scripts/core/tdlib-serializer "$(realpath -m  ./src/main/java/${JAVA_API_PACKAGE_PATH}/php_TdApi.java)" "$(realpath -m ./src/main/java/${JAVA_API_PACKAGE_PATH}/unexpanded_TdApi.java)" "$(realpath -m ../scripts/core/tdlib-serializer/headers.txt)" "$SEALED"
+${PYTHON_EXECUTABLE} ../scripts/core/tdlib-serializer "$(realpath -m  ../generated-"$API_TYPE"/src/main/java/${JAVA_API_PACKAGE_PATH}/php_TdApi.java)" "$(realpath -m ../generated-"$API_TYPE"/src/main/java/${JAVA_API_PACKAGE_PATH}/unexpanded_TdApi.java)" "$(realpath -m ../scripts/core/tdlib-serializer/headers.txt)" "$SEALED"
 if [[ "$OPERATING_SYSTEM_NAME" == "osx" ]]; then
-	unexpand --tabs=2 ./src/main/java/${JAVA_API_PACKAGE_PATH}/unexpanded_TdApi.java > ./src/main/java/${JAVA_API_PACKAGE_PATH}/TdApi.java
+	unexpand --tabs=2 ../generated-"$API_TYPE"/src/main/java/${JAVA_API_PACKAGE_PATH}/unexpanded_TdApi.java > ../generated-"$API_TYPE"/src/main/java/${JAVA_API_PACKAGE_PATH}/TdApi.java
 else
-	unexpand -t 2 ./src/main/java/${JAVA_API_PACKAGE_PATH}/unexpanded_TdApi.java > ./src/main/java/${JAVA_API_PACKAGE_PATH}/TdApi.java
+	unexpand -t 2 ../generated-"$API_TYPE"/src/main/java/${JAVA_API_PACKAGE_PATH}/unexpanded_TdApi.java > ../generated-"$API_TYPE"/src/main/java/${JAVA_API_PACKAGE_PATH}/TdApi.java
 fi
-rm ./src/main/java/${JAVA_API_PACKAGE_PATH}/unexpanded_TdApi.java
+rm ../generated-"$API_TYPE"/src/main/java/${JAVA_API_PACKAGE_PATH}/unexpanded_TdApi.java
 
-echo "Generated '$(realpath -m ./src/main/java/${JAVA_API_PACKAGE_PATH}/TdApi.java)'"
+echo "Generated '$(realpath -m ../generated-"$API_TYPE"/src/main/java/${JAVA_API_PACKAGE_PATH}/TdApi.java)'"
 
 
-rm ./src/main/java/${JAVA_API_PACKAGE_PATH}/php_TdApi.java
+rm ../generated-"$API_TYPE"/src/main/java/${JAVA_API_PACKAGE_PATH}/php_TdApi.java
 
 echo "Done."
 exit 0

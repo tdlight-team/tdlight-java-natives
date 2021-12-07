@@ -37,21 +37,21 @@ echo "API type: ${API_TYPE}"
 
 # Delete old data
 echo "Deleting old data..."
-[ -d ./generated/ ] && rm -r ./generated/
+[ -d "./generated-${API_TYPE}" ] && rm -r "./generated-${API_TYPE}"
 
 # Create missing folders
 echo "Creating missing folders..."
-[ -d ./generated/ ] || mkdir ./generated/
-[ -d ./generated/src/main ] || mkdir -p ./generated/src/main
+[ -d "./generated-${API_TYPE}" ] || mkdir "./generated-${API_TYPE}"
+[ -d "./generated-${API_TYPE}/src/main" ] || mkdir -p "./generated-${API_TYPE}/src/main"
 
 # Generate pom.xml
 echo "Generating pom.xml..."
-sed -f "src/main/replacements/replace-${OPERATING_SYSTEM_NAME}-${CPU_ARCHITECTURE_NAME}-${IMPLEMENTATION_NAME}-${API_TYPE}.sed" src/main/tdapi-project-src/pom.template.xml > generated/pom.xml
+sed -f "src/main/replacements/replace-${OPERATING_SYSTEM_NAME}-${CPU_ARCHITECTURE_NAME}-${IMPLEMENTATION_NAME}-${API_TYPE}.sed" src/main/tdapi-project-src/pom.template.xml > "./generated-${API_TYPE}/pom.xml"
 
 # Copy source files
 echo "Copying source files..."
-[ -d ./src/main/tdapi-java ] && cp -r ./src/main/tdapi-java ./generated/src/main/java
-[ -d ./src/main/tdapi-resources ] && cp -r ./src/main/tdapi-resources ./generated/src/main/resources
+[ -d ./src/main/tdapi-java ] && cp -r ./src/main/tdapi-java "./generated-${API_TYPE}/src/main/java"
+[ -d ./src/main/tdapi-resources ] && cp -r ./src/main/tdapi-resources "./generated-${API_TYPE}/src/main/resources"
 
 echo "Done."
 exit 0
