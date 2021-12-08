@@ -97,10 +97,10 @@ jobs:
           ./scripts/continuous-integration/github-workflows/build-tdapi.sh
       - id: getfilename
         shell: bash
-        run: echo "::set-output name=file::$(cd generated/target; ls tdli*-api-*.jar)"
+        run: echo "::set-output name=file::$(cd generated-sealed/target; ls tdli*-api-*.jar)"
       - id: getfilepath
         shell: bash
-        run: echo "::set-output name=file::$(ls generated/target/tdli*-api-*.jar)"
+        run: echo "::set-output name=file::$(ls generated-sealed/target/tdli*-api-*.jar)"
       - uses: actions/upload-artifact@v2
         with:
           name: ${{ steps.getfilename.outputs.file }}
