@@ -2,13 +2,13 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>it.tdlight</groupId>
 	<artifactId>${IMPLEMENTATION_NAME}-api-${API_TYPE}</artifactId>
-  <version>4.0.${revisionNumber}${revisionSuffix}</version>
+  <version>${revision}</version>
 	<name>${IMPLEMENTATION_NAME} API</name>
 	<packaging>jar</packaging>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <revisionNumber>0</revisionNumber>
-    <revisionSuffix>-SNAPSHOT</revisionSuffix>
+		<revision>4.0.0-SNAPSHOT</revision>
+		<safeVersionName>v4_0_0</safeVersionName>
 	</properties>
 	<profiles>
 		<profile>
