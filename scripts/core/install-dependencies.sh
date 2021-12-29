@@ -90,22 +90,22 @@ if [[ "$OPERATING_SYSTEM_NAME" == "linux" ]]; then
     dpkg -x "$JC_DEB" "$CROSS_BUILD_DEPS_DIR"
     rm "$JC_DEB"
     # OpenJDK-JRE-Headless
-    wget "http://security.debian.org/debian-security/pool/updates/main/o/openjdk-11/openjdk-11-jre-headless_11.0.12+7-2~deb10u1_${CPU_ARCH_DPKG}.deb" -O jdk-11-jre-headless.deb
+    wget "http://security.debian.org/debian-security/pool/updates/main/o/openjdk-11/openjdk-11-jre-headless_11.0.13+8-1~deb10u1_${CPU_ARCH_DPKG}.deb" -O jdk-11-jre-headless.deb
     OJDKRH_DEB=jdk-11-jre-headless.deb
     dpkg -x "$OJDKRH_DEB" "$CROSS_BUILD_DEPS_DIR"
     rm "$OJDKRH_DEB"
     # OpenJDK-JRE
-    wget "http://security.debian.org/debian-security/pool/updates/main/o/openjdk-11/openjdk-11-jre_11.0.12+7-2~deb10u1_${CPU_ARCH_DPKG}.deb" -O jdk-11-jre.deb
+    wget "http://security.debian.org/debian-security/pool/updates/main/o/openjdk-11/openjdk-11-jre_11.0.13+8-1~deb10u1_${CPU_ARCH_DPKG}.deb" -O jdk-11-jre.deb
     OJDKR_DEB=jdk-11-jre.deb
     dpkg -x "$OJDKR_DEB" "$CROSS_BUILD_DEPS_DIR"
     rm "$OJDKR_DEB"
     # OpenJDK-JDK
-    wget "http://security.debian.org/debian-security/pool/updates/main/o/openjdk-11/openjdk-11-jdk-headless_11.0.12+7-2~deb10u1_${CPU_ARCH_DPKG}.deb" -O jdk-11-jdk-headless.deb
+    wget "http://security.debian.org/debian-security/pool/updates/main/o/openjdk-11/openjdk-11-jdk-headless_11.0.13+8-1~deb10u1_${CPU_ARCH_DPKG}.deb" -O jdk-11-jdk-headless.deb
     OJDKJ_DEB=jdk-11-jdk-headless.deb
     dpkg -x "$OJDKJ_DEB" "$CROSS_BUILD_DEPS_DIR"
     rm "$OJDKJ_DEB"
     # OpenJDK-GUI
-    wget "http://security.debian.org/debian-security/pool/updates/main/o/openjdk-11/openjdk-11-jdk_11.0.12+7-2~deb10u1_${CPU_ARCH_DPKG}.deb" -O jdk-11-jdk.deb
+    wget "http://security.debian.org/debian-security/pool/updates/main/o/openjdk-11/openjdk-11-jdk_11.0.13+8-1~deb10u1_${CPU_ARCH_DPKG}.deb" -O jdk-11-jdk.deb
     OJDKG_DEB=jdk-11-jdk.deb
     dpkg -x "$OJDKG_DEB" "$CROSS_BUILD_DEPS_DIR"
     rm "$OJDKG_DEB"
