@@ -99,9 +99,12 @@ if [[ "$CORE_VARIABLES_SET" != "YES" ]]; then
     export CROSS_BUILD_DEPS_DIR
   fi
 
+  export JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
+
   # ====== Print variables
   echo "========= Variables ========="
   echo "Variables"
+  echo "JAVA_TOOL_OPTIONS=${JAVA_TOOL_OPTIONS}"
   echo "CPU_ARCH_JAVA=${CPU_ARCH_JAVA}"
   echo "CPU_ARCH_JAVA_INTERNAL=${CPU_ARCH_JAVA_INTERNAL}"
   echo "JAVA_INSTALLATION_TYPE=${JAVA_INSTALLATION_TYPE}"
