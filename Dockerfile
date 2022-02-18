@@ -12,7 +12,8 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN apt update && apt upgrade -y
 
-RUN apt install -y sudo build-essential openjdk-11-jdk locales wget cmake gperf ccache maven
+RUN apt install -y sudo build-essential openjdk-11-jdk locales wget cmake gperf ccache maven \
+    libssl-dev libssl1.1 zlib1g-dev zlib1g
 
 RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
     dpkg-reconfigure --frontend=noninteractive locales && \
@@ -26,9 +27,6 @@ ADD scripts /usr/src/tdlight-java-natives/scripts
 ADD src /usr/src/tdlight-java-natives/src
 
 WORKDIR /usr/src/tdlight-java-natives/
-
-ENV JAVA_HOME="$(find "/usr/lib/jvm/" -maxdepth 1 -type d -iname "java*jdk*" | head -n 1)/"
-ENV JAVA_INCLUDE_PATH="$JAVA_HOME/include"
 
 RUN /bin/bash /usr/src/tdlight-java-natives/scripts/continuous-integration/docker/build-natives.sh
 

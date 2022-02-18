@@ -1,3 +1,4 @@
+#!/bin/bash -e
 source ./scripts/continuous-integration/github-workflows/setup-variables.sh
 # Check variables correctness
 if [ -z "${CPU_ARCH_DPKG}" ]; then
@@ -12,7 +13,7 @@ fi
 CROSS_OPENJDK_PATH=""
 fix_jdk_path() {
   # Setup OpenJDK path
-  CROSS_OPENJDK_PATH="$(find "$CROSS_BUILD_DEPS_DIR/usr/lib/jvm/" -maxdepth 1 -type d -iname "java*jdk*" | head -n 1)"
+  CROSS_OPENJDK_PATH=$(find "$CROSS_BUILD_DEPS_DIR/usr/lib/jvm/" -maxdepth 1 -type d -iname "java*jdk*" | head -n 1)
 }
 
 check_jdk_existance() {
@@ -22,10 +23,15 @@ check_jdk_existance() {
   fi
 }
 
+PWD_BEFORE_CROSS_DEPS=$(pwd)
 if [[ ! -f "$CROSS_BUILD_DEPS_DIR/ok-012" ]]; then
 	rm -rf "$CROSS_BUILD_DEPS_DIR" || true
 	mkdir -p "$CROSS_BUILD_DEPS_DIR"
-	cd "$CROSS_BUILD_DEPS_DIR" || exit 1
+	cd "$CROSS_BUILD_DEPS_DIR"
+
+	dpkg --add-architecture arm64
+	apt-get update
+
 	# LibZ-Dev
 	apt-get download "zlib1g-dev:${CPU_ARCH_DPKG}"
 	ZLIB1G_DEV_DEB=$(find . -name "zlib1g-dev_*.deb")
@@ -42,33 +48,33 @@ if [[ ! -f "$CROSS_BUILD_DEPS_DIR/ok-012" ]]; then
 	dpkg -x "$LIBSSL_DEV_DEB" "$CROSS_BUILD_DEPS_DIR"
 	rm "$LIBSSL_DEV_DEB"
 	# LibSSL
-	apt-get download "libssl:${CPU_ARCH_DPKG}"
-	LIBSSL_DEB=$(find . -name "libssl_*.deb")
+	apt-get download "libssl1.1:${CPU_ARCH_DPKG}"
+	LIBSSL_DEB=$(find . -name "libssl1.1_*.deb")
 	dpkg -x "$LIBSSL_DEB" "$CROSS_BUILD_DEPS_DIR"
 	rm "$LIBSSL_DEB"
 	# Java Common
-	apt-get download "java-common:${CPU_ARCH_DPKG}"
+	apt-get download "java-common"
 	JC_DEB=$(find . -name "java-common_*.deb")
 	dpkg -x "$JC_DEB" "$CROSS_BUILD_DEPS_DIR"
 	rm "$JC_DEB"
 	# OpenJDK-JRE-Headless
-	apt-get download "jdk-11-jre-headless:${CPU_ARCH_DPKG}"
-	OJDKRH_DEB=$(find . -name "jdk-11-jre-headless_*.deb")
+	apt-get download "openjdk-11-jre-headless:${CPU_ARCH_DPKG}"
+	OJDKRH_DEB=$(find . -name "openjdk-11-jre-headless_*.deb")
 	dpkg -x "$OJDKRH_DEB" "$CROSS_BUILD_DEPS_DIR"
 	rm "$OJDKRH_DEB"
 	# OpenJDK-JRE
-	apt-get download "jdk-11-jre:${CPU_ARCH_DPKG}"
-	OJDKR_DEB=$(find . -name "jdk-11-jre_*.deb")
+	apt-get download "openjdk-11-jre:${CPU_ARCH_DPKG}"
+	OJDKR_DEB=$(find . -name "openjdk-11-jre_*.deb")
 	dpkg -x "$OJDKR_DEB" "$CROSS_BUILD_DEPS_DIR"
 	rm "$OJDKR_DEB"
 	# OpenJDK-JDK
-	apt-get download "jdk-11-jdk-headless:${CPU_ARCH_DPKG}"
-	OJDKJ_DEB=$(find . -name "jdk-11-jdk-headless_*.deb")
+	apt-get download "openjdk-11-jdk-headless:${CPU_ARCH_DPKG}"
+	OJDKJ_DEB=$(find . -name "openjdk-11-jdk-headless_*.deb")
 	dpkg -x "$OJDKJ_DEB" "$CROSS_BUILD_DEPS_DIR"
 	rm "$OJDKJ_DEB"
 	# OpenJDK-GUI
-	apt-get download "jdk-11-jdk:${CPU_ARCH_DPKG}"
-	OJDKG_DEB=$(find . -name "jdk-11-jdk_*.deb")
+	apt-get download "openjdk-11-jdk:${CPU_ARCH_DPKG}"
+	OJDKG_DEB=$(find . -name "openjdk-11-jdk_*.deb")
 	dpkg -x "$OJDKG_DEB" "$CROSS_BUILD_DEPS_DIR"
 	rm "$OJDKG_DEB"
 
@@ -84,6 +90,7 @@ if [[ ! -f "$CROSS_BUILD_DEPS_DIR/ok-012" ]]; then
 fi
 fix_jdk_path
 check_jdk_existance
+cd "${PWD_BEFORE_CROSS_DEPS}"
 
 source ./scripts/continuous-integration/github-workflows/install-dependencies.sh
 sudo apt install -y "crossbuild-essential-${CPU_ARCH_DPKG}"

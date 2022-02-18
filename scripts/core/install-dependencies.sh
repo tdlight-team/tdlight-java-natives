@@ -49,12 +49,13 @@ echo "CMake extra arguments: '${CMAKE_EXTRA_ARGUMENTS}'"
 echo "Cross build deps dir: '${CROSS_BUILD_DEPS_DIR}'"
 
 if [[ "$OPERATING_SYSTEM_NAME" == "linux" ]]; then
-	if [ -z "${CROSS_BUILD_DEPS_DIR}" ]; then
+	if [ -n "${CROSS_BUILD_DEPS_DIR}" ]; then
 
 		CROSS_OPENJDK_PATH=""
 		fix_jdk_path() {
 			# Setup OpenJDK path
-			CROSS_OPENJDK_PATH="$(find "$CROSS_BUILD_DEPS_DIR/usr/lib/jvm/" -maxdepth 1 -type d -iname "java*jdk*" | head -n 1)"
+			CROSS_OPENJDK_PATH=$(find "$CROSS_BUILD_DEPS_DIR/usr/lib/jvm/" -maxdepth 1 -type d -iname "java*jdk*" | head -n 1)
+			echo "Fixed cross openjdk path: '${CROSS_OPENJDK_PATH}'"
 		}
 
 		check_jdk_existance() {
