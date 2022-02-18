@@ -10,6 +10,8 @@
 #   CPU_CORES = "-- -j<cores>" or "-m" on Windows
 #   CMAKE_EXTRA_ARGUMENTS = <args>
 #   REVISION = <revision>
+# OPTIONAL ENVIRONMENT VARIABLES:
+#   CROSS_BUILD_DEPS_DIR = <args>
 
 cd ../core
 

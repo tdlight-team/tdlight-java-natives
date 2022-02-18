@@ -1,4 +1,4 @@
-FROM debian:buster
+FROM debian:oldstable
 
 ARG REVISION
 ARG GH_MATRIX_OS
@@ -26,6 +26,11 @@ ADD scripts /usr/src/tdlight-java-natives/scripts
 ADD src /usr/src/tdlight-java-natives/src
 
 WORKDIR /usr/src/tdlight-java-natives/
+
+ENV CROSS_BUILD_DEPS_DIR "/usr/src/tdlight-java-natives"
+
+ENV JAVA_HOME="$(find "/usr/lib/jvm/" -maxdepth 1 -type d -iname "java*jdk*" | head -n 1)/"
+ENV JAVA_INCLUDE_PATH="$JAVA_HOME/include"
 
 RUN /bin/bash /usr/src/tdlight-java-natives/scripts/continuous-integration/docker/build-natives.sh
 

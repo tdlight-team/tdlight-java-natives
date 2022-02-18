@@ -61,7 +61,7 @@ if [[ "$IMPLEMENTATION_NAME" = "tdlight" ]]; then
 else
   CMAKE_EXTRA_ARGUMENTS_TD=""
 fi
-if [[ ! -z "$CROSS_BUILD_DEPS_DIR" ]]; then
+if [[ -n "$CROSS_BUILD_DEPS_DIR" ]]; then
  # shellcheck disable=SC2089
  CMAKE_EXTRA_ARGUMENTS_TD="${CMAKE_EXTRA_ARGUMENTS_TD} -DCMAKE_TOOLCHAIN_FILE=${CROSS_BUILD_DEPS_DIR}/toolchain.cmake"
 fi

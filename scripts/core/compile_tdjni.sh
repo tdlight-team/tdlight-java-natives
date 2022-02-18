@@ -91,7 +91,7 @@ echo "Configuring CMake..."
 cd ./generated/tdjni_build/
 
 CMAKE_EXTRA_ARGUMENTS_TDJNI=""
-if [[ ! -z "$CROSS_BUILD_DEPS_DIR" ]]; then
+if [[ -n "$CROSS_BUILD_DEPS_DIR" ]]; then
  # shellcheck disable=SC2089
  CMAKE_EXTRA_ARGUMENTS_TDJNI="${CMAKE_EXTRA_ARGUMENTS_TDJNI} -DCMAKE_TOOLCHAIN_FILE=${CROSS_BUILD_DEPS_DIR}/toolchain.cmake"
 fi
