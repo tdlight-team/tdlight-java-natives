@@ -22,11 +22,10 @@ check_jdk_existance() {
   fi
 }
 
-fix_jdk_path
 if [[ ! -f "$CROSS_BUILD_DEPS_DIR/ok-012" ]]; then
 	rm -rf "$CROSS_BUILD_DEPS_DIR" || true
 	mkdir -p "$CROSS_BUILD_DEPS_DIR"
-	cd "$CROSS_BUILD_DEPS_DIR"
+	cd "$CROSS_BUILD_DEPS_DIR" || exit 1
 	# LibZ-Dev
 	apt-get download "zlib1g-dev:${CPU_ARCH_DPKG}"
 	ZLIB1G_DEV_DEB=$(find . -name "zlib1g-dev_*.deb")
@@ -83,7 +82,7 @@ if [[ ! -f "$CROSS_BUILD_DEPS_DIR/ok-012" ]]; then
 
 	touch "$CROSS_BUILD_DEPS_DIR/ok-012"
 fi
-
+fix_jdk_path
 check_jdk_existance
 
 source ./scripts/continuous-integration/github-workflows/install-dependencies.sh

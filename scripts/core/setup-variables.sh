@@ -95,7 +95,7 @@ if [[ "$CORE_VARIABLES_SET" != "YES" ]]; then
       export CROSS_CXX="${CPU_ARCH_CMAKE}-linux-${CPU_COMPILATION_TOOL}-g++"
     fi
 
-    CROSS_BUILD_DEPS_DIR="$(realpath "../../")/.cache/tdlib-build-cross-${CPU_ARCH_DPKG}/"
+    CROSS_BUILD_DEPS_DIR="$(realpath "../../")/.cache/tdlib-build-cross-${CPU_ARCH_DPKG}"
     export CROSS_BUILD_DEPS_DIR
   fi
 
