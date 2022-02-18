@@ -29,7 +29,7 @@ if [[ ! -f "$CROSS_BUILD_DEPS_DIR/ok-012" ]]; then
 	mkdir -p "$CROSS_BUILD_DEPS_DIR"
 	cd "$CROSS_BUILD_DEPS_DIR"
 
-	dpkg --add-architecture arm64
+	dpkg --add-architecture "${CPU_ARCH_DPKG}"
 	apt-get update
 
 	# LibZ-Dev
