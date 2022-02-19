@@ -24,8 +24,8 @@ jobs:
         #- {os: ubuntu-20.04, usedocker: "true", useqemu: "false", arch: "linux/s390x", implementation: "tdlib"}
         - {os: ubuntu-20.04, usedocker: "true", useqemu: "false", arch: "linux/ppc64le", implementation: "tdlight"}
         #- {os: ubuntu-20.04, usedocker: "true", useqemu: "false", arch: "linux/ppc64le", implementation: "tdlib"}
-        - {os: windows-2022, usedocker: "false", useqemu: "false", arch: "amd64", implementation: "tdlight", vcpkgCommitId: "5568f110b509a9fd90711978a7cb76bae75bb092", triplet: "x64-windows-static"}
-        #- {os: windows-2022, usedocker: "false", useqemu: "false", arch: "amd64", implementation: "tdlib", vcpkgCommitId: "5568f110b509a9fd90711978a7cb76bae75bb092", triplet: "x64-windows-static"}
+        - {os: windows-latest, usedocker: "false", useqemu: "false", arch: "amd64", implementation: "tdlight", vcpkgCommitId: "5568f110b509a9fd90711978a7cb76bae75bb092", triplet: "x64-windows-static"}
+        #- {os: windows-latest, usedocker: "false", useqemu: "false", arch: "amd64", implementation: "tdlib", vcpkgCommitId: "5568f110b509a9fd90711978a7cb76bae75bb092", triplet: "x64-windows-static"}
         - {os: macos-10.15, usedocker: "false", useqemu: "false", arch: "amd64", implementation: "tdlight"}
         #- {os: macos-10.15, usedocker: "false", useqemu: "false", arch: "amd64", implementation: "tdlib"}
     steps:
@@ -204,12 +204,12 @@ jobs:
           php-version: '8.0'
           extensions: readline
       - name: Install MSVC
-        if: matrix.os == 'windows-2022'
+        if: matrix.os == 'windows-latest'
         uses: ilammy/msvc-dev-cmd@v1
         with:
           vs-version: '[16.4,16.5)'
       - name: Setup cmake
-        if: matrix.os == 'windows-2022'
+        if: matrix.os == 'windows-latest'
         uses: jwlawson/actions-setup-cmake@v1.9
         with:
           cmake-version: '3.16.x'
@@ -218,10 +218,10 @@ jobs:
         with:
           maven-version: 3.8.2
       - name: Setup NASM
-        if: matrix.os == 'windows-2022'
+        if: matrix.os == 'windows-latest'
         uses: ilammy/setup-nasm@v1
       - name: Restore artifacts, or setup vcpkg (do not install any package)
-        if: matrix.os == 'windows-2022'
+        if: matrix.os == 'windows-latest'
         uses: lukka/run-vcpkg@v10.1
         with:
           # Just install vcpkg for now, do not install any ports in this step yet.
@@ -236,7 +236,7 @@ jobs:
           # Ensure the vcpkg artifacts are cached, they are generated in the 'CMAKE_BINARY_DIR/vcpkg_installed' directory.
           additionalCachedPaths: ${{ github.workspace }}/vcpkg
       - name: Install vcpkg deps
-        if: matrix.os == 'windows-2022'
+        if: matrix.os == 'windows-latest'
         run: |
           $VCPKG_DIR/vcpkg install gperf openssl:x64-windows-static zlib:x64-windows-static
         shell: bash
