@@ -70,7 +70,6 @@ if [[ "$CORE_VARIABLES_SET" != "YES" ]]; then
 
   export CPU_CORES_NUM="2"
 
-  unset CROSS_BUILD_DEPS_DIR
   if [[ "$OPERATING_SYSTEM_NAME" == "windows" ]]; then
     export CMAKE_EXTRA_ARGUMENTS_TDJNI="${CMAKE_EXTRA_ARGUMENTS_TDJNI} -DOPENSSL_USE_STATIC_LIBS=True"
   elif [[ "$OPERATING_SYSTEM_NAME" == "osx" ]]; then
@@ -94,9 +93,6 @@ if [[ "$CORE_VARIABLES_SET" != "YES" ]]; then
       export CROSS_CC="${CPU_ARCH_CMAKE}-linux-${CPU_COMPILATION_TOOL}-gcc"
       export CROSS_CXX="${CPU_ARCH_CMAKE}-linux-${CPU_COMPILATION_TOOL}-g++"
     fi
-
-    CROSS_BUILD_DEPS_DIR="$(realpath "../../")/.cache/tdlib-build-cross-${CPU_ARCH_DPKG}"
-    export CROSS_BUILD_DEPS_DIR
   fi
 
   export JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"

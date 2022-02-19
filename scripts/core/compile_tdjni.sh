@@ -8,6 +8,8 @@
 #   CPU_CORES = "-- -j<cores>" or "-m" on Windows
 # OTHER REQUIRED ENVIRONMENT VARIABLES:
 #   CMAKE_EXTRA_ARGUMENTS = <args>
+# OPTIONAL ENVIRONMENT VARIABLES:
+#   CROSS_BUILD_DEPS_DIR = <args>
 
 # Check variables correctness
 if [ -z "${OPERATING_SYSTEM_NAME}" ]; then
