@@ -210,9 +210,7 @@ jobs:
           vs-version: '[16.4,16.5)'
       - name: Setup cmake
         if: matrix.os == 'windows-latest'
-        uses: jwlawson/actions-setup-cmake@v1.9
-        with:
-          cmake-version: '3.16.x'
+      - uses: lukka/get-cmake@v3.21.2
       - name: Set up Maven
         uses: stCarolas/setup-maven@v4.2
         with:
@@ -222,7 +220,7 @@ jobs:
         uses: ilammy/setup-nasm@v1
       - name: Restore artifacts, or setup vcpkg (do not install any package)
         if: matrix.os == 'windows-latest'
-        uses: lukka/run-vcpkg@v10.1
+        uses: lukka/run-vcpkg@v10.2
         with:
           # Just install vcpkg for now, do not install any ports in this step yet.
           setupOnly: true
