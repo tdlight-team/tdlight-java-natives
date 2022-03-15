@@ -204,22 +204,23 @@ jobs:
           php-version: '8.0'
           extensions: readline
       - name: Install MSVC
-        if: matrix.os == 'windows-latest'
+        if: matrix.os == 'windows-2019'
         uses: ilammy/msvc-dev-cmd@v1
         with:
+          toolset: 14.0
           vs-version: '[16.4,16.5)'
       - name: Setup cmake
-        if: matrix.os == 'windows-latest'
+        if: matrix.os == 'windows-2019'
         uses: lukka/get-cmake@latest
       - name: Set up Maven
         uses: stCarolas/setup-maven@v4.2
         with:
           maven-version: 3.8.2
       - name: Setup NASM
-        if: matrix.os == 'windows-latest'
+        if: matrix.os == 'windows-2019'
         uses: ilammy/setup-nasm@v1
       - name: Restore artifacts, or setup vcpkg (do not install any package)
-        if: matrix.os == 'windows-latest'
+        if: matrix.os == 'windows-2019'
         uses: lukka/run-vcpkg@v10.2
         with:
           # Just install vcpkg for now, do not install any ports in this step yet.
@@ -234,7 +235,7 @@ jobs:
           # Ensure the vcpkg artifacts are cached, they are generated in the 'CMAKE_BINARY_DIR/vcpkg_installed' directory.
           additionalCachedPaths: ${{ github.workspace }}/vcpkg
       - name: Install vcpkg deps
-        if: matrix.os == 'windows-latest'
+        if: matrix.os == 'windows-2019'
         run: |
           $VCPKG_DIR/vcpkg install gperf openssl:x64-windows-static zlib:x64-windows-static
         shell: bash
