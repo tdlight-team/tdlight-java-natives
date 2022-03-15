@@ -108,7 +108,6 @@ cmake \
  "-DTd_DIR=$(realpath -m ../td_bin/lib/cmake/Td/)" \
  "-DJAVA_SRC_DIR=$(realpath -m ../src/main/jni-java-src/)" \
  "-DTDNATIVES_CPP_SRC_DIR:PATH=$(realpath -m ../src/main/jni-cpp-src/)" \
- "-DTD_ENABLE_LTO=ON" \
  ${CMAKE_EXTRA_ARGUMENTS_TDJNI} \
  ${CMAKE_EXTRA_ARGUMENTS} \
  "$(realpath -m ../src/main/jni-cpp-src/)"

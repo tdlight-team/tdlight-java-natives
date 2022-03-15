@@ -75,6 +75,7 @@ if [[ "$CORE_VARIABLES_SET" != "YES" ]]; then
   elif [[ "$OPERATING_SYSTEM_NAME" == "osx" ]]; then
     export CMAKE_EXTRA_ARGUMENTS_TDJNI="${CMAKE_EXTRA_ARGUMENTS_TDJNI} -DOPENSSL_USE_STATIC_LIBS=True"
   elif [[ "$OPERATING_SYSTEM_NAME" == "linux" ]]; then
+    export CMAKE_EXTRA_ARGUMENTS_TDJNI="${CMAKE_EXTRA_ARGUMENTS_TDJNI} -DTD_ENABLE_LTO=ON"
     if [[ "$CPU_ARCHITECTURE_NAME" == "386" ]] || [[ "$CPU_ARCHITECTURE_NAME" == "armhf" ]]; then
       export CMAKE_EXE_LINKER_FLAGS="$CMAKE_EXE_LINKER_FLAGS -latomic"
       export LDFLAGS="$LDFLAGS -latomic"
