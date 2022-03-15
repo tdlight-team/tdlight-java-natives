@@ -210,7 +210,7 @@ jobs:
           vs-version: '[16.4,16.5)'
       - name: Setup cmake
         if: matrix.os == 'windows-latest'
-      - uses: lukka/get-cmake@v3.21.2
+        uses: lukka/get-cmake@latest
       - name: Set up Maven
         uses: stCarolas/setup-maven@v4.2
         with:
