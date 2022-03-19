@@ -72,9 +72,6 @@ if [[ "$OPERATING_SYSTEM_NAME" == "linux" ]]; then
 		echo "Creating toolchain file..."
 		cd "$ROOT_DIR"
 		{
-			echo "set(CMAKE_EXE_LINKER_FLAGS \${CMAKE_EXE_LINKER_FLAGS} ${MFLAGS})";
-			echo "set(CMAKE_C_FLAGS \${CMAKE_C_FLAGS} ${MFLAGS})";
-			echo "set(CMAKE_CXX_FLAGS \${CMAKE_CXX_FLAGS} ${MFLAGS})";
 			echo "set(CMAKE_SYSTEM_PROCESSOR ${CPU_ARCH_LINUX})";
 			echo "set(CMAKE_C_COMPILER ${CROSS_CC})";
 			echo "set(CMAKE_C_COMPILER_TARGET ${CLANG_TRIPLE})";

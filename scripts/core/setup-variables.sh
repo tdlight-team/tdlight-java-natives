@@ -72,10 +72,6 @@ if [[ "$CORE_VARIABLES_SET" != "YES" ]]; then
   	export CPU_CORES_NUM="4"
   fi
 
-  if [[ "$CPU_ARCHITECTURE_NAME" == "386" ]]; then
-  	export MFLAGS="-m32"
-  fi
-
   if [[ "$OPERATING_SYSTEM_NAME" == "windows" ]]; then
     export CMAKE_EXTRA_ARGUMENTS_TDJNI="${CMAKE_EXTRA_ARGUMENTS_TDJNI} -DOPENSSL_USE_STATIC_LIBS=True"
   elif [[ "$OPERATING_SYSTEM_NAME" == "osx" ]]; then
@@ -118,7 +114,6 @@ if [[ "$CORE_VARIABLES_SET" != "YES" ]]; then
   echo "CPU_COMPILATION_TOOL=${CPU_COMPILATION_TOOL}"
   echo "CC=${CC}"
   echo "CXX=${CXX}"
-  echo "MFLAGS=${MFLAGS}"
   echo "CFLAGS=${CFLAGS}"
   echo "CXXFLAGS=${CXXFLAGS}"
   echo "CMAKE_EXE_LINKER_FLAGS=${CMAKE_EXE_LINKER_FLAGS}"
