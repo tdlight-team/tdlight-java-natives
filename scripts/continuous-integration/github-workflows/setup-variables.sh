@@ -22,25 +22,23 @@ export GH_OS_NAME
 
 if [[ "$GH_CPU_ARCH" == "arm64" ]]; then
 	export CPU_ARCHITECTURE_NAME="aarch64"
-	export CPU_CORES_NUM="2"
 elif [[ "$GH_CPU_ARCH" == "armhf" ]]; then
 	export CPU_ARCHITECTURE_NAME="armhf"
-	export CPU_CORES_NUM="2"
 elif [[ "$GH_CPU_ARCH" == "s390x" ]]; then
 	export CPU_ARCHITECTURE_NAME="s390x"
-	export CPU_CORES_NUM="2"
 elif [[ "$GH_CPU_ARCH" == "386" ]]; then
 	export CPU_ARCHITECTURE_NAME="386"
-	export CPU_CORES_NUM="2"
 elif [[ "$GH_CPU_ARCH" == "amd64" ]]; then
 	export CPU_ARCHITECTURE_NAME="amd64"
-	export CPU_CORES_NUM="2"
 elif [[ "$GH_CPU_ARCH" == "ppc64le" ]]; then
 	export CPU_ARCHITECTURE_NAME="ppc64le"
-	export CPU_CORES_NUM="2"
 else
 	echo "Unrecognized cpu arch: $GH_CPU_ARCH"
 	exit 1
+fi
+
+if [ -z "${CPU_CORES_NUM}" ]; then
+	export CPU_CORES_NUM="2"
 fi
 
 if [[ "$GH_OS_NAME" == "windows" ]]; then

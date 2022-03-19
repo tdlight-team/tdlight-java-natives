@@ -3,6 +3,7 @@ export JAVA_HOME
 JAVA_HOME="$(find "/usr/lib/jvm/" -maxdepth 1 -type d -iname "java*jdk*" | head -n 1)/"
 export JAVA_INCLUDE_PATH="$JAVA_HOME/include"
 source ./scripts/continuous-integration/github-workflows/setup-variables.sh
+export CROSS_BUILD_DEPS_DIR="$PWD/cross-build-deps"
 # Check variables correctness
 if [ -z "${CPU_ARCH_DPKG}" ]; then
 	echo "Missing parameter: CPU_ARCH_DPKG"
@@ -24,6 +25,7 @@ if [ -n "${CROSS_BUILD_DEPS_DIR}" ]; then
 
 	PWD_BEFORE_CROSS_DEPS=$(pwd)
 	if [[ ! -f "$CROSS_BUILD_DEPS_DIR/ok-012" ]]; then
+		echo "Setting up cross build deps dir"
 		rm -rf "$CROSS_BUILD_DEPS_DIR" || true
 		mkdir -p "$CROSS_BUILD_DEPS_DIR"
 		cd "$CROSS_BUILD_DEPS_DIR"
@@ -81,17 +83,27 @@ if [ -n "${CROSS_BUILD_DEPS_DIR}" ]; then
 		find "$CROSS_BUILD_DEPS_DIR" -lname "/*" \
 				-exec  sh -c "ln -sf \"\`echo \"$CROSS_BUILD_DEPS_DIR\$(readlink \$0)\"\`\" \"\$0\"" {} \;
 
+		echo "Cross build deps dir setup finished, testing..."
+
 		# Check if openjdk is found
 		fix_jdk_path
 		check_jdk_existance
 
 		touch "$CROSS_BUILD_DEPS_DIR/ok-012"
 	fi
+	echo "Cross build deps dir setup done"
 	fix_jdk_path
 	check_jdk_existance
 	cd "${PWD_BEFORE_CROSS_DEPS}"
 	apt install -y "crossbuild-essential-${CPU_ARCH_DPKG}"
 fi
 
-source ./scripts/continuous-integration/github-workflows/install-dependencies.sh
-source ./scripts/continuous-integration/github-workflows/build-natives.sh
+cd scripts/core
+source ./setup-variables.sh
+./install-dependencies.sh
+./generate_maven_project.sh
+./generate_td_tools.sh
+./configure_td.sh
+./compile_td.sh
+./compile_tdjni.sh
+./build_generated_maven_project.sh

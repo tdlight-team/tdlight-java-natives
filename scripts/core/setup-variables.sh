@@ -68,12 +68,12 @@ if [[ "$CORE_VARIABLES_SET" != "YES" ]]; then
     exit 1
   fi
 
-  export CPU_CORES_NUM="2"
+	if [ -z "${CPU_CORES_NUM}" ]; then
+  	export CPU_CORES_NUM="2"
+  fi
 
-  if [[ "$CPU_ARCHITECTURE_NAME" == "armhf" || "$CPU_ARCHITECTURE_NAME" == "386" ]]; then
-  	export CXXFLAGS="$CXXFLAGS -m32"
-  	export CFLAGS="$CFLAGS -m32"
-  	export LDFLAGS="$LDFLAGS -m32"
+  if [[ "$CPU_ARCHITECTURE_NAME" == "386" ]]; then
+  	export MFLAGS="-m32"
   fi
 
   if [[ "$OPERATING_SYSTEM_NAME" == "windows" ]]; then
@@ -118,6 +118,7 @@ if [[ "$CORE_VARIABLES_SET" != "YES" ]]; then
   echo "CPU_COMPILATION_TOOL=${CPU_COMPILATION_TOOL}"
   echo "CC=${CC}"
   echo "CXX=${CXX}"
+  echo "MFLAGS=${MFLAGS}"
   echo "CFLAGS=${CFLAGS}"
   echo "CXXFLAGS=${CXXFLAGS}"
   echo "CMAKE_EXE_LINKER_FLAGS=${CMAKE_EXE_LINKER_FLAGS}"
