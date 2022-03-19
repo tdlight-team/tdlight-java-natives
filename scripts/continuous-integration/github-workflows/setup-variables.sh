@@ -38,7 +38,7 @@ else
 fi
 
 if [ -z "${CPU_CORES_NUM}" ]; then
-	export CPU_CORES_NUM="2"
+	export CPU_CORES_NUM="4"
 fi
 
 if [[ "$GH_OS_NAME" == "windows" ]]; then

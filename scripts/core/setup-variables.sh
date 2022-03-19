@@ -69,7 +69,7 @@ if [[ "$CORE_VARIABLES_SET" != "YES" ]]; then
   fi
 
 	if [ -z "${CPU_CORES_NUM}" ]; then
-  	export CPU_CORES_NUM="2"
+  	export CPU_CORES_NUM="4"
   fi
 
   if [[ "$CPU_ARCHITECTURE_NAME" == "386" ]]; then
