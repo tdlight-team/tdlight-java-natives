@@ -24,8 +24,8 @@ jobs:
         #- {os: ubuntu-20.04, usedocker: "true", useqemu: "false", arch: "linux/s390x", implementation: "tdlib"}
         - {os: ubuntu-20.04, usedocker: "true", useqemu: "false", arch: "linux/ppc64le", implementation: "tdlight"}
         #- {os: ubuntu-20.04, usedocker: "true", useqemu: "false", arch: "linux/ppc64le", implementation: "tdlib"}
-        - {os: windows-2019, usedocker: "false", useqemu: "false", arch: "amd64", implementation: "tdlight", vcpkgCommitId: "5568f110b509a9fd90711978a7cb76bae75bb092", triplet: "x64-windows-static"}
-        #- {os: windows-2019, usedocker: "false", useqemu: "false", arch: "amd64", implementation: "tdlib", vcpkgCommitId: "5568f110b509a9fd90711978a7cb76bae75bb092", triplet: "x64-windows-static"}
+        - {os: windows-2019, usedocker: "false", useqemu: "false", arch: "amd64", implementation: "tdlight", vcpkgCommitId: "b98afc9f1192becb2f447cee485ce36ba111f9f6", triplet: "x64-windows-static"}
+        #- {os: windows-2019, usedocker: "false", useqemu: "false", arch: "amd64", implementation: "tdlib", vcpkgCommitId: "b98afc9f1192becb2f447cee485ce36ba111f9f6", triplet: "x64-windows-static"}
         - {os: macos-10.15, usedocker: "false", useqemu: "false", arch: "amd64", implementation: "tdlight"}
         #- {os: macos-10.15, usedocker: "false", useqemu: "false", arch: "amd64", implementation: "tdlib"}
     steps:
