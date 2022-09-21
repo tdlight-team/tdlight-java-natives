@@ -1,12 +1,10 @@
- 
 //
-// Copyright Aliaksei Levin (levlam@telegram.org), Arseny Smirnov (arseny30@gmail.com) 2014-2018
+// Copyright Aliaksei Levin (levlam@telegram.org), Arseny Smirnov (arseny30@gmail.com) 2014-2022
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
 #include <td/telegram/Client.h>
-#include <td/telegram/Log.h>
 #include <td/telegram/td_api.h>
 
 #include <td/tl/tl_jni_object.h>
@@ -88,23 +86,52 @@ static jstring Function_toString(JNIEnv *env, jobject object) {
 
 static constexpr jint JAVA_VERSION = JNI_VERSION_1_6;
 static JavaVM *java_vm;
-static jclass log_class;
+static jobject log_message_handler;
 
-static void on_log_message(int verbosity_level, const char *error_message) {
-  if (verbosity_level != 0) {
-    return;
-  }
+static void on_log_message(int verbosity_level, const char *log_message) {
   auto env = td::jni::get_jni_env(java_vm, JAVA_VERSION);
   if (env == nullptr) {
     return;
   }
-  jmethodID on_fatal_error_method = env->GetStaticMethodID(log_class, "onFatalError", "(Ljava/lang/String;)V");
-  if (on_fatal_error_method) {
-    jstring error_str = td::jni::to_jstring(env.get(), error_message);
-    env->CallStaticVoidMethod(log_class, on_fatal_error_method, error_str);
-    if (error_str) {
-      env->DeleteLocalRef(error_str);
+
+  jobject handler = env->NewLocalRef(log_message_handler);
+  if (!handler) {
+    return;
+  }
+
+  jclass handler_class = env->GetObjectClass(handler);
+  if (handler_class) {
+    jmethodID on_log_message_method = env->GetMethodID(handler_class, "onLogMessage", "(ILjava/lang/String;)V");
+    if (on_log_message_method) {
+      jstring log_message_str = td::jni::to_jstring(env.get(), log_message);
+      if (log_message_str) {
+        env->CallVoidMethod(handler, on_log_message_method, static_cast<jint>(verbosity_level), log_message_str);
+        env->DeleteLocalRef((jobject)log_message_str);
+      }
     }
+    env->DeleteLocalRef((jobject)handler_class);
+  }
+
+  env->DeleteLocalRef(handler);
+}
+
+static void Client_nativeClientSetLogMessageHandler(JNIEnv *env, jclass clazz, jint max_verbosity_level,
+                                                    jobject new_log_message_handler) {
+  if (log_message_handler) {
+    td::ClientManager::set_log_message_callback(0, nullptr);
+    jobject old_log_message_handler = log_message_handler;
+    log_message_handler = jobject();
+    env->DeleteGlobalRef(old_log_message_handler);
+  }
+
+  if (new_log_message_handler) {
+    log_message_handler = env->NewGlobalRef(new_log_message_handler);
+    if (!log_message_handler) {
+      // out of memory
+      return;
+    }
+
+    td::ClientManager::set_log_message_callback(static_cast<int>(max_verbosity_level), on_log_message);
   }
 }
 
@@ -122,7 +149,6 @@ static jint register_native(JavaVM *vm) {
   };
 
   auto client_class = td::jni::get_jclass(env, PACKAGE_NAME "/NativeClient");
-  log_class = td::jni::get_jclass(env, PACKAGE_NAME "/NativeLog");
   auto object_class = td::jni::get_jclass(env, API_PACKAGE_NAME "/TdApi$Object");
   auto function_class = td::jni::get_jclass(env, API_PACKAGE_NAME "/TdApi$Function");
 
@@ -132,6 +158,8 @@ static jint register_native(JavaVM *vm) {
   register_method(client_class, "nativeClientSend", "(IJ" TD_FUNCTION ")V", Client_nativeClientSend);
   register_method(client_class, "nativeClientReceive", "([I[J[" TD_OBJECT "D)I", Client_nativeClientReceive);
   register_method(client_class, "nativeClientExecute", "(" TD_FUNCTION ")" TD_OBJECT, Client_nativeClientExecute);
+  register_method(client_class, "nativeClientSetLogMessageHandler", "(IL" PACKAGE_NAME "/NativeClient$LogMessageHandler;)V",
+                  Client_nativeClientSetLogMessageHandler);
 
   register_method(object_class, "toString", "()Ljava/lang/String;", Object_toString);
 
@@ -142,7 +170,6 @@ static jint register_native(JavaVM *vm) {
   td::jni::init_vars(env, API_PACKAGE_NAME);
   td::td_api::Object::init_jni_vars(env, API_PACKAGE_NAME);
   td::td_api::Function::init_jni_vars(env, API_PACKAGE_NAME);
-  td::ClientManager::set_log_message_callback(0, on_log_message);
 
   return JAVA_VERSION;
 }

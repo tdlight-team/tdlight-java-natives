@@ -1,3 +1,2 @@
 ../src/main/jni-java-src/it/tdlight/jni/TdApi.java
 ../src/main/jni-java-src/it/tdlight/tdnative/NativeClient.java
-../src/main/jni-java-src/it/tdlight/tdnative/NativeLog.java
