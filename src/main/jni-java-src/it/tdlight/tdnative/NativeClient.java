@@ -16,7 +16,7 @@ public class NativeClient {
 
 	protected static native TdApi.Object nativeClientExecute(TdApi.Function function);
 
-	private static native void nativeClientSetLogMessageHandler(int maxVerbosityLevel, LogMessageHandler logMessageHandler);
+	protected static native void nativeClientSetLogMessageHandler(int maxVerbosityLevel, LogMessageHandler logMessageHandler);
 
 	/**
 	 * Interface for handler of messages that are added to the internal TDLib log.
