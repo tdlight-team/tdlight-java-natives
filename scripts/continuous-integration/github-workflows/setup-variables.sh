@@ -1,7 +1,7 @@
 #!/bin/bash -e
 set -e
 
-export MAVEN_OPTS="--add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens java.base/java.lang.reflect=ALL-UNNAMED --add-opens java.base/javax.crypto=ALL-UNNAMED --add-opens java.base/java.io=ALL-UNNAMED"
+export MAVEN_OPTS=""
 
 echo "MATRIX_OS: $GH_MATRIX_OS"
 echo "MATRIX_ARCH: $GH_MATRIX_ARCH"
