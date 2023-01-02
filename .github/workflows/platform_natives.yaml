@@ -2,7 +2,9 @@ name: Docker multi-arch build
 
 on:
   push:
-  pull_request:
+    branches:
+      - master
+      - develop
 
 jobs:
   build:
@@ -143,7 +145,7 @@ jobs:
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
       - name: Setup Java (Release)
-        if: github.ref == 'refs/heads/master'
+        if: github.ref != 'refs/heads/develop'
         uses: actions/setup-java@v3
         with:
           java-version: 11
