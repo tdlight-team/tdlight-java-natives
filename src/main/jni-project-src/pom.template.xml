@@ -89,6 +89,18 @@
 									<pattern>it.tdlight.jni.implementation_name.operating_system_name.cpu_architecture_name.version</pattern>
 									<shadedPattern>it.tdlight.jni.${IMPLEMENTATION_NAME}.${OPERATING_SYSTEM_NAME_SHORT}.${CPU_ARCHITECTURE_NAME}.${safeVersionName}</shadedPattern>
 								</relocation>
+								<relocation>
+									<pattern>it.tdlight.jni.implementation_name.operating_system_name.cpu_architecture_name</pattern>
+									<shadedPattern>it.tdlight.jni.${IMPLEMENTATION_NAME}.${OPERATING_SYSTEM_NAME_SHORT}.${CPU_ARCHITECTURE_NAME}</shadedPattern>
+								</relocation>
+								<relocation>
+									<pattern>it.tdlight.jni.implementation_name.operating_system_name</pattern>
+									<shadedPattern>it.tdlight.jni.${IMPLEMENTATION_NAME}.${OPERATING_SYSTEM_NAME_SHORT}</shadedPattern>
+								</relocation>
+								<relocation>
+									<pattern>it.tdlight.jni.implementation_name</pattern>
+									<shadedPattern>it.tdlight.jni.${IMPLEMENTATION_NAME}</shadedPattern>
+								</relocation>
 							</relocations>
 						</configuration>
 					</execution>
