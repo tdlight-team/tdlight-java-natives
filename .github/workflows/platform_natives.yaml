@@ -19,14 +19,10 @@ jobs:
         - {os: ubuntu-20.04, usedocker: "true", ssl: "ssl1", useqemu: "false", arch: "linux/arm64", implementation: "tdlight"}
         - {os: ubuntu-20.04, usedocker: "true", ssl: "ssl1", useqemu: "false", arch: "linux/s390x", implementation: "tdlight"}
         - {os: ubuntu-20.04, usedocker: "true", ssl: "ssl1", useqemu: "false", arch: "linux/ppc64le", implementation: "tdlight"}
-        - {os: ubuntu-22.04, usedocker: "true", ssl: "ssl3", useqemu: "false", arch: "linux/386", implementation: "tdlight"}
         - {os: ubuntu-22.04, usedocker: "true", ssl: "ssl3", useqemu: "false", arch: "linux/amd64", implementation: "tdlight"}
-        - {os: ubuntu-22.04, usedocker: "true", ssl: "ssl3", useqemu: "false", arch: "linux/armhf", implementation: "tdlight"}
         - {os: ubuntu-22.04, usedocker: "true", ssl: "ssl3", useqemu: "false", arch: "linux/arm64", implementation: "tdlight"}
-        - {os: ubuntu-22.04, usedocker: "true", ssl: "ssl3", useqemu: "false", arch: "linux/s390x", implementation: "tdlight"}
-        - {os: ubuntu-22.04, usedocker: "true", ssl: "ssl3", useqemu: "false", arch: "linux/ppc64le", implementation: "tdlight"}
-        - {os: windows-2019, usedocker: "false", useqemu: "false", arch: "amd64", implementation: "tdlight", vcpkgCommitId: "6ca56aeb457f033d344a7106cb3f9f1abf8f4e98", triplet: "x64-windows-static"}
-        - {os: macos-10.15, usedocker: "false", useqemu: "false", arch: "amd64", implementation: "tdlight"}
+        - {os: windows-2019, usedocker: "false", ssl: "ssl1", useqemu: "false", arch: "amd64", implementation: "tdlight", vcpkgCommitId: "6ca56aeb457f033d344a7106cb3f9f1abf8f4e98", triplet: "x64-windows-static"}
+        - {os: macos-10.15, usedocker: "false", ssl: "ssl1", useqemu: "false", arch: "amd64", implementation: "tdlight"}
     steps:
       - name: Checkout current repo
         uses: actions/checkout@v2
@@ -53,19 +49,19 @@ jobs:
           VERSION=$(echo "$VERSION" | awk '{print tolower($0)}')
           ARCH=${{ matrix.arch }}
           SAFE_ARCH=${ARCH///}  # linux/amd64 -> linuxamd64
-          SSL3=${{ matrix.ssl }}
+          SSL_TYPE=${{ matrix.ssl }}
 
           # Store variable for future use
           echo "HASH_VERSION=$HASH_VERSION" >> $GITHUB_ENV
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "SAFE_ARCH=$SAFE_ARCH" >> $GITHUB_ENV
-          echo "SSL3=$SSL3" >> $GITHUB_ENV
+          echo "SSL_TYPE=$SSL_TYPE" >> $GITHUB_ENV
 
           # Print debug info
           echo "hash version: $HASH_VERSION"
           echo "version: $VERSION"
           echo "safe arch: $SAFE_ARCH"
-          echo "ssl3: $SSL3"
+          echo "ssl type: $SSL_TYPE"
 
           # Save env to file
           cat $GITHUB_ENV > github.env
@@ -188,7 +184,7 @@ jobs:
           echo "VCPKG_DIR=$VCPKG_DIR" >> $GITHUB_ENV
           echo "MAVEN_OPTS=$MAVEN_OPTS" >> $GITHUB_ENV
           echo "GH_CPU_ARCH=$GH_CPU_ARCH" >> $GITHUB_ENV
-          echo "SSL3=$GH_MATRIX_SSL" >> $GITHUB_ENV
+          echo "SSL_TYPE=$GH_MATRIX_SSL" >> $GITHUB_ENV
           echo "CPU_ARCH_JAVA=$CPU_ARCH_JAVA" >> $GITHUB_ENV
           echo "CPU_ARCHITECTURE_NAME=$CPU_ARCHITECTURE_NAME" >> $GITHUB_ENV
           echo "CPU_CORES_NUM=$CPU_CORES_NUM" >> $GITHUB_ENV
@@ -268,6 +264,7 @@ jobs:
         shell: bash
         run: |
           echo "REVISION: $REVISION"
+          echo "SSL TYPE: $SSL_TYPE"
 
           source ./scripts/continuous-integration/github-workflows/deploy-snapshot.sh
         env:
@@ -278,6 +275,7 @@ jobs:
         shell: bash
         run: |
           echo "REVISION: $REVISION"
+          echo "SSL TYPE: $SSL_TYPE"
 
           source ./scripts/continuous-integration/github-workflows/deploy-release.sh
         env:
