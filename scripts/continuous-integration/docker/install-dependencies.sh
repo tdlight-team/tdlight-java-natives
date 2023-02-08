@@ -28,7 +28,7 @@ if [ -n "${CROSS_BUILD_DEPS_DIR}" ]; then
 	PWD_BEFORE_CROSS_DEPS=$(pwd)
 	if [[ ! -f "$CROSS_BUILD_DEPS_DIR/ok-013" ]]; then
 		echo "Setting up cross build deps dir"
-		rm -rf "$CROSS_BUILD_DEPS_DIR" || true
+		find "$CROSS_BUILD_DEPS_DIR" -mindepth 1 -delete || true
 		mkdir -p "$CROSS_BUILD_DEPS_DIR"
 		cd "$CROSS_BUILD_DEPS_DIR"
 

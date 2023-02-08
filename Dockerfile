@@ -1,8 +1,8 @@
 ARG GH_MATRIX_SSL
 
-FROM debian:oldstable as img_ssl1
+FROM debian:buster as img_ssl1
 ONBUILD ENV SSL_LIB_NAME=libssl1.1
-FROM ubuntu:jammy as img_ssl3
+FROM debian:bookworm as img_ssl3
 ONBUILD ENV SSL_LIB_NAME=libssl3
 
 FROM img_${GH_MATRIX_SSL} AS build
