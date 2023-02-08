@@ -57,8 +57,8 @@ if [ -n "${CROSS_BUILD_DEPS_DIR}" ]; then
       dpkg -x "$LIBSSL_DEB" "$CROSS_BUILD_DEPS_DIR"
 		else
       # LibSSL
-      apt-get download "libssl:${CPU_ARCH_DPKG}"
-      LIBSSL_DEB=$(find . -name "libssl_*.deb")
+      apt-get download "libssl1.1:${CPU_ARCH_DPKG}"
+      LIBSSL_DEB=$(find . -name "libssl1.1_*.deb")
       dpkg -x "$LIBSSL_DEB" "$CROSS_BUILD_DEPS_DIR"
 		fi
 		rm "$LIBSSL_DEB"
