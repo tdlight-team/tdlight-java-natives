@@ -49,8 +49,8 @@ if [ -n "${CROSS_BUILD_DEPS_DIR}" ]; then
 		dpkg -x "$LIBSSL_DEV_DEB" "$CROSS_BUILD_DEPS_DIR"
 		rm "$LIBSSL_DEV_DEB"
 		# LibSSL
-		apt-get download "libssl1.1:${CPU_ARCH_DPKG}"
-		LIBSSL_DEB=$(find . -name "libssl1.1_*.deb")
+		apt-get download "libssl3:${CPU_ARCH_DPKG}"
+		LIBSSL_DEB=$(find . -name "libssl3_*.deb")
 		dpkg -x "$LIBSSL_DEB" "$CROSS_BUILD_DEPS_DIR"
 		rm "$LIBSSL_DEB"
 		# Java Common
