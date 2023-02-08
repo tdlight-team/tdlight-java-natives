@@ -24,7 +24,7 @@ if [ -n "${CROSS_BUILD_DEPS_DIR}" ]; then
 	}
 
 	PWD_BEFORE_CROSS_DEPS=$(pwd)
-	if [[ ! -f "$CROSS_BUILD_DEPS_DIR/ok-012" ]]; then
+	if [[ ! -f "$CROSS_BUILD_DEPS_DIR/ok-013" ]]; then
 		echo "Setting up cross build deps dir"
 		rm -rf "$CROSS_BUILD_DEPS_DIR" || true
 		mkdir -p "$CROSS_BUILD_DEPS_DIR"
@@ -48,10 +48,17 @@ if [ -n "${CROSS_BUILD_DEPS_DIR}" ]; then
 		LIBSSL_DEV_DEB=$(find . -name "libssl-dev_*.deb")
 		dpkg -x "$LIBSSL_DEV_DEB" "$CROSS_BUILD_DEPS_DIR"
 		rm "$LIBSSL_DEV_DEB"
-		# LibSSL
-		apt-get download "libssl3:${CPU_ARCH_DPKG}"
-		LIBSSL_DEB=$(find . -name "libssl3_*.deb")
-		dpkg -x "$LIBSSL_DEB" "$CROSS_BUILD_DEPS_DIR"
+	  if [[ "$GH_MATRIX_SSL" == "ssl3" ]]; then
+      # LibSSL
+      apt-get download "libssl3:${CPU_ARCH_DPKG}"
+      LIBSSL_DEB=$(find . -name "libssl3_*.deb")
+      dpkg -x "$LIBSSL_DEB" "$CROSS_BUILD_DEPS_DIR"
+		else
+      # LibSSL
+      apt-get download "libssl:${CPU_ARCH_DPKG}"
+      LIBSSL_DEB=$(find . -name "libssl_*.deb")
+      dpkg -x "$LIBSSL_DEB" "$CROSS_BUILD_DEPS_DIR"
+		fi
 		rm "$LIBSSL_DEB"
 		# Java Common
 		apt-get download "java-common"
@@ -89,7 +96,7 @@ if [ -n "${CROSS_BUILD_DEPS_DIR}" ]; then
 		fix_jdk_path
 		check_jdk_existance
 
-		touch "$CROSS_BUILD_DEPS_DIR/ok-012"
+		touch "$CROSS_BUILD_DEPS_DIR/ok-013"
 	fi
 	echo "Cross build deps dir setup done"
 	fix_jdk_path

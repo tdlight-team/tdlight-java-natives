@@ -13,22 +13,20 @@ jobs:
     strategy:
       matrix:
         include:
-        - {os: ubuntu-22.04, usedocker: "true", useqemu: "false", arch: "linux/386", implementation: "tdlight"}
-        #- {os: ubuntu-22.04, usedocker: "true", useqemu: "false", arch: "linux/386", implementation: "tdlib"}
-        - {os: ubuntu-22.04, usedocker: "true", useqemu: "false", arch: "linux/amd64", implementation: "tdlight"}
-        #- {os: ubuntu-22.04, usedocker: "true", useqemu: "false", arch: "linux/amd64", implementation: "tdlib"}
-        - {os: ubuntu-22.04, usedocker: "true", useqemu: "false", arch: "linux/armhf", implementation: "tdlight"}
-        #- {os: ubuntu-22.04, usedocker: "true", useqemu: "false", arch: "linux/armhf", implementation: "tdlib"}
-        - {os: ubuntu-22.04, usedocker: "true", useqemu: "false", arch: "linux/arm64", implementation: "tdlight"}
-        #- {os: ubuntu-22.04, usedocker: "true", useqemu: "false", arch: "linux/arm64", implementation: "tdlib"}
-        - {os: ubuntu-22.04, usedocker: "true", useqemu: "false", arch: "linux/s390x", implementation: "tdlight"}
-        #- {os: ubuntu-22.04, usedocker: "true", useqemu: "false", arch: "linux/s390x", implementation: "tdlib"}
-        - {os: ubuntu-22.04, usedocker: "true", useqemu: "false", arch: "linux/ppc64le", implementation: "tdlight"}
-        #- {os: ubuntu-22.04, usedocker: "true", useqemu: "false", arch: "linux/ppc64le", implementation: "tdlib"}
+        - {os: ubuntu-20.04, usedocker: "true", ssl: "ssl1", useqemu: "false", arch: "linux/386", implementation: "tdlight"}
+        - {os: ubuntu-20.04, usedocker: "true", ssl: "ssl1", useqemu: "false", arch: "linux/amd64", implementation: "tdlight"}
+        - {os: ubuntu-20.04, usedocker: "true", ssl: "ssl1", useqemu: "false", arch: "linux/armhf", implementation: "tdlight"}
+        - {os: ubuntu-20.04, usedocker: "true", ssl: "ssl1", useqemu: "false", arch: "linux/arm64", implementation: "tdlight"}
+        - {os: ubuntu-20.04, usedocker: "true", ssl: "ssl1", useqemu: "false", arch: "linux/s390x", implementation: "tdlight"}
+        - {os: ubuntu-20.04, usedocker: "true", ssl: "ssl1", useqemu: "false", arch: "linux/ppc64le", implementation: "tdlight"}
+        - {os: ubuntu-22.04, usedocker: "true", ssl: "ssl3", useqemu: "false", arch: "linux/386", implementation: "tdlight"}
+        - {os: ubuntu-22.04, usedocker: "true", ssl: "ssl3", useqemu: "false", arch: "linux/amd64", implementation: "tdlight"}
+        - {os: ubuntu-22.04, usedocker: "true", ssl: "ssl3", useqemu: "false", arch: "linux/armhf", implementation: "tdlight"}
+        - {os: ubuntu-22.04, usedocker: "true", ssl: "ssl3", useqemu: "false", arch: "linux/arm64", implementation: "tdlight"}
+        - {os: ubuntu-22.04, usedocker: "true", ssl: "ssl3", useqemu: "false", arch: "linux/s390x", implementation: "tdlight"}
+        - {os: ubuntu-22.04, usedocker: "true", ssl: "ssl3", useqemu: "false", arch: "linux/ppc64le", implementation: "tdlight"}
         - {os: windows-2019, usedocker: "false", useqemu: "false", arch: "amd64", implementation: "tdlight", vcpkgCommitId: "6ca56aeb457f033d344a7106cb3f9f1abf8f4e98", triplet: "x64-windows-static"}
-        #- {os: windows-2019, usedocker: "false", useqemu: "false", arch: "amd64", implementation: "tdlib", vcpkgCommitId: "6ca56aeb457f033d344a7106cb3f9f1abf8f4e98", triplet: "x64-windows-static"}
         - {os: macos-10.15, usedocker: "false", useqemu: "false", arch: "amd64", implementation: "tdlight"}
-        #- {os: macos-10.15, usedocker: "false", useqemu: "false", arch: "amd64", implementation: "tdlib"}
     steps:
       - name: Checkout current repo
         uses: actions/checkout@v2
@@ -55,16 +53,19 @@ jobs:
           VERSION=$(echo "$VERSION" | awk '{print tolower($0)}')
           ARCH=${{ matrix.arch }}
           SAFE_ARCH=${ARCH///}  # linux/amd64 -> linuxamd64
+          SSL3=${{ matrix.ssl }}
 
           # Store variable for future use
           echo "HASH_VERSION=$HASH_VERSION" >> $GITHUB_ENV
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "SAFE_ARCH=$SAFE_ARCH" >> $GITHUB_ENV
+          echo "SSL3=$SSL3" >> $GITHUB_ENV
 
           # Print debug info
           echo "hash version: $HASH_VERSION"
           echo "version: $VERSION"
           echo "safe arch: $SAFE_ARCH"
+          echo "ssl3: $SSL3"
 
           # Save env to file
           cat $GITHUB_ENV > github.env
@@ -82,33 +83,33 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-v3-buildx-cache-${{ env.SAFE_ARCH }}-${{ github.sha }}
+          key: ${{ runner.os }}-v3-buildx-cache-${{ env.SAFE_ARCH }}-${{ env.SSL }}-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-v3-buildx-cache-${{ env.SAFE_ARCH }}-
+            ${{ runner.os }}-v3-buildx-cache-${{ env.SAFE_ARCH }}-${{ env.SSL }}-
 
       - name: Cache Maven
         uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-v3-maven-${{ env.SAFE_ARCH }}-${{ hashFiles('**/pom.xml') }}
+          key: ${{ runner.os }}-v3-maven-${{ env.SAFE_ARCH }}-${{ env.SSL }}-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
-            ${{ runner.os }}-v3-maven-${{ env.SAFE_ARCH }}-
+            ${{ runner.os }}-v3-maven-${{ env.SAFE_ARCH }}-${{ env.SSL }}-
 
       - name: Cache packages cache
         uses: actions/cache@v3
         with:
           path:  ~/tdlight-java-natives/tdlight-java-natives/.cache
-          key: ${{ runner.os }}-v3-packages-${{ env.SAFE_ARCH }}-${{ github.sha }}
+          key: ${{ runner.os }}-v3-packages-${{ env.SAFE_ARCH }}-${{ env.SSL }}-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-v3-packages-${{ env.SAFE_ARCH }}-
+            ${{ runner.os }}-v3-packages-${{ env.SAFE_ARCH }}-${{ env.SSL }}-
 
       - name: Cache ccache
         uses: actions/cache@v3
         with:
           path: ~/.ccache
-          key: ${{ runner.os }}-v2-ccache-${{ env.SAFE_ARCH }}-${{ github.sha }}
+          key: ${{ runner.os }}-v2-ccache-${{ env.SAFE_ARCH }}-${{ env.SSL }}-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-v2-ccache-${{ env.SAFE_ARCH }}-
+            ${{ runner.os }}-v2-ccache-${{ env.SAFE_ARCH }}-${{ env.SSL }}-
 
       - name: Build image
         if: matrix.usedocker == 'true'
@@ -122,18 +123,19 @@ jobs:
           push: false
           load: true
           tags: |
-            tdlight-java-natives:${{ env.HASH_VERSION }}-${{ env.SAFE_ARCH }}
+            tdlight-java-natives:${{ env.HASH_VERSION }}-${{ env.SAFE_ARCH }}-${{ env.SSL }}
           build-args: |
             REVISION=${{ github.run_number }}
             GH_MATRIX_OS=${{ matrix.os }}
             GH_MATRIX_ARCH=${{ matrix.arch }}
+            GH_MATRIX_SSL=${{ matrix.ssl }}
             IMPLEMENTATION_NAME=${{ matrix.implementation }}
 
       - name: Extract jni from docker image
         if: matrix.usedocker == 'true'
         run: |
           mkdir generated
-          docker cp $(docker create tdlight-java-natives:${{ env.HASH_VERSION }}-${{ env.SAFE_ARCH }}):/usr/src/tdlight-java-natives/generated/. ./generated/.
+          docker cp $(docker create tdlight-java-natives:${{ env.HASH_VERSION }}-${{ env.SAFE_ARCH }}-${{ env.SSL }}):/usr/src/tdlight-java-natives/generated/. ./generated/.
 
       - name: Setup Java (Snapshot)
         if: github.ref == 'refs/heads/develop'
@@ -160,6 +162,7 @@ jobs:
           export REVISION=${{ github.run_number }}
           export GH_MATRIX_OS=${{ matrix.os }}
           export GH_MATRIX_ARCH=${{ matrix.arch }}
+          export GH_MATRIX_SSL=${{ matrix.ssl }}
           export IMPLEMENTATION_NAME=${{ matrix.implementation }}
           source ./scripts/continuous-integration/github-workflows/setup-variables.sh
 
@@ -185,6 +188,7 @@ jobs:
           echo "VCPKG_DIR=$VCPKG_DIR" >> $GITHUB_ENV
           echo "MAVEN_OPTS=$MAVEN_OPTS" >> $GITHUB_ENV
           echo "GH_CPU_ARCH=$GH_CPU_ARCH" >> $GITHUB_ENV
+          echo "SSL3=$GH_MATRIX_SSL" >> $GITHUB_ENV
           echo "CPU_ARCH_JAVA=$CPU_ARCH_JAVA" >> $GITHUB_ENV
           echo "CPU_ARCHITECTURE_NAME=$CPU_ARCHITECTURE_NAME" >> $GITHUB_ENV
           echo "CPU_CORES_NUM=$CPU_CORES_NUM" >> $GITHUB_ENV
