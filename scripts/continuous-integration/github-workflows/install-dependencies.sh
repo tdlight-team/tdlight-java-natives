@@ -10,9 +10,10 @@ if [[ "$OPERATING_SYSTEM_NAME" == "linux" ]]; then
 
 elif [[ "$OPERATING_SYSTEM_NAME" == "osx" ]]; then
 	echo "==OSX======"
+	brew update
 	brew install gperf cmake openssl coreutils
-	brew install libtiff
 	brew install openjdk
+	brew install freetype gd libtiff
 elif [[ "$OPERATING_SYSTEM_NAME" == "windows" ]]; then
 	echo "==Windows=="
 	#choco install visualstudio2019buildtools --version=16.10.4.0 --allow-downgrade --package-parameters "--passive"

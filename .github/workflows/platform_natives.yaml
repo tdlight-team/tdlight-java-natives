@@ -22,7 +22,7 @@ jobs:
         - {os: ubuntu-22.04, usedocker: "false", ssl: "ssl3", useqemu: "false", arch: "linux/amd64", implementation: "tdlight"}
         - {os: ubuntu-22.04, usedocker: "false", ssl: "ssl3", useqemu: "false", arch: "linux/arm64", implementation: "tdlight"}
         - {os: windows-2019, usedocker: "false", ssl: "ssl1", useqemu: "false", arch: "amd64", implementation: "tdlight", vcpkgCommitId: "6ca56aeb457f033d344a7106cb3f9f1abf8f4e98", triplet: "x64-windows-static"}
-        - {os: macos-11, usedocker: "false", ssl: "ssl1", useqemu: "false", arch: "amd64", implementation: "tdlight"}
+        - {os: macos-12, usedocker: "false", ssl: "ssl1", useqemu: "false", arch: "amd64", implementation: "tdlight"}
     steps:
       - name: Checkout current repo
         uses: actions/checkout@v2
