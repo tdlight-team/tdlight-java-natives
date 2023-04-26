@@ -10,9 +10,8 @@ if [[ "$OPERATING_SYSTEM_NAME" == "linux" ]]; then
 
 elif [[ "$OPERATING_SYSTEM_NAME" == "osx" ]]; then
 	echo "==OSX======"
-	export PYTHON=36
-	brew install swig;
-	brew install gperf openssl coreutils
+	brew install gperf cmake openssl coreutils
+	brew install openjdk
 elif [[ "$OPERATING_SYSTEM_NAME" == "windows" ]]; then
 	echo "==Windows=="
 	#choco install visualstudio2019buildtools --version=16.10.4.0 --allow-downgrade --package-parameters "--passive"

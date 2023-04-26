@@ -129,7 +129,6 @@ jobs:
 
           API_TYPE=legacy ./scripts/continuous-integration/github-workflows/deploy-release.sh
           API_TYPE=sealed ./scripts/continuous-integration/github-workflows/deploy-release.sh
-          API_TYPE=legacy ./scripts/continuous-integration/github-workflows/deploy-javadoc.sh
           API_TYPE=sealed ./scripts/continuous-integration/github-workflows/deploy-javadoc.sh
         env:
           MAVEN_USERNAME: ${{ secrets.MCHV_USERNAME }}
