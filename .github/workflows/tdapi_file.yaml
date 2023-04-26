@@ -129,8 +129,11 @@ jobs:
 
           API_TYPE=legacy ./scripts/continuous-integration/github-workflows/deploy-release.sh
           API_TYPE=sealed ./scripts/continuous-integration/github-workflows/deploy-release.sh
+          API_TYPE=legacy ./scripts/continuous-integration/github-workflows/deploy-javadoc.sh
           API_TYPE=sealed ./scripts/continuous-integration/github-workflows/deploy-javadoc.sh
         env:
           MAVEN_USERNAME: ${{ secrets.MCHV_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.MCHV_TOKEN }}
+          DOCS_DEPLOY_USERNAME: ${{ secrets.DOCS_DEPLOY_USERNAME }}
+          DOCS_DEPLOY_PASSWORD: ${{ secrets.DOCS_DEPLOY_PASSWORD }}
 

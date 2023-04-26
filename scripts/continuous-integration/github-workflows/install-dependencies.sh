@@ -10,7 +10,7 @@ if [[ "$OPERATING_SYSTEM_NAME" == "linux" ]]; then
 
 elif [[ "$OPERATING_SYSTEM_NAME" == "osx" ]]; then
 	echo "==OSX======"
-	brew install gperf cmake openssl coreutils
+	brew install gperf cmake openssl coreutils imagemagick
 	brew install openjdk
 elif [[ "$OPERATING_SYSTEM_NAME" == "windows" ]]; then
 	echo "==Windows=="
