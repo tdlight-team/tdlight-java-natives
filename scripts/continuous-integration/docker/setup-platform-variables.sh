@@ -1,4 +1,7 @@
 #!/bin/bash -e
+if [[ -n ${GH_CROSSBUILD} ]]; then
+  export CROSS_BUILD_DEPS_DIR=""
+fi
 source ./scripts/continuous-integration/github-workflows/setup-variables.sh
 
 export JAVA_HOME
