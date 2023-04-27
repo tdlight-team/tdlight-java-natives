@@ -28,7 +28,7 @@ else
 	cd "../../generated-${API_TYPE}"
 fi
 
-mvn -B -Drevision="${REVISION_MVN}" -DsafeVersionName="${SAFE_VERSION_NAME}" -Dssl3=${USE_SSL3} "-D${API_TYPE:-${FALLBACK_API_TYPE}}" clean deploy
+mvn -B -Drevision="${REVISION_MVN}" -DsafeVersionName="${SAFE_VERSION_NAME}" -Dssl3=${USE_SSL3} "-D${API_TYPE:-${FALLBACK_API_TYPE}}" deploy
 
 echo "Done."
 exit 0

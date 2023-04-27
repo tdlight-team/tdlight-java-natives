@@ -19,7 +19,7 @@ if [ "${SSL_TYPE:-${FALLBACK_SSL_TYPE}}" != "ssl1" ]; then
 fi
 REVISION_MVN="4.0.0${REVISION_SUFFIX}"
 
-mvn -B -Drevision="${REVISION_MVN}" -Dssl3=${USE_SSL3} -DsafeVersionName="${SAFE_VERSION_NAME}" "-D${API_TYPE:-${FALLBACK_API_TYPE}}" deploy
+mvn -B -Drevision="${REVISION_MVN}" -DsafeVersionName="${SAFE_VERSION_NAME}" -Dssl3=${USE_SSL3} "-D${API_TYPE:-${FALLBACK_API_TYPE}}" deploy
 
 echo "Done."
 exit 0

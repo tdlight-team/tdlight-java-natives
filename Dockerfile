@@ -37,7 +37,4 @@ RUN --mount=target=/var/lib/apt/lists,type=cache,sharing=locked \
     --mount=target=/var/cache/crossbuild-deps,type=cache,sharing=locked \
     /bin/bash /usr/src/tdlight-java-natives/scripts/continuous-integration/docker/build-natives.sh
 
-#WORKDIR /usr/src/tdlight-java-natives/generated/
-#RUN echo "aaaa" > test.txt
-
 ENTRYPOINT [ "/bin/bash" ]
