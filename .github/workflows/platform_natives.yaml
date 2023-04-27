@@ -8,54 +8,58 @@ on:
 
 jobs:
   build:
-    name: Build (${{ matrix.implementation }}-${{ matrix.os }}-${{ matrix.arch }})
+    name: Build (${{ matrix.type }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         include:
-        - {os: ubuntu-20.04, usedocker: "true", ssl: "ssl1", useqemu: "false", crossbuild: "false", arch: "linux/386", implementation: "tdlight"}
-        - {os: ubuntu-20.04, usedocker: "true", ssl: "ssl1", useqemu: "false", crossbuild: "false", arch: "linux/amd64", implementation: "tdlight"}
-        - {os: ubuntu-20.04, usedocker: "true", ssl: "ssl1", useqemu: "false", crossbuild: "false", arch: "linux/armhf", implementation: "tdlight"}
-        - {os: ubuntu-20.04, usedocker: "true", ssl: "ssl1", useqemu: "false", crossbuild: "false", arch: "linux/arm64", implementation: "tdlight"}
-        - {os: ubuntu-20.04, usedocker: "true", ssl: "ssl1", useqemu: "false", crossbuild: "false", arch: "linux/s390x", implementation: "tdlight"}
-        - {os: ubuntu-20.04, usedocker: "true", ssl: "ssl1", useqemu: "false", crossbuild: "false", arch: "linux/ppc64le", implementation: "tdlight"}
-        - {os: ubuntu-22.04, usedocker: "false", ssl: "ssl3", useqemu: "false", crossbuild: "false", arch: "linux/amd64", implementation: "tdlight"}
-        - {os: ubuntu-22.04, usedocker: "false", ssl: "ssl3", useqemu: "false", crossbuild: "false", arch: "linux/arm64", implementation: "tdlight"}
-        - {os: windows-2019, usedocker: "false", ssl: "ssl1", useqemu: "false", crossbuild: "false", arch: "amd64", implementation: "tdlight", vcpkgCommitId: "6ca56aeb457f033d344a7106cb3f9f1abf8f4e98", triplet: "x64-windows-static"}
-        - {os: macos-12, usedocker: "false", ssl: "ssl1", useqemu: "false", crossbuild: "false", arch: "amd64", implementation: "tdlight"}
+          - { os: ubuntu-20.04, type: "linux/386-ssl1" }
+          - { os: ubuntu-20.04, type: "linux/amd64-ssl1" }
+          - { os: ubuntu-20.04, type: "linux/arm64-ssl1" }
+          - { os: ubuntu-20.04, type: "linux/s390x-ssl1" }
+          - { os: ubuntu-20.04, type: "linux/ppc64le-ssl1" }
+          - { os: ubuntu-20.04, type: "linux/amd64-ssl3" }
+          - { os: ubuntu-20.04, type: "linux/arm64-ssl3" }
+          - { os: windows-2019, type: "windows/amd64", vcpkgCommitId: "6ca56aeb457f033d344a7106cb3f9f1abf8f4e98", triplet: "x64-windows-static" }
+          - { os: macos-12, type: "macos/amd64" }
     steps:
       - name: Checkout current repo
         uses: actions/checkout@v2
         with:
           submodules: "recursive"
 
-
       - name: Get version
-        if: matrix.usedocker == 'true'
         run: |
           # Get latest commit short hash
           HASH_VERSION=$(git rev-parse --short HEAD)
 
           # Strip git ref prefix from version
           VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-        
+          
           # Strip "v" prefix from tag name
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
-        
+          
           # Use Docker `latest` tag convention
           [ "$VERSION" == "master" ] && VERSION=latest
 
           HASH_VERSION=$(echo "$HASH_VERSION" | awk '{print tolower($0)}')
           VERSION=$(echo "$VERSION" | awk '{print tolower($0)}')
-          ARCH=${{ matrix.arch }}
-          SAFE_ARCH=${ARCH///}  # linux/amd64 -> linuxamd64
-          SSL_TYPE=${{ matrix.ssl }}
+          TYPE=${{ matrix.type }}
+          SAFE_TYPE=${TYPE///}  # linux/amd64 -> linuxamd64
+
+          REVISION=${{ github.run_number }}
+          GH_MATRIX_OS=${{ matrix.os }}
+          GH_MATRIX_TYPE=${{ matrix.type }}
 
           # Store variable for future use
           echo "HASH_VERSION=$HASH_VERSION" >> $GITHUB_ENV
           echo "VERSION=$VERSION" >> $GITHUB_ENV
-          echo "SAFE_ARCH=$SAFE_ARCH" >> $GITHUB_ENV
+          echo "TYPE=$TYPE" >> $GITHUB_ENV
+          echo "SAFE_TYPE=$SAFE_TYPE" >> $GITHUB_ENV
           echo "SSL_TYPE=$SSL_TYPE" >> $GITHUB_ENV
+          echo "REVISION=$REVISION" >> $GITHUB_ENV
+          echo "GH_MATRIX_OS=$GH_MATRIX_OS" >> $GITHUB_ENV
+          echo "GH_MATRIX_TYPE=$GH_MATRIX_TYPE" >> $GITHUB_ENV
 
           # Print debug info
           echo "hash version: $HASH_VERSION"
@@ -63,76 +67,34 @@ jobs:
           echo "safe arch: $SAFE_ARCH"
           echo "ssl type: $SSL_TYPE"
 
+          echo "Variables:"
+          
           # Save env to file
           cat $GITHUB_ENV > github.env
-
-      - name: Set up QEMU
-        if: matrix.usedocker == 'true' && matrix.useqemu == 'true'
-        uses: docker/setup-qemu-action@v2
-
-      - name: Set up Docker Buildx
-        if: matrix.usedocker == 'true'
-        uses: docker/setup-buildx-action@v2
-
-      - name: Cache Docker layers
-        if: matrix.usedocker == 'true'
-        uses: actions/cache@v3
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-v3-buildx-cache-${{ env.SAFE_ARCH }}-${{ env.SSL }}-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-v3-buildx-cache-${{ env.SAFE_ARCH }}-${{ env.SSL }}-
 
       - name: Cache Maven
         uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-v3-maven-${{ env.SAFE_ARCH }}-${{ env.SSL }}-${{ hashFiles('**/pom.xml') }}
+          key: ${{ runner.os }}-v3-maven-${{ env.SAFE_TYPE }}-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
-            ${{ runner.os }}-v3-maven-${{ env.SAFE_ARCH }}-${{ env.SSL }}-
+            ${{ runner.os }}-v3-maven-${{ env.SAFE_TYPE }}-
 
       - name: Cache packages cache
         uses: actions/cache@v3
         with:
           path:  ~/tdlight-java-natives/tdlight-java-natives/.cache
-          key: ${{ runner.os }}-v3-packages-${{ env.SAFE_ARCH }}-${{ env.SSL }}-${{ github.sha }}
+          key: ${{ runner.os }}-v3-packages-${{ env.SAFE_TYPE }}-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-v3-packages-${{ env.SAFE_ARCH }}-${{ env.SSL }}-
+            ${{ runner.os }}-v3-packages-${{ env.SAFE_TYPE }}-
 
       - name: Cache ccache
         uses: actions/cache@v3
         with:
           path: ~/.ccache
-          key: ${{ runner.os }}-v2-ccache-${{ env.SAFE_ARCH }}-${{ env.SSL }}-${{ github.sha }}
+          key: ${{ runner.os }}-v2-ccache-${{ env.SAFE_TYPE }}-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-v2-ccache-${{ env.SAFE_ARCH }}-${{ env.SSL }}-
-
-      - name: Build image
-        if: matrix.usedocker == 'true'
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          file: ./Dockerfile
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,mode=max,dest=/tmp/.buildx-cache
-          platforms: linux/amd64
-          push: false
-          load: true
-          tags: |
-            tdlight-java-natives:${{ env.HASH_VERSION }}-${{ env.SAFE_ARCH }}-${{ env.SSL }}
-          build-args: |
-            REVISION=${{ github.run_number }}
-            GH_MATRIX_OS=${{ matrix.os }}
-            GH_MATRIX_ARCH=${{ matrix.arch }}
-            GH_MATRIX_SSL=${{ matrix.ssl }}
-            GH_CROSSBUILD=${{ matrix.crossbuild }}
-            IMPLEMENTATION_NAME=${{ matrix.implementation }}
-
-      - name: Extract jni from docker image
-        if: matrix.usedocker == 'true'
-        run: |
-          mkdir generated
-          docker cp $(docker create tdlight-java-natives:${{ env.HASH_VERSION }}-${{ env.SAFE_ARCH }}-${{ env.SSL }}):/usr/src/tdlight-java-natives/generated/. ./generated/.
+            ${{ runner.os }}-v2-ccache-${{ env.SAFE_TYPE }}-
 
       - name: Setup Java (Snapshot)
         if: github.ref == 'refs/heads/develop'
@@ -152,58 +114,7 @@ jobs:
           server-id: mchv-release-distribution
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
-      - name: Setup variables
-        shell: bash
-        run: |
-          # ====== Variables
-          export REVISION=${{ github.run_number }}
-          export GH_MATRIX_OS=${{ matrix.os }}
-          export GH_MATRIX_ARCH=${{ matrix.arch }}
-          export GH_MATRIX_SSL=${{ matrix.ssl }}
-          export GH_CROSSBUILD=${{ matrix.crossbuild }}
-          export IMPLEMENTATION_NAME=${{ matrix.implementation }}
-          source ./scripts/continuous-integration/github-workflows/setup-variables.sh
 
-          echo "Variables:"
-          echo "REVISION=$REVISION" >> $GITHUB_ENV
-          echo "BUILD_TYPE=$BUILD_TYPE" >> $GITHUB_ENV
-          echo "IMPLEMENTATION_NAME=$IMPLEMENTATION_NAME" >> $GITHUB_ENV
-          echo "TD_SRC_DIR=$TD_SRC_DIR" >> $GITHUB_ENV
-          echo "TD_BIN_DIR=$TD_BIN_DIR" >> $GITHUB_ENV
-          echo "TDNATIVES_BIN_DIR=$TDNATIVES_BIN_DIR" >> $GITHUB_ENV
-          echo "TDNATIVES_CPP_SRC_DIR=$TDNATIVES_CPP_SRC_DIR" >> $GITHUB_ENV
-          echo "TDNATIVES_DOCS_BIN_DIR=$TDNATIVES_DOCS_BIN_DIR" >> $GITHUB_ENV
-          echo "TD_BUILD_DIR=$TD_BUILD_DIR" >> $GITHUB_ENV
-          echo "TDNATIVES_CPP_BUILD_DIR=$TDNATIVES_CPP_BUILD_DIR" >> $GITHUB_ENV
-          echo "JAVA_SRC_DIR=$JAVA_SRC_DIR" >> $GITHUB_ENV
-          echo "TDLIB_SERIALIZER_DIR=$TDLIB_SERIALIZER_DIR" >> $GITHUB_ENV
-          if [[ ! -z "$PATH" && "$OPERATING_SYSTEM_NAME" != "windows" ]]; then
-            echo "PATH=$PATH" >> $GITHUB_ENV
-          fi
-          echo "JAVA_HOME=$JAVA_HOME" >> $GITHUB_ENV
-          echo "JAVA_INCLUDE_PATH=$JAVA_INCLUDE_PATH" >> $GITHUB_ENV
-          echo "CMAKE_EXTRA_ARGUMENTS=$CMAKE_EXTRA_ARGUMENTS" >> $GITHUB_ENV
-          echo "VCPKG_DIR=$VCPKG_DIR" >> $GITHUB_ENV
-          echo "MAVEN_OPTS=$MAVEN_OPTS" >> $GITHUB_ENV
-          echo "GH_CPU_ARCH=$GH_CPU_ARCH" >> $GITHUB_ENV
-          echo "SSL_TYPE=$GH_MATRIX_SSL" >> $GITHUB_ENV
-          echo "CROSSBUILD=$GH_CROSSBUILD" >> $GITHUB_ENV
-          echo "CPU_ARCH_JAVA=$CPU_ARCH_JAVA" >> $GITHUB_ENV
-          echo "CPU_ARCHITECTURE_NAME=$CPU_ARCHITECTURE_NAME" >> $GITHUB_ENV
-          echo "CPU_CORES_NUM=$CPU_CORES_NUM" >> $GITHUB_ENV
-          echo "CPU_CORES=$CPU_CORES" >> $GITHUB_ENV
-          echo "OPERATING_SYSTEM_NAME=$OPERATING_SYSTEM_NAME" >> $GITHUB_ENV
-          echo "OPERATING_SYSTEM_NAME_SHORT=$OPERATING_SYSTEM_NAME_SHORT" >> $GITHUB_ENV
-          echo "SRC_TDJNI_LIBNAME=$SRC_TDJNI_LIBNAME" >> $GITHUB_ENV
-          echo "DEST_TDJNI_LIBNAME=$DEST_TDJNI_LIBNAME" >> $GITHUB_ENV
-
-      - name: Install dependencies
-        if: matrix.usedocker == 'false'
-        shell: bash
-        run: |
-          echo "REVISION: $REVISION"
-
-          source ./scripts/continuous-integration/github-workflows/install-dependencies.sh
       - name: Setup PHP with Readline extension
         uses: shivammathur/setup-php@v2
         with:
@@ -246,12 +157,11 @@ jobs:
           $VCPKG_DIR/vcpkg install gperf openssl:x64-windows-static zlib:x64-windows-static
         shell: bash
       - name: Build
-        if: matrix.usedocker == 'false'
         shell: bash
         run: |
           echo "REVISION: $REVISION"
-
-          source ./scripts/continuous-integration/github-workflows/build-natives.sh
+          
+          source ./.github/workflows/scripts/build-${SAFE_TYPE}.sh
       - id: getfilename
         shell: bash
         run: echo "::set-output name=file::$(cd generated/target; ls tdli*-natives-*.jar)"
