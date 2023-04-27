@@ -13,12 +13,13 @@ FALLBACK_API_TYPE="sealed"
 FALLBACK_SSL_TYPE="ssl1"
 SAFE_VERSION_NAME="v4_0_0"
 REVISION_SUFFIX="-SNAPSHOT"
+USE_SSL3="False"
 if [ "${SSL_TYPE:-${FALLBACK_SSL_TYPE}}" != "ssl1" ]; then
-  REVISION_SUFFIX="-${SSL_TYPE}${REVISION_SUFFIX}"
+  USE_SSL3="True"
 fi
 REVISION_MVN="4.0.0${REVISION_SUFFIX}"
 
-mvn -B -Drevision="${REVISION_MVN}" -DsafeVersionName="${SAFE_VERSION_NAME}" "-D${API_TYPE:-${FALLBACK_API_TYPE}}" deploy
+mvn -B -Drevision="${REVISION_MVN}" -Dssl3=${USE_SSL3} -DsafeVersionName="${SAFE_VERSION_NAME}" "-D${API_TYPE:-${FALLBACK_API_TYPE}}" deploy
 
 echo "Done."
 exit 0
