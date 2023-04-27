@@ -124,18 +124,9 @@
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-jar-plugin</artifactId>
 						<version>3.2.0</version>
-						<executions>
-							<execution>
-								<id>ssl3</id>
-								<phase>package</phase>
-								<goals>
-									<goal>jar</goal>
-								</goals>
-								<configuration>
-									<classifier>ssl3</classifier>
-								</configuration>
-							</execution>
-						</executions>
+						<configuration>
+							<classifier>ssl3</classifier>
+						</configuration>
 					</plugin>
 				</plugins>
 			</build>
