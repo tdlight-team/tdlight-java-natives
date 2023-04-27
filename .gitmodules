@@ -1,6 +1,3 @@
-[submodule "implementations/tdlib"]
-	path = implementations/tdlib
-	url = https://github.com/tdlib/td.git
 [submodule "implementations/tdlight"]
 	path = implementations/tdlight
 	url = https://git.ignuranza.net/tdlight-team/tdlight.git
