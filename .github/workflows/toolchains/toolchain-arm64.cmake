@@ -4,11 +4,11 @@ set(triple aarch64-linux-gnu)
 set(CMAKE_SYSROOT /usr/aarch64-linux-gnu)
 set(CMAKE_FIND_ROOT_PATH /usr/aarch64-linux-gnu)
 
-set(CMAKE_C_COMPILER /usr/lib/clang-10)
+set(CMAKE_C_COMPILER /usr/bin/clang-10)
 set(CMAKE_C_COMPILER_TARGET ${triple})
-set(CMAKE_CXX_COMPILER /usr/lib/clang++-10)
+set(CMAKE_CXX_COMPILER /usr/bin/clang++-10)
 set(CMAKE_CXX_COMPILER_TARGET ${triple})
-set(CMAKE_AR /usr/lib/llvm-ar-10)
+set(CMAKE_AR /usr/bin/llvm-ar-10)
 
 # Set various compiler flags
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-psabi --specs=nosys.specs -fdata-sections -ffunction-sections -Wl,--gc-sections")
