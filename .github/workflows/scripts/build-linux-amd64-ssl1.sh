@@ -7,7 +7,9 @@ TOOLCHAIN_HOST_FILE="$(readlink -e ./.github/workflows/toolchains/toolchain-cmak
 rm -rf implementations/tdlight/td_tools_build implementations/tdlight/build api/target-legacy api/target api/.ci-friendly-pom.xml implementations/tdlight/td/generate/auto natives/src/main/java/it/tdlight/jni natives/build natives/tdjni_bin natives/tdjni_docs
 mkdir -p implementations/tdlight/build  implementations/tdlight/build/td_bin/bin implementations/tdlight/td_tools_build/java/it/tdlight/jni api/src/main/java-legacy/it/tdlight/jni api/src/main/java-sealed/it/tdlight/jni natives/src/main/java/it/tdlight/jni natives/build natives/tdjni_bin natives/tdjni_docs
 
-
+# Default compiler
+export CMAKE_C_COMPILER=clang-10
+export CMAKE_CXX_COMPILER=clang++-10
 
 # Build tdlib tools
 cd implementations/tdlight/td_tools_build
