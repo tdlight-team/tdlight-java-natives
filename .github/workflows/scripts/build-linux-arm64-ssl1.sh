@@ -62,15 +62,15 @@ cd ../../../
 cd natives/build
 CXXFLAGS="-stdlib=libc++" CC="$HOST_CMAKE_C_COMPILER" CXX="$HOST_CMAKE_CXX_COMPILER" cmake \
   -DCMAKE_BUILD_TYPE=Release \
-  -DTD_GENERATED_BINARIES_DIR=../../implementations/tdlight/build/td/generate \
-  -DTD_SRC_DIR=../../implementations/tdlight \
+  -DTD_GENERATED_BINARIES_DIR="$(readlink -e ../../implementations/tdlight/build/td/generate)" \
+  -DTD_SRC_DIR="$(readlink -e ../../implementations/tdlight)" \
   -DTD_ENABLE_LTO=ON \
   -DTDNATIVES_BIN_DIR="$(readlink -e ../tdjni_bin/)" \
   -DTDNATIVES_DOCS_BIN_DIR="$(readlink -e ../tdjni_docs/)" \
   -DTd_DIR:PATH="$(readlink -e ../../implementations/tdlight/build/td_bin/lib/cmake/Td)" \
-  -DJAVA_SRC_DIR="../src/main/java" \
+  -DJAVA_SRC_DIR="$(readlink -e ../src/main/java)" \
   -DJava_JAVADOC_EXECUTABLE="/bin/true" \
-  -DTDNATIVES_CPP_SRC_DIR="../src/main/cpp" \
+  -DTDNATIVES_CPP_SRC_DIR="$(readlink -e ../src/main/cpp)" \
   -DCMAKE_TOOLCHAIN_FILE="${TOOLCHAIN_FILE}" \
   ../src/main/cpp
 cmake --build . --target install --config Release "-j$(nproc)"
