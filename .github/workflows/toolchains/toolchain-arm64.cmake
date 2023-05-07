@@ -4,11 +4,11 @@ set(triple aarch64-linux-gnu)
 set(CMAKE_SYSROOT /usr/aarch64-linux-gnu)
 set(CMAKE_FIND_ROOT_PATH /usr/aarch64-linux-gnu)
 
-set(CMAKE_C_COMPILER clang)
+set(CMAKE_C_COMPILER /usr/lib/clang-10)
 set(CMAKE_C_COMPILER_TARGET ${triple})
-set(CMAKE_CXX_COMPILER clang++)
+set(CMAKE_CXX_COMPILER /usr/lib/clang++-10)
 set(CMAKE_CXX_COMPILER_TARGET ${triple})
-set(CMAKE_AR llvm-ar)
+set(CMAKE_AR /usr/lib/llvm-ar-10)
 
 # Set various compiler flags
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-psabi --specs=nosys.specs -fdata-sections -ffunction-sections -Wl,--gc-sections")
@@ -49,7 +49,7 @@ set(THREADS_PREFER_PTHREAD_FLAG ON)
 
 # Use LLD on linux
 #add_link_options("-fuse-ld=lld" "-rtlib=compiler-rt" "-unwindlib=libunwind" "-Wl,--as-needed")
-add_link_options("-fuse-ld=lld" "-v")
+add_link_options("-fuse-ld=lld")
 
 # ccache
 find_program(CCACHE_FOUND ccache)
