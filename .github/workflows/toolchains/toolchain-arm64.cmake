@@ -2,7 +2,7 @@ SET(CMAKE_SYSTEM_NAME Linux)
 set(CMAKE_SYSTEM_PROCESSOR aarch64)
 set(triple aarch64-linux-gnu)
 set(CMAKE_SYSROOT /usr/aarch64-linux-gnu)
-set(CMAKE_FIND_ROOT_PATH /usr/aarch64-linux-gnu)
+set(CMAKE_FIND_ROOT_PATH /usr/aarch64-linux-gnu /usr/lib/aarch64-linux-gnu /usr/lib/llvm-10/include)
 
 set(CMAKE_C_COMPILER /usr/bin/clang-10)
 set(CMAKE_C_COMPILER_TARGET ${triple})
@@ -26,7 +26,6 @@ SET(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 # Optionally reduce compiler sanity check when cross-compiling.
 set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 
-include_directories("/usr/lib/llvm-10/include")
 #include_directories("${CROSS_OPENJDK_PATH}/include/linux")
 
 
