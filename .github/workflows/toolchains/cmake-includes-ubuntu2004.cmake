@@ -1,8 +1,8 @@
 SET(CMAKE_SYSTEM_NAME Linux)
 
-set(CMAKE_C_COMPILER clang-10)
-set(CMAKE_CXX_COMPILER clang++-10)
-set(CMAKE_AR llvm-ar-10)
+set(CMAKE_C_COMPILER "/usr/bin/ccache /usr/bin/clang-10")
+set(CMAKE_CXX_COMPILER "/usr/bin/ccache /usr/bin/clang++-10")
+set(CMAKE_AR /usr/bin/llvm-ar-10)
 
 # Set various compiler flags
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-psabi --specs=nosys.specs -fdata-sections -ffunction-sections -Wl,--gc-sections")
