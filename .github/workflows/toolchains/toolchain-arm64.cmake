@@ -1,6 +1,6 @@
 SET(CMAKE_SYSTEM_NAME Linux)
 set(CMAKE_SYSTEM_PROCESSOR aarch64)
-set(triple arm-linux-gnueabihf)
+set(triple aarch64-linux-gnu)
 set(CMAKE_SYSROOT /usr/aarch64-linux-gnu)
 set(CMAKE_FIND_ROOT_PATH /usr/aarch64-linux-gnu)
 

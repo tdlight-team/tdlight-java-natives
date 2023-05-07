@@ -70,16 +70,6 @@ jobs:
           echo "REVISION: $REVISION"
 
           ./.github/workflows/scripts/build-api.sh
-      - id: getfilename
-        shell: bash
-        run: echo "::set-output name=file::$(cd api/target; ls tdli*-api-*-SNAPSHOT.jar)"
-      - id: getfilepath
-        shell: bash
-        run: echo "::set-output name=file::$(ls api/target/tdli*-api-*-SNAPSHOT.jar)"
-      - uses: actions/upload-artifact@v2
-        with:
-          name: ${{ steps.getfilename.outputs.file }}
-          path: ${{ steps.getfilepath.outputs.file }}
       - name: Deploy to Maven (Snapshot)
         if: github.ref != 'refs/heads/master'
         shell: bash

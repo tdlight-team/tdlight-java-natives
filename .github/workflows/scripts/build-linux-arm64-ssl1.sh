@@ -1,6 +1,7 @@
 #!/bin/bash -ex
-# Debian 10+
+# Ubuntu 20.04
 REVISION="${REVISION:-1.0.0.0-SNAPSHOT}"
+TOOLCHAIN_HOST_FILE="$(readlink -e ./.github/workflows/toolchains/toolchain-cmake-host-ubuntu2004.cmake)"
 TOOLCHAIN_FILE="$(readlink -e ./.github/workflows/toolchains/toolchain-arm64.cmake)"
 
 # Create missing dirs
@@ -17,6 +18,7 @@ cmake \
   -DCMAKE_CXX_FLAGS_RELEASE="-O0 -DNDEBUG" \
   -DTD_ENABLE_LTO=OFF \
   -DTD_ENABLE_JNI=ON \
+  -DCMAKE_TOOLCHAIN_FILE="${TOOLCHAIN_HOST_FILE}" \
   ..
 cmake --build . --target prepare_cross_compiling "-j$(nproc)"
 cmake --build . --target td_generate_java_api "-j$(nproc)"
