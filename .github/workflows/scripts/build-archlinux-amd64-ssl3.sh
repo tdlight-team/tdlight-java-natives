@@ -61,7 +61,6 @@ cmake \
   -DTDNATIVES_DOCS_BIN_DIR="$(readlink -e ../tdjni_docs/)" \
   -DTd_DIR:PATH="$(readlink -e ../../implementations/tdlight/build/td_bin/lib/cmake/Td)" \
   -DJAVA_SRC_DIR="../src/main/java" \
-  -DJava_JAVADOC_EXECUTABLE="/bin/true" \
   -DTDNATIVES_CPP_SRC_DIR="../src/main/cpp" \
   ../src/main/cpp
 cmake --build . --target install --config Release "-j$(nproc)"

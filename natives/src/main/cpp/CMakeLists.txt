@@ -48,7 +48,7 @@ add_custom_target(td_generate_java_api
 get_filename_component(JAVA_OUTPUT_DIRECTORY ${TDNATIVES_BIN_DIR}/java-classes REALPATH BASE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 file(MAKE_DIRECTORY ${JAVA_OUTPUT_DIRECTORY})
 add_custom_target(build_java
-  COMMAND ${Java_JAVAC_EXECUTABLE} -d ${JAVA_OUTPUT_DIRECTORY} @${TDNATIVES_CPP_SRC_DIR}/sources.txt
+  COMMAND ${Java_JAVAC_EXECUTABLE} -encoding UTF-8 -d ${JAVA_OUTPUT_DIRECTORY} @${TDNATIVES_CPP_SRC_DIR}/sources.txt
   COMMENT "Building Java code"
   DEPENDS td_generate_java_api
 )
@@ -103,7 +103,8 @@ if (NOT HAVE_STD14)
   message(FATAL_ERROR "No C++14 support in the compiler. Please upgrade the compiler.")
 endif()
 
-add_dependencies(tdjni td_generate_java_api build_java generate_javadoc)
+#add_dependencies(tdjni td_generate_java_api build_java generate_javadoc)
+add_dependencies(tdjni td_generate_java_api build_java)
 
 install(TARGETS tdjni
   LIBRARY DESTINATION ${TDNATIVES_BIN_DIR}
