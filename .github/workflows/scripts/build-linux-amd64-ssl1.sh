@@ -7,15 +7,17 @@ rm -rf implementations/tdlight/td_tools_build implementations/tdlight/build api/
 mkdir -p implementations/tdlight/build  implementations/tdlight/build/td_bin/bin implementations/tdlight/td_tools_build/java/it/tdlight/jni api/src/main/java-legacy/it/tdlight/jni api/src/main/java-sealed/it/tdlight/jni natives/src/main/java/it/tdlight/jni natives/build natives/tdjni_bin natives/tdjni_docs
 
 # machine-specific flags
-export CMAKE_C_COMPILER="/usr/bin/clang-10"
-export CMAKE_CXX_COMPILER="/usr/bin/clang++-10"
-export HOST_CMAKE_C_FLAGS="-Wno-psabi --specs=nosys.specs -fdata-sections -ffunction-sections -Wl,--gc-sections"
-export HOST_CMAKE_CXX_FLAGS="${HOST_CMAKE_C_FLAGS} -stdlib=libc++ -fno-exceptions"
-export HOST_CMAKE_EXE_LINKER_FLAGS="-stdlib=libc++ -lc++ -lc++abi"
+HOST_CMAKE_C_COMPILER="/usr/bin/clang-10"
+HOST_CMAKE_CXX_COMPILER="/usr/bin/clang++-10"
+HOST_CMAKE_C_FLAGS="-Wno-psabi --specs=nosys.specs -fdata-sections -ffunction-sections -Wl,--gc-sections"
+HOST_CMAKE_CXX_FLAGS="${HOST_CMAKE_C_FLAGS} -stdlib=libc++ -fno-exceptions"
+HOST_CMAKE_EXE_LINKER_FLAGS="-stdlib=libc++ -lc++ -lc++abi"
 
 # Build tdlib tools
 cd implementations/tdlight/td_tools_build
 cmake \
+  -DCMAKE_C_COMPILER="${HOST_CMAKE_C_COMPILER}" \
+  -DCMAKE_CXX_COMPILER="${HOST_CMAKE_CXX_COMPILER}" \
   -DCMAKE_C_FLAGS="${CMAKE_C_FLAGS} ${HOST_CMAKE_C_FLAGS}" \
   -DCMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} ${HOST_CMAKE_CXX_FLAGS}" \
   -DCMAKE_EXE_LINKER_FLAGS="${CMAKE_EXE_LINKER_FLAGS} ${HOST_CMAKE_EXE_LINKER_FLAGS}" \
@@ -46,6 +48,8 @@ cd implementations/tdlight/build
 INSTALL_PREFIX="$(readlink -e ./td_bin/)"
 INSTALL_BINDIR="$(readlink -e ./td_bin/bin)"
 cmake \
+  -DCMAKE_C_COMPILER="${HOST_CMAKE_C_COMPILER}" \
+  -DCMAKE_CXX_COMPILER="${HOST_CMAKE_CXX_COMPILER}" \
   -DCMAKE_C_FLAGS="${CMAKE_C_FLAGS} ${HOST_CMAKE_C_FLAGS}" \
   -DCMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} ${HOST_CMAKE_CXX_FLAGS}" \
   -DCMAKE_EXE_LINKER_FLAGS="${CMAKE_EXE_LINKER_FLAGS} ${HOST_CMAKE_EXE_LINKER_FLAGS}" \
@@ -62,6 +66,8 @@ cd ../../../
 
 cd natives/build
 cmake \
+  -DCMAKE_C_COMPILER="${HOST_CMAKE_C_COMPILER}" \
+  -DCMAKE_CXX_COMPILER="${HOST_CMAKE_CXX_COMPILER}" \
   -DCMAKE_C_FLAGS="${CMAKE_C_FLAGS} ${HOST_CMAKE_C_FLAGS}" \
   -DCMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} ${HOST_CMAKE_CXX_FLAGS}" \
   -DCMAKE_EXE_LINKER_FLAGS="${CMAKE_EXE_LINKER_FLAGS} ${HOST_CMAKE_EXE_LINKER_FLAGS}" \
