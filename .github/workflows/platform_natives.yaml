@@ -125,13 +125,13 @@ jobs:
         if: matrix.os == 'ubuntu-20.04'
         uses: awalsh128/cache-apt-pkgs-action@latest
         with:
-          packages: make git zlib1g-dev libssl-dev gperf php-cli cmake default-jdk clang-10 libc++-dev libc++abi-dev ccache
+          packages: make git zlib1g-dev libssl-dev gperf php-cli cmake default-jdk clang-10 lld-10 libc++-dev libc++abi-dev ccache
           version: 1.0
       - name: Install ubuntu 22.04 dependencies
         if: matrix.os == 'ubuntu-22.04'
         uses: awalsh128/cache-apt-pkgs-action@latest
         with:
-          packages: make git zlib1g-dev libssl-dev gperf php-cli cmake default-jdk clang-14 libc++-dev libc++abi-dev ccache
+          packages: make git zlib1g-dev libssl-dev gperf php-cli cmake default-jdk clang-14 lld-14 libc++-dev libc++abi-dev ccache
           version: 1.0
       - name: Install MSVC
         if: matrix.os == 'windows-2019'
