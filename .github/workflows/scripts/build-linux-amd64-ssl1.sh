@@ -9,9 +9,9 @@ mkdir -p implementations/tdlight/build  implementations/tdlight/build/td_bin/bin
 # machine-specific flags
 HOST_CMAKE_C_COMPILER="/usr/bin/clang-10"
 HOST_CMAKE_CXX_COMPILER="/usr/bin/clang++-10"
-HOST_CMAKE_C_FLAGS="-fuse-ld=lld -Wno-psabi --specs=nosys.specs -fdata-sections -ffunction-sections -Wl,--gc-sections"
-HOST_CMAKE_CXX_FLAGS="${HOST_CMAKE_C_FLAGS} -stdlib=libc++ -fno-exceptions"
-HOST_CMAKE_EXE_LINKER_FLAGS="-stdlib=libc++ -lc++ -lc++abi"
+HOST_CMAKE_C_FLAGS="-fuse-ld=lld"
+HOST_CMAKE_CXX_FLAGS="${HOST_CMAKE_C_FLAGS} -stdlib=libc++"
+HOST_CMAKE_EXE_LINKER_FLAGS="-stdlib=libc++"
 
 # Build tdlib tools
 cd implementations/tdlight/td_tools_build
