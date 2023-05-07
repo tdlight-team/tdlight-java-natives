@@ -34,7 +34,7 @@ cd ../../../
 # Optimization flags
 export CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -std=c++14 -fno-omit-frame-pointer -ffunction-sections -fdata-sections -fno-exceptions -fno-rtti"
 export CMAKE_SHARED_LINKER_FLAGS="${CMAKE_SHARED_LINKER_FLAGS} -Wl,--gc-sections -Wl,--exclude-libs,ALL"
-export CMAKE_CXX_FLAGS_MINSIZEREL="${CMAKE_CXX_FLAGS_MINSIZEREL} -flto=thin -Oz"
+export CMAKE_CXX_FLAGS_MINSIZEREL="${CMAKE_CXX_FLAGS_MINSIZEREL} -flto=thin -O3"
 
 # Build tdlib
 cd implementations/tdlight/build

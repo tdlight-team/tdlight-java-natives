@@ -41,14 +41,14 @@ cd ../../../
 export CMAKE_C_FLAGS="${CMAKE_C_FLAGS}"
 export CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -fno-omit-frame-pointer -ffunction-sections -fdata-sections -fno-exceptions -fno-rtti"
 export CMAKE_SHARED_LINKER_FLAGS="${CMAKE_SHARED_LINKER_FLAGS} -Wl,--gc-sections -Wl,--exclude-libs,ALL"
-export CMAKE_CXX_FLAGS_MINSIZEREL="${CMAKE_CXX_FLAGS_MINSIZEREL} -flto=thin -O3"
+export CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -flto=thin -O3"
 
 # Build tdlib
 cd implementations/tdlight/build
 INSTALL_PREFIX="$(readlink -e ./td_bin/)"
 INSTALL_BINDIR="$(readlink -e ./td_bin/bin)"
 CXXFLAGS="-stdlib=libc++" cmake \
-  -DCMAKE_BUILD_TYPE=MinSizeRel \
+  -DCMAKE_BUILD_TYPE=Release \
   -DTD_SKIP_BENCHMARK=ON -DTD_SKIP_TEST=ON -DTD_SKIP_TG_CLI=ON \
   -DTD_ENABLE_LTO=ON \
   -DTD_ENABLE_JNI=ON \
@@ -61,7 +61,7 @@ cd ../../../
 
 cd natives/build
 CXXFLAGS="-stdlib=libc++" cmake \
-  -DCMAKE_BUILD_TYPE=MinSizeRel \
+  -DCMAKE_BUILD_TYPE=Release \
   -DTD_GENERATED_BINARIES_DIR=../../implementations/tdlight/build/td/generate \
   -DTD_SRC_DIR=../../implementations/tdlight \
   -DTD_ENABLE_LTO=ON \
