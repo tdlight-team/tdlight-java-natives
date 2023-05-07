@@ -1,0 +1,2 @@
+../src/main/java/it/tdlight/jni/TdApi.java
+../src/main/java/it/tdlight/tdnative/NativeClient.java

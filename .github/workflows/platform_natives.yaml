@@ -13,15 +13,16 @@ jobs:
     strategy:
       matrix:
         include:
-          - { os: ubuntu-20.04, type: "linux/386-ssl1" }
-          - { os: ubuntu-20.04, type: "linux/amd64-ssl1" }
-          - { os: ubuntu-20.04, type: "linux/arm64-ssl1" }
-          - { os: ubuntu-20.04, type: "linux/s390x-ssl1" }
-          - { os: ubuntu-20.04, type: "linux/ppc64le-ssl1" }
-          - { os: ubuntu-20.04, type: "linux/amd64-ssl3" }
-          - { os: ubuntu-20.04, type: "linux/arm64-ssl3" }
-          - { os: windows-2019, type: "windows/amd64", vcpkgCommitId: "6ca56aeb457f033d344a7106cb3f9f1abf8f4e98", triplet: "x64-windows-static" }
-          - { os: macos-12, type: "macos/amd64" }
+          # todo: re-enable
+          #- { os: ubuntu-20.04, type: "linux-386-ssl1" }
+          - { os: ubuntu-20.04, type: "linux-amd64-ssl1" }
+          - { os: ubuntu-20.04, type: "linux-arm64-ssl1" }
+          #- { os: ubuntu-20.04, type: "linux-s390x-ssl1" }
+          #- { os: ubuntu-20.04, type: "linux-ppc64le-ssl1" }
+          - { os: ubuntu-22.04, type: "linux-amd64-ssl3" }
+          #- { os: ubuntu-22.04, type: "linux-arm64-ssl3" }
+          #- { os: windows-2019, type: "windows-amd64", vcpkgCommitId: "6ca56aeb457f033d344a7106cb3f9f1abf8f4e98", triplet: "x64-windows-static" }
+          #- { os: macos-12, type: "macos-amd64" }
     steps:
       - name: Checkout current repo
         uses: actions/checkout@v2
@@ -45,7 +46,7 @@ jobs:
           HASH_VERSION=$(echo "$HASH_VERSION" | awk '{print tolower($0)}')
           VERSION=$(echo "$VERSION" | awk '{print tolower($0)}')
           TYPE=${{ matrix.type }}
-          SAFE_TYPE=${TYPE///}  # linux/amd64 -> linuxamd64
+          SAFE_TYPE=${TYPE///}  # linux-amd64 -> linux-amd64
 
           REVISION=${{ github.run_number }}
           GH_MATRIX_OS=${{ matrix.os }}
@@ -120,6 +121,18 @@ jobs:
         with:
           php-version: '8.0'
           extensions: readline
+      - name: Install ubuntu 20.04 dependencies
+        if: matrix.os == 'ubuntu-20.04'
+      - uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: make git zlib1g-dev libssl-dev gperf php-cli cmake default-jdk clang-10 libc++-dev libc++abi-dev
+          version: 1.0
+      - name: Install ubuntu 22.04 dependencies
+        if: matrix.os == 'ubuntu-22.04'
+      - uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: make git zlib1g-dev libssl-dev gperf php-cli cmake default-jdk clang-14 libc++-dev libc++abi-dev
+          version: 1.0
       - name: Install MSVC
         if: matrix.os == 'windows-2019'
         uses: ilammy/msvc-dev-cmd@v1

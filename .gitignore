@@ -64,3 +64,18 @@ win-deps.sh
 /.cache/
 
 .idea/
+/natives/build/
+/natives/src/main/td/
+/natives/tdjni_bin/
+/natives/tdjni_docs/
+/natives/src/main/td_bin/
+/natives/src/main/tdjni_docs/
+/api/src/main/td/
+/api/jni_bin/
+/api/target-legacy/
+/api/target-sealed/
+/api/.ci-friendly-pom.xml
+
+natives/.ci-friendly-pom.xml
+
+*.so
