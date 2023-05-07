@@ -228,6 +228,8 @@
               <release>17</release>
               <quiet>true</quiet>
               <notimestamp>true</notimestamp>
+              <encoding>UTF-8</encoding>
+              <charset>UTF-8</charset>
             </configuration>
           </execution>
         </executions>
