@@ -15,7 +15,7 @@ HOST_CMAKE_EXE_LINKER_FLAGS="-stdlib=libc++ -lc++ -lc++abi"
 
 # Build tdlib tools
 cd implementations/tdlight/td_tools_build
-CXXFLAGS="-stdlib=libc++" cmake \
+CXXFLAGS="-stdlib=libc++" CC="$HOST_CMAKE_C_COMPILER" CXX="$HOST_CMAKE_CXX_COMPILER" cmake \
   -DCMAKE_C_COMPILER="${HOST_CMAKE_C_COMPILER}" \
   -DCMAKE_CXX_COMPILER="${HOST_CMAKE_CXX_COMPILER}" \
   -DCMAKE_C_FLAGS="${CMAKE_C_FLAGS} ${HOST_CMAKE_C_FLAGS}" \
@@ -47,7 +47,7 @@ export CMAKE_CXX_FLAGS_MINSIZEREL="${CMAKE_CXX_FLAGS_MINSIZEREL} -flto=thin -Oz"
 cd implementations/tdlight/build
 INSTALL_PREFIX="$(readlink -e ./td_bin/)"
 INSTALL_BINDIR="$(readlink -e ./td_bin/bin)"
-CXXFLAGS="-stdlib=libc++" cmake \
+CXXFLAGS="-stdlib=libc++" CC="$HOST_CMAKE_C_COMPILER" CXX="$HOST_CMAKE_CXX_COMPILER" cmake \
   -DCMAKE_C_COMPILER="${HOST_CMAKE_C_COMPILER}" \
   -DCMAKE_CXX_COMPILER="${HOST_CMAKE_CXX_COMPILER}" \
   -DCMAKE_C_FLAGS="${CMAKE_C_FLAGS} ${HOST_CMAKE_C_FLAGS}" \
@@ -65,7 +65,7 @@ cmake --build . --target install --config Release "-j$(nproc)"
 cd ../../../
 
 cd natives/build
-CXXFLAGS="-stdlib=libc++" cmake \
+CXXFLAGS="-stdlib=libc++" CC="$HOST_CMAKE_C_COMPILER" CXX="$HOST_CMAKE_CXX_COMPILER" cmake \
   -DCMAKE_C_COMPILER="${HOST_CMAKE_C_COMPILER}" \
   -DCMAKE_CXX_COMPILER="${HOST_CMAKE_CXX_COMPILER}" \
   -DCMAKE_C_FLAGS="${CMAKE_C_FLAGS} ${HOST_CMAKE_C_FLAGS}" \

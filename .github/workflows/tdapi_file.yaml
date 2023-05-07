@@ -77,9 +77,9 @@ jobs:
           echo "REVISION: $REVISION"
 
           echo "Deploying legacy package"
-          mvn -f api/pom.xml deploy -Dlegacy=true
+          mvn -f api/pom.xml package deploy -Dlegacy=true -Drevision="-1.0.0.0-SNAPSHOT"
           echo "Building standard package"
-          mvn -f api/pom.xml deploy
+          mvn -f api/pom.xml package deploy -Drevision="-1.0.0.0-SNAPSHOT"
         env:
           MAVEN_USERNAME: ${{ secrets.MCHV_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.MCHV_TOKEN }}
@@ -90,10 +90,10 @@ jobs:
           echo "REVISION: $REVISION"
 
           echo "Deploying legacy package"
-          mvn -f api/pom.xml deploy -Dlegacy=true -Drevision="$REVISION"
+          mvn -f api/pom.xml package deploy -Dlegacy=true -Drevision="$REVISION"
 
           echo "Deploying standard package"
-          mvn -f api/pom.xml deploy -Drevision="$REVISION"
+          mvn -f api/pom.xml package deploy -Drevision="$REVISION"
           
           
           echo "Deploying docs"
