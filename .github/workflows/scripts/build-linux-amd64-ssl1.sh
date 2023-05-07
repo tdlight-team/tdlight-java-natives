@@ -2,8 +2,8 @@
 # Debian 10+
 REVISION="${REVISION:-1.0.0.0-SNAPSHOT}"
 
-export CC="ccache /usr/bin/clang"
-export CXX="ccache /usr/bin/clang++"
+export CC="ccache /usr/bin/clang-10"
+export CXX="ccache /usr/bin/clang++-10"
 export CXXFLAGS="-stdlib=libc++"
 
 # Create missing dirs
