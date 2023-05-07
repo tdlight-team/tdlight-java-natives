@@ -19,7 +19,7 @@ cmake \
   -DCMAKE_CXX_FLAGS_RELEASE="-O0 -DNDEBUG" \
   -DTD_ENABLE_LTO=OFF \
   -DTD_ENABLE_JNI=ON \
-  -DCMAKE_PROJECT_TOP_LEVEL_INCLUDES="${HOST_CMAKE_INCLUDES_FILE}" \
+  -DCMAKE_TOOLCHAIN_FILE="${HOST_CMAKE_INCLUDES_FILE}" \
   ..
 cmake --build . --target prepare_cross_compiling "-j$(nproc)"
 cmake --build . --target td_generate_java_api "-j$(nproc)"
@@ -46,7 +46,7 @@ cmake \
   -DTD_ENABLE_JNI=ON \
   -DCMAKE_INSTALL_PREFIX:PATH="$INSTALL_PREFIX" \
   -DCMAKE_INSTALL_BINDIR:PATH="$INSTALL_BINDIR" \
-  -DCMAKE_PROJECT_TOP_LEVEL_INCLUDES="${HOST_CMAKE_INCLUDES_FILE}" \
+  -DCMAKE_TOOLCHAIN_FILE="${HOST_CMAKE_INCLUDES_FILE}" \
   ..
 cmake --build . --target install --config Release "-j$(nproc)"
 cd ../../../
@@ -63,7 +63,7 @@ cmake \
   -DJAVA_SRC_DIR="../src/main/java" \
   -DJava_JAVADOC_EXECUTABLE="/bin/true" \
   -DTDNATIVES_CPP_SRC_DIR="../src/main/cpp" \
-  -DCMAKE_PROJECT_TOP_LEVEL_INCLUDES="${HOST_CMAKE_INCLUDES_FILE}" \
+  -DCMAKE_TOOLCHAIN_FILE="${HOST_CMAKE_INCLUDES_FILE}" \
   ../src/main/cpp
 cmake --build . --target install --config Release "-j$(nproc)"
 cd ..

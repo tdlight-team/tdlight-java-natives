@@ -20,7 +20,7 @@ cmake \
   -DCMAKE_CXX_FLAGS_RELEASE="-O0 -DNDEBUG" \
   -DTD_ENABLE_LTO=OFF \
   -DTD_ENABLE_JNI=ON \
-  -DCMAKE_PROJECT_TOP_LEVEL_INCLUDES="${HOST_CMAKE_INCLUDES_FILE}" \
+  -DCMAKE_TOOLCHAIN_FILE="${HOST_CMAKE_INCLUDES_FILE}" \
   ..
 cmake --build . --target prepare_cross_compiling "-j$(nproc)"
 cmake --build . --target td_generate_java_api "-j$(nproc)"
