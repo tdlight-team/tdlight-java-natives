@@ -12,8 +12,7 @@ set(CMAKE_AR /usr/bin/llvm-ar-10)
 
 # Set various compiler flags
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-psabi --specs=nosys.specs -fdata-sections -ffunction-sections -Wl,--gc-sections")
-set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} ${CMAKE_CXX_FLAGS} -stdlib=libc++ -fno-exceptions")
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libc++")
+set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} ${CMAKE_CXX_FLAGS} -fno-exceptions")
 
 
 # Use our definitions for compiler tools
