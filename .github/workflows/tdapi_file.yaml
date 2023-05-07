@@ -12,7 +12,6 @@ jobs:
       matrix:
         include:
         - {os: ubuntu-20.04, arch: "linux/amd64", implementation: "tdlight"}
-        #- {os: ubuntu-20.04, arch: "linux/amd64", implementation: "tdlib"}
     runs-on: ${{ matrix.os }}
     steps:
       - name: Install sudo package
@@ -57,55 +56,26 @@ jobs:
           export GH_MATRIX_ARCH=${{ matrix.arch }}
           export IMPLEMENTATION_NAME=${{ matrix.implementation }}
 
-          source ./scripts/continuous-integration/github-workflows/setup-variables.sh
-
           echo "REVISION=$REVISION" >> $GITHUB_ENV
           echo "BUILD_TYPE=$BUILD_TYPE" >> $GITHUB_ENV
           echo "IMPLEMENTATION_NAME=$IMPLEMENTATION_NAME" >> $GITHUB_ENV
-          echo "TD_SRC_DIR=$TD_SRC_DIR" >> $GITHUB_ENV
-          echo "TD_BIN_DIR=$TD_BIN_DIR" >> $GITHUB_ENV
-          echo "TDNATIVES_BIN_DIR=$TDNATIVES_BIN_DIR" >> $GITHUB_ENV
-          echo "TDNATIVES_CPP_SRC_DIR=$TDNATIVES_CPP_SRC_DIR" >> $GITHUB_ENV
-          echo "TDNATIVES_DOCS_BIN_DIR=$TDNATIVES_DOCS_BIN_DIR" >> $GITHUB_ENV
-          echo "TD_BUILD_DIR=$TD_BUILD_DIR" >> $GITHUB_ENV
-          echo "TDNATIVES_CPP_BUILD_DIR=$TDNATIVES_CPP_BUILD_DIR" >> $GITHUB_ENV
-          echo "JAVA_SRC_DIR=$JAVA_SRC_DIR" >> $GITHUB_ENV
-          echo "TDLIB_SERIALIZER_DIR=$TDLIB_SERIALIZER_DIR" >> $GITHUB_ENV
           if [[ ! -z "$PATH" ]]; then
             echo "PATH=$PATH" >> $GITHUB_ENV
           fi
           echo "JAVA_HOME=$JAVA_HOME" >> $GITHUB_ENV
           echo "JAVA_INCLUDE_PATH=$JAVA_INCLUDE_PATH" >> $GITHUB_ENV
-          echo "CMAKE_EXTRA_ARGUMENTS=$CMAKE_EXTRA_ARGUMENTS" >> $GITHUB_ENV
-          echo "VCPKG_DIR=$VCPKG_DIR" >> $GITHUB_ENV
-          echo "MAVEN_OPTS=$MAVEN_OPTS" >> $GITHUB_ENV
-          echo "GH_CPU_ARCH=$GH_CPU_ARCH" >> $GITHUB_ENV
-          echo "CPU_ARCH_JAVA=$CPU_ARCH_JAVA" >> $GITHUB_ENV
-          echo "CPU_ARCHITECTURE_NAME=$CPU_ARCHITECTURE_NAME" >> $GITHUB_ENV
-          echo "CPU_CORES_NUM=$CPU_CORES_NUM" >> $GITHUB_ENV
-          echo "CPU_CORES=$CPU_CORES" >> $GITHUB_ENV
-          echo "OPERATING_SYSTEM_NAME=$OPERATING_SYSTEM_NAME" >> $GITHUB_ENV
-          echo "OPERATING_SYSTEM_NAME_SHORT=$OPERATING_SYSTEM_NAME_SHORT" >> $GITHUB_ENV
-          echo "SRC_TDJNI_LIBNAME=$SRC_TDJNI_LIBNAME" >> $GITHUB_ENV
-          echo "DEST_TDJNI_LIBNAME=$DEST_TDJNI_LIBNAME" >> $GITHUB_ENV
-      - name: Install dependencies
-        shell: bash
-        run: |
-          echo "REVISION: $REVISION"
-
-          ./scripts/continuous-integration/github-workflows/install-dependencies.sh
       - name: Build
         shell: bash
         run: |
           echo "REVISION: $REVISION"
 
-          ./scripts/continuous-integration/github-workflows/build-tdapi.sh
+          ./.github/workflows/scripts/build-api.sh
       - id: getfilename
         shell: bash
-        run: echo "::set-output name=file::$(cd generated-sealed/target; ls tdli*-api-*-SNAPSHOT.jar)"
+        run: echo "::set-output name=file::$(cd api/target; ls tdli*-api-*-SNAPSHOT.jar)"
       - id: getfilepath
         shell: bash
-        run: echo "::set-output name=file::$(ls generated-sealed/target/tdli*-api-*-SNAPSHOT.jar)"
+        run: echo "::set-output name=file::$(ls api/target/tdli*-api-*-SNAPSHOT.jar)"
       - uses: actions/upload-artifact@v2
         with:
           name: ${{ steps.getfilename.outputs.file }}
@@ -116,8 +86,10 @@ jobs:
         run: |
           echo "REVISION: $REVISION"
 
-          API_TYPE=legacy ./scripts/continuous-integration/github-workflows/deploy-snapshot.sh
-          API_TYPE=sealed ./scripts/continuous-integration/github-workflows/deploy-snapshot.sh
+          echo "Deploying legacy package"
+          mvn -f api/pom.xml deploy -Dlegacy=true
+          echo "Building standard package"
+          mvn -f api/pom.xml deploy
         env:
           MAVEN_USERNAME: ${{ secrets.MCHV_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.MCHV_TOKEN }}
@@ -127,10 +99,29 @@ jobs:
         run: |
           echo "REVISION: $REVISION"
 
-          API_TYPE=legacy ./scripts/continuous-integration/github-workflows/deploy-release.sh
-          API_TYPE=sealed ./scripts/continuous-integration/github-workflows/deploy-release.sh
-          API_TYPE=legacy ./scripts/continuous-integration/github-workflows/deploy-javadoc.sh
-          API_TYPE=sealed ./scripts/continuous-integration/github-workflows/deploy-javadoc.sh
+          echo "Deploying legacy package"
+          mvn -f api/pom.xml deploy -Dlegacy=true -Drevision="$REVISION"
+
+          echo "Deploying standard package"
+          mvn -f api/pom.xml deploy -Drevision="$REVISION"
+          
+          
+          echo "Deploying docs"
+          cd "./api/target/apidocs"
+          find . -name '*.html' -exec sed -i -r 's/<\/title>/<\/title>\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><style>\n\t#memberSummary_tabpanel{overflow-x: auto;}\n\tli.blockList{overflow-x: auto;}\n\ttd.colLast div{max-width:30vw;}\n\t#search{width: 400px;max-width: 65vw;}\n\t.title,.subTitle,pre,.inheritance,h1,h2,h3,h4,h5,.memberSummary,.memberSignature,.typeSummary,.blockList,.contentContainer{white-space:normal;word-break:break-word;}\n\tul{padding-left:10px}\n<\/style>/' {} \;
+          git config --global init.defaultBranch master
+          git init
+          git checkout -b "tdlight"
+          git remote add origin "https://${DOCS_DEPLOY_USERNAME}:${DOCS_DEPLOY_PASSWORD}@git.ignuranza.net/tdlight-team/tdlight-docs"
+          git config user.email "andrea@warp.ovh"
+          git config user.name "Andrea Cavalli"
+          git fetch --all
+          git reset --soft "origin/tdlight" || true
+          git add -A
+          git commit -m "Update javadocs"
+          git push --set-upstream origin "tdlight"
+          
+          echo "Done."
         env:
           MAVEN_USERNAME: ${{ secrets.MCHV_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.MCHV_TOKEN }}
