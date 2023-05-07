@@ -11,8 +11,8 @@ set(CMAKE_CXX_COMPILER_TARGET ${triple})
 set(CMAKE_AR /usr/bin/llvm-ar-10)
 
 # Set various compiler flags
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-psabi --specs=nosys.specs -fdata-sections -ffunction-sections -Wl,--gc-sections")
-set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} ${CMAKE_CXX_FLAGS} -fno-exceptions")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fuse-ld=lld")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fuse-ld=lld")
 
 
 # Use our definitions for compiler tools
@@ -48,4 +48,4 @@ set(THREADS_PREFER_PTHREAD_FLAG ON)
 
 # Use LLD on linux
 #add_link_options("-fuse-ld=lld" "-rtlib=compiler-rt" "-unwindlib=libunwind" "-Wl,--as-needed")
-add_link_options("-fuse-ld=lld")
+#add_link_options("-fuse-ld=lld")
