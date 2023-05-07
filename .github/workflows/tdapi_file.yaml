@@ -11,15 +11,15 @@ jobs:
     strategy:
       matrix:
         include:
-        - {os: ubuntu-20.04, arch: "linux/amd64", implementation: "tdlight"}
+        - {os: ubuntu-22.04, arch: "linux/amd64", implementation: "tdlight"}
     runs-on: ${{ matrix.os }}
     steps:
-      - name: Install sudo package
-        if: runner.os == 'Linux'
-        run: |
-          (apt-get update || true) 2>/dev/null
-          (apt-get install -y sudo || true) 2>/dev/null
-          sudo apt update
+      - name: Install ubuntu 22.04 dependencies
+        if: matrix.os == 'ubuntu-22.04'
+        uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: sudo make git zlib1g-dev libssl-dev gperf php-cli cmake default-jdk clang-14 libc++-dev libc++abi-dev
+          version: 1.0
       - name: Install SSH key
         uses: shimataro/ssh-key-action@v2
         with:
