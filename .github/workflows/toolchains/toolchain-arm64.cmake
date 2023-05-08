@@ -11,7 +11,10 @@ set(CMAKE_ASM_COMPILER_TARGET ${TARGET_TRIPLE})
 set(CMAKE_ASM_COMPILER /usr/bin/clang-10)
 set(CMAKE_AR /usr/bin/llvm-ar-10)
 
-#set(CMAKE_FIND_ROOT_PATH /usr/lib/aarch64-linux-gnu)
+set(CMAKE_FIND_ROOT_PATH /usr/aarch64-linux-gnu /usr/lib/aarch64-linux-gnu /usr/include/aarch64-linux-gnu /usr/bin/aarch64-linux-gnu)
+set(CMAKE_INCLUDE_PATH  /usr/include/aarch64-linux-gnu)
+set(CMAKE_LIBRARY_PATH  /usr/lib/aarch64-linux-gnu)
+set(CMAKE_PROGRAM_PATH  /usr/bin/aarch64-linux-gnu)
 #set(CMAKE_SYSROOT /usr/lib/aarch64-linux-gnu)
 #set(OPENSSL_INCLUDE_DIR /usr/include/openssl)
 #include_directories("/usr/include/openssl")
@@ -25,7 +28,7 @@ set(CMAKE_CXX_FLAGS_INIT "-stdlib=libc++")
 
 
 # Use our definitions for compiler tools
-#SET(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+SET(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 
 # Search for libraries and headers in the target directories only
 #SET(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
