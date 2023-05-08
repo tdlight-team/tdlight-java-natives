@@ -1,7 +1,7 @@
 SET(CMAKE_SYSTEM_NAME Linux)
 set(CMAKE_SYSTEM_PROCESSOR aarch64)
 set(triple aarch64-linux-gnu)
-set(CMAKE_SYSROOT /usr/lib/aarch64-linux-gnu)
+#set(CMAKE_SYSROOT /usr/lib/aarch64-linux-gnu)
 set(CMAKE_FIND_ROOT_PATH /usr/lib/aarch64-linux-gnu /usr/lib/llvm-10/include)
 
 set(CMAKE_C_COMPILER /usr/bin/clang-10)
