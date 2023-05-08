@@ -10,8 +10,8 @@ set(CMAKE_CXX_COMPILER /usr/bin/clang++-10)
 set(CMAKE_ASM_COMPILER_TARGET ${TARGET_TRIPLE})
 set(CMAKE_ASM_COMPILER /usr/bin/clang-10)
 
-set(CMAKE_FIND_ROOT_PATH /usr/lib/aarch64-linux-gnu)
-set(CMAKE_SYSROOT /usr/lib/aarch64-linux-gnu)
+#set(CMAKE_FIND_ROOT_PATH /usr/lib/aarch64-linux-gnu)
+#set(CMAKE_SYSROOT /usr/lib/aarch64-linux-gnu)
 
 set(CMAKE_AR /usr/bin/llvm-ar-10)
 
