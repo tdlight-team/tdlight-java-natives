@@ -13,7 +13,7 @@ apt-get --assume-yes update
 
 # Install and bypass a bug in the cross-platform libc++ packages
 apt-get --assume-yes autoremove libc++-10-dev libc++abi-10-dev
-apt-get --assume-yes install libc++-10-dev:arm64 libc++abi-10-dev:arm64
+apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install libc++-10-dev:arm64 libc++abi-10-dev:arm64
 cp --remove-destination /usr/lib/llvm-10/lib/libc++.so.1.0 /usr/lib/aarch64-linux-gnu/
 cp --remove-destination /usr/lib/llvm-10/lib/libc++abi.so.1.0 /usr/lib/aarch64-linux-gnu/
 cp --remove-destination /usr/lib/llvm-10/lib/libc++abi.so /usr/lib/aarch64-linux-gnu/
