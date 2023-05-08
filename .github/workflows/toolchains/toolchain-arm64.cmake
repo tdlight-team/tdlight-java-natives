@@ -1,13 +1,18 @@
+set(CMAKE_CROSSCOMPILING TRUE)
 SET(CMAKE_SYSTEM_NAME Linux)
 set(CMAKE_SYSTEM_PROCESSOR aarch64)
-set(triple aarch64-linux-gnu)
-#set(CMAKE_SYSROOT /usr/lib/aarch64-linux-gnu)
-set(CMAKE_FIND_ROOT_PATH /usr/lib/aarch64-linux-gnu /usr/lib/llvm-10/include)
+set(TARGET_TRIPLE aarch64-linux-gnu)
 
+set(CMAKE_C_COMPILER_TARGET ${TARGET_TRIPLE})
 set(CMAKE_C_COMPILER /usr/bin/clang-10)
-set(CMAKE_C_COMPILER_TARGET ${triple})
+set(CMAKE_CXX_COMPILER_TARGET ${TARGET_TRIPLE})
 set(CMAKE_CXX_COMPILER /usr/bin/clang++-10)
-set(CMAKE_CXX_COMPILER_TARGET ${triple})
+set(CMAKE_ASM_COMPILER_TARGET ${TARGET_TRIPLE})
+set(CMAKE_ASM_COMPILER /usr/bin/clang-10)
+
+set(CMAKE_FIND_ROOT_PATH /usr/lib/aarch64-linux-gnu)
+set(CMAKE_SYSROOT /usr/lib/aarch64-linux-gnu)
+
 set(CMAKE_AR /usr/bin/llvm-ar-10)
 
 # Set various compiler flags
@@ -18,15 +23,15 @@ set(CMAKE_CXX_FLAGS_INIT "-stdlib=libc++")
 
 
 # Use our definitions for compiler tools
-SET(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+#SET(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 
 # Search for libraries and headers in the target directories only
-SET(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
-SET(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
-SET(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
+#SET(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+#SET(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+#SET(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 
-# Optionally reduce compiler sanity check when cross-compiling.
-#set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
+# This must be set or compiler checks fail when linking
+set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 
 #include_directories("${CROSS_OPENJDK_PATH}/include/linux")
 
