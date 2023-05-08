@@ -11,7 +11,7 @@ HOST_CMAKE_C_COMPILER="/usr/bin/clang-14"
 HOST_CMAKE_CXX_COMPILER="/usr/bin/clang++-14"
 HOST_CMAKE_C_FLAGS="-fuse-ld=lld"
 HOST_CMAKE_CXX_FLAGS="${HOST_CMAKE_C_FLAGS} -stdlib=libc++"
-HOST_CMAKE_EXE_LINKER_FLAGS="-stdlib=libc++"
+HOST_CMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld -rtlib=compiler-rt -unwindlib=libunwind"
 
 # Build tdlib tools
 cd implementations/tdlight/td_tools_build
