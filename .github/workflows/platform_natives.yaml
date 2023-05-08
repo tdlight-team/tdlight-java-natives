@@ -121,17 +121,25 @@ jobs:
         with:
           php-version: '8.0'
           extensions: readline
+      - name: Install custom dependencies
+        shell: bash
+        run: |
+          echo "REVISION: $REVISION"
+
+          if [[ -f "./.github/workflows/scripts/install-deps-${SAFE_TYPE}.sh" ]]; then
+            source ./.github/workflows/scripts/install-deps-${SAFE_TYPE}.sh
+          fi
       - name: Install ubuntu 20.04 dependencies
         if: matrix.os == 'ubuntu-20.04'
         uses: awalsh128/cache-apt-pkgs-action@latest
         with:
-          packages: make git zlib1g-dev libssl-dev gperf php-cli cmake default-jdk clang-10 lld-10 libc++-10-dev libc++abi-10-dev ccache maven
+          packages: make git zlib1g-dev libssl-dev gperf php-cli cmake default-jdk clang-10 lld-10 libc++-10-dev libc++abi-10-dev libgcc-9-dev ccache maven
           version: 1.0
       - name: Install ubuntu 22.04 dependencies
         if: matrix.os == 'ubuntu-22.04'
         uses: awalsh128/cache-apt-pkgs-action@latest
         with:
-          packages: make git zlib1g-dev libssl-dev gperf php-cli cmake default-jdk clang-14 lld-14 libc++-14-dev libc++abi-14-dev ccache maven
+          packages: make git zlib1g-dev libssl-dev gperf php-cli cmake default-jdk clang-14 lld-14 libc++-14-dev libc++abi-14-dev libgcc-11-dev ccache maven
           version: 1.0
       - name: Install MSVC
         if: matrix.os == 'windows-2019'
@@ -169,14 +177,6 @@ jobs:
         run: |
           $VCPKG_DIR/vcpkg install gperf openssl:x64-windows-static zlib:x64-windows-static
         shell: bash
-      - name: Install deps
-        shell: bash
-        run: |
-          echo "REVISION: $REVISION"
-
-          if [[ -f "./.github/workflows/scripts/install-deps-${SAFE_TYPE}.sh" ]]; then
-            source ./.github/workflows/scripts/install-deps-${SAFE_TYPE}.sh
-          fi
       - name: Build
         shell: bash
         run: |
