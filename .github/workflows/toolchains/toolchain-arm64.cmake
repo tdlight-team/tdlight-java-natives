@@ -21,9 +21,9 @@ set(CMAKE_PROGRAM_PATH  /usr/bin/aarch64-linux-gnu)
 
 
 # Set various compiler flags
-set(CMAKE_EXE_LINKER_FLAGS_INIT "-fuse-ld=lld" "-v")
-set(CMAKE_MODULE_LINKER_FLAGS_INIT "-fuse-ld=lld" "-v")
-set(CMAKE_SHARED_LINKER_FLAGS_INIT "-fuse-ld=lld" "-v")
+set(CMAKE_EXE_LINKER_FLAGS_INIT "-fuse-ld=lld")
+set(CMAKE_MODULE_LINKER_FLAGS_INIT "-fuse-ld=lld")
+set(CMAKE_SHARED_LINKER_FLAGS_INIT "-fuse-ld=lld")
 set(CMAKE_CXX_FLAGS_INIT "-stdlib=libc++")
 
 
