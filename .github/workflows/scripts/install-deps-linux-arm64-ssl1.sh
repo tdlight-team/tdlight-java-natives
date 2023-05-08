@@ -27,4 +27,4 @@ dpkg-deb -xv libclang-common-10-dev_*_arm64.deb /
 
 
 # Install dependencies
-apt-get --assume-yes install libssl-dev:arm64 zlib1g-dev:arm64 openjdk-8-jdk-headless:arm64 libgcc-9-dev:arm64 libc6-dev:arm64
+apt-get --assume-yes install libssl-dev:arm64 zlib1g-dev:arm64 openjdk-8-jdk-headless:arm64 libgcc-9-dev:arm64 libc6-dev:arm64 libunwind-dev:arm64

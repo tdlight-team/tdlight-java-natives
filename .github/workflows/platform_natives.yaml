@@ -31,6 +31,7 @@ jobs:
 
       - name: Get version
         run: |
+          set -eo pipefail
           # Get latest commit short hash
           HASH_VERSION=$(git rev-parse --short HEAD)
 
@@ -124,6 +125,7 @@ jobs:
       - name: Install custom dependencies
         shell: bash
         run: |
+          set -eo pipefail
           echo "REVISION: $REVISION"
 
           if [[ -f "./.github/workflows/scripts/install-deps-${SAFE_TYPE}.sh" ]]; then
@@ -175,20 +177,26 @@ jobs:
       - name: Install vcpkg deps
         if: matrix.os == 'windows-2019'
         run: |
+          set -eo pipefail
           $VCPKG_DIR/vcpkg install gperf openssl:x64-windows-static zlib:x64-windows-static
         shell: bash
       - name: Build
         shell: bash
         run: |
+          set -eo pipefail
           echo "REVISION: $REVISION"
           
           source ./.github/workflows/scripts/build-${SAFE_TYPE}.sh
       - id: getfilename
         shell: bash
-        run: echo "::set-output name=file::$(cd generated/target; ls tdli*-natives-*.jar)"
+        run: |
+          set -eo pipefail
+          echo "::set-output name=file::$(cd generated/target; ls tdli*-natives-*.jar)"
       - id: getfilepath
         shell: bash
-        run: echo "::set-output name=file::$(ls generated/target/tdli*-natives-*.jar)"
+        run: |
+          set -eo pipefail
+          echo "::set-output name=file::$(ls generated/target/tdli*-natives-*.jar)"
       - uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.getfilename.outputs.file }}
@@ -197,6 +205,7 @@ jobs:
         if: github.ref == 'refs/heads/develop'
         shell: bash
         run: |
+          set -eo pipefail
           echo "REVISION: $REVISION"
           echo "SSL TYPE: $SSL_TYPE"
 
@@ -208,6 +217,7 @@ jobs:
         if: github.ref == 'refs/heads/master'
         shell: bash
         run: |
+          set -eo pipefail
           echo "REVISION: $REVISION"
           echo "SSL TYPE: $SSL_TYPE"
 

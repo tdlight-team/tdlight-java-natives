@@ -18,7 +18,7 @@ jobs:
         if: matrix.os == 'ubuntu-22.04'
         uses: awalsh128/cache-apt-pkgs-action@latest
         with:
-          packages: sudo make git zlib1g-dev libssl-dev gperf php-cli cmake default-jdk clang-14 libc++-14-dev libc++abi-14-dev libgcc-11-dev libunwind-14-dev libclang-common-14-dev ccache maven
+          packages: sudo make git zlib1g-dev libssl-dev gperf php-cli cmake openjdk-17-jdk clang-14 libc++-14-dev libc++abi-14-dev libgcc-11-dev libunwind-14-dev libclang-common-14-dev ccache maven
           version: 1.0
       - name: Install SSH key
         uses: shimataro/ssh-key-action@v2
@@ -50,6 +50,7 @@ jobs:
       - name: Setup variables
         shell: bash
         run: |
+          set -eo pipefail
           # ====== Variables
           export REVISION=${{ github.run_number }}
           export GH_MATRIX_OS=${{ matrix.os }}
@@ -67,6 +68,7 @@ jobs:
       - name: Build
         shell: bash
         run: |
+          set -eo pipefail
           echo "REVISION: $REVISION"
 
           ./.github/workflows/scripts/build-api.sh
@@ -74,6 +76,7 @@ jobs:
         if: github.ref != 'refs/heads/master'
         shell: bash
         run: |
+          set -eo pipefail
           echo "REVISION: $REVISION"
 
           echo "Deploying legacy package"
@@ -87,6 +90,7 @@ jobs:
         if: github.ref == 'refs/heads/master'
         shell: bash
         run: |
+          set -eo pipefail
           echo "REVISION: $REVISION"
 
           echo "Deploying legacy package"
