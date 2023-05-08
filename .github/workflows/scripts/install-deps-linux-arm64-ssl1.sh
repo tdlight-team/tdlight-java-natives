@@ -21,5 +21,10 @@ mv /usr/lib/llvm-10/lib/libc++abi.so /usr/lib/aarch64-linux-gnu/
 apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install libc++-10-dev libc++abi-10-dev
 # End libc++ packages bugfix
 
+# Add arm64 common files
+apt-get download libclang-common-10-dev:arm64
+dpkg-deb -xv libclang-common-10-dev_*_arm64.deb /
+
+
 # Install dependencies
 apt-get --assume-yes install libssl-dev:arm64 zlib1g-dev:arm64 openjdk-8-jdk-headless:arm64 libgcc-9-dev:arm64 libc6-dev:arm64
