@@ -12,7 +12,7 @@ HOST_CMAKE_C_COMPILER="/usr/bin/clang-10"
 HOST_CMAKE_CXX_COMPILER="/usr/bin/clang++-10"
 HOST_CMAKE_C_FLAGS="-fuse-ld=lld"
 HOST_CMAKE_CXX_FLAGS="${HOST_CMAKE_C_FLAGS} -stdlib=libc++"
-HOST_CMAKE_EXE_LINKER_FLAGS="-stdlib=libc++"
+HOST_CMAKE_EXE_LINKER_FLAGS="-lc++ -lc++abi"
 
 # Build tdlib tools
 cd implementations/tdlight/td_tools_build
@@ -47,7 +47,7 @@ export CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -flto=thin -O3"
 cd implementations/tdlight/build
 INSTALL_PREFIX="$(readlink -e ./td_bin/)"
 INSTALL_BINDIR="$(readlink -e ./td_bin/bin)"
-CXXFLAGS="-stdlib=libc++" CC="$HOST_CMAKE_C_COMPILER" CXX="$HOST_CMAKE_CXX_COMPILER" cmake \
+cmake \
   -DCMAKE_BUILD_TYPE=Release \
   -DTD_SKIP_BENCHMARK=ON -DTD_SKIP_TEST=ON -DTD_SKIP_TG_CLI=ON \
   -DTD_ENABLE_LTO=ON \
@@ -60,7 +60,7 @@ cmake --build . --target install --config Release "-j$(nproc)"
 cd ../../../
 
 cd natives/build
-CXXFLAGS="-stdlib=libc++" CC="$HOST_CMAKE_C_COMPILER" CXX="$HOST_CMAKE_CXX_COMPILER" cmake \
+cmake \
   -DCMAKE_BUILD_TYPE=Release \
   -DTD_GENERATED_BINARIES_DIR="$(readlink -e ../../implementations/tdlight/build/td/generate)" \
   -DTD_SRC_DIR="$(readlink -e ../../implementations/tdlight)" \
