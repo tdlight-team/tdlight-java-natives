@@ -9,7 +9,7 @@ set(CMAKE_CXX_COMPILER_TARGET ${TARGET_TRIPLE})
 set(CMAKE_CXX_COMPILER /usr/bin/clang++-10)
 set(CMAKE_ASM_COMPILER_TARGET ${TARGET_TRIPLE})
 set(CMAKE_ASM_COMPILER /usr/bin/clang-10)
-set(CMAKE_AR /usr/bin/llvm-ar-10)
+set(CMAKE_AR "/usr/bin/llvm-ar-10" CACHE FILEPATH "" FORCE)
 
 set(CMAKE_FIND_ROOT_PATH /usr/aarch64-linux-gnu /usr/lib/aarch64-linux-gnu /usr/include/aarch64-linux-gnu /usr/bin/aarch64-linux-gnu)
 set(CMAKE_INCLUDE_PATH  /usr/include/aarch64-linux-gnu)
