@@ -127,7 +127,7 @@ jobs:
           echo "REVISION: $REVISION"
 
           if [[ -f "./.github/workflows/scripts/install-deps-${SAFE_TYPE}.sh" ]]; then
-            source ./.github/workflows/scripts/install-deps-${SAFE_TYPE}.sh
+            sudo ./.github/workflows/scripts/install-deps-${SAFE_TYPE}.sh
           fi
       - name: Install ubuntu 20.04 dependencies
         if: matrix.os == 'ubuntu-20.04'
