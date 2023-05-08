@@ -54,7 +54,7 @@ cd ../../../
 cd natives/build
 cmake \
   -DCMAKE_BUILD_TYPE=MinSizeRel \
-  -DTD_GENERATED_BINARIES_DIR=../../implementations/tdlight/build/td/generate \
+  -DTD_GENERATED_BINARIES_DIR=../../implementations/tdlight/td_tools_build/td/generate \
   -DTD_SRC_DIR=../../implementations/tdlight \
   -DTD_ENABLE_LTO=ON \
   -DTDNATIVES_BIN_DIR="$(readlink -e ../tdjni_bin/)" \

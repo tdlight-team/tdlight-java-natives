@@ -76,7 +76,7 @@ CXXFLAGS="-stdlib=libc++" CC="$HOST_CMAKE_C_COMPILER" CXX="$HOST_CMAKE_CXX_COMPI
   -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
   \
   -DCMAKE_BUILD_TYPE=Release \
-  -DTD_GENERATED_BINARIES_DIR="$(readlink -e ../../implementations/tdlight/build/td/generate)" \
+  -DTD_GENERATED_BINARIES_DIR="$(readlink -e ../../implementations/tdlight/td_tools_build/td/generate)" \
   -DTD_SRC_DIR="$(readlink -e ../../implementations/tdlight)" \
   -DTD_ENABLE_LTO=ON \
   -DTDNATIVES_BIN_DIR="$(readlink -e ../tdjni_bin/)" \
