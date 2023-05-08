@@ -21,9 +21,9 @@ set(CMAKE_PROGRAM_PATH  /usr/bin/aarch64-linux-gnu)
 
 
 # Set various compiler flags
-set(CMAKE_EXE_LINKER_FLAGS_INIT "-fuse-ld=lld")
-set(CMAKE_MODULE_LINKER_FLAGS_INIT "-fuse-ld=lld")
-set(CMAKE_SHARED_LINKER_FLAGS_INIT "-fuse-ld=lld")
+set(CMAKE_EXE_LINKER_FLAGS_INIT "-fuse-ld=lld -rtlib=compiler-rt -unwindlib=libunwind")
+set(CMAKE_MODULE_LINKER_FLAGS_INIT "-fuse-ld=lld -rtlib=compiler-rt -unwindlib=libunwind")
+set(CMAKE_SHARED_LINKER_FLAGS_INIT "-fuse-ld=lld -rtlib=compiler-rt -unwindlib=libunwind")
 set(CMAKE_CXX_FLAGS_INIT "-stdlib=libc++")
 
 
@@ -40,13 +40,14 @@ set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 
 #include_directories("${CROSS_OPENJDK_PATH}/include/linux")
 
-SET(JAVA_HOME "/usr/lib/jvm/java-1.8.0-openjdk-arm64")
+SET(JAVA_HOME "/usr/lib/jvm/default-java/")
+SET(JAVA_CROSS_HOME "/usr/lib/jvm/java-1.8.0-openjdk-arm64")
 SET(JAVA_INCLUDE_PATH "${JAVA_HOME}/include")
 SET(JAVA_AWT_INCLUDE_PATH "${JAVA_HOME}/include")
 SET(JAVA_INCLUDE_PATH2 "${JAVA_HOME}/include/linux")
 
-SET(JAVA_JVM_LIBRARY "${JAVA_HOME}/jre/lib/aarch64/server/libjvm.so")
-SET(JAVA_AWT_LIBRARY "${JAVA_HOME}/jre/lib/aarch64/libawt.so")
+SET(JAVA_JVM_LIBRARY "${JAVA_CROSS_HOME}/jre/lib/aarch64/server/libjvm.so")
+SET(JAVA_AWT_LIBRARY "${JAVA_CROSS_HOME}/jre/lib/aarch64/libawt.so")
 
 
 # Only on aarch64 & armhf architecture
