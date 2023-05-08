@@ -40,14 +40,13 @@ set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 
 #include_directories("${CROSS_OPENJDK_PATH}/include/linux")
 
+SET(JAVA_HOME "/usr/lib/jvm/java-1.8.0-openjdk-arm64")
+SET(JAVA_INCLUDE_PATH "${JAVA_HOME}/include")
+SET(JAVA_AWT_INCLUDE_PATH "${JAVA_HOME}/include")
+SET(JAVA_INCLUDE_PATH2 "${JAVA_HOME}/include/linux")
 
-#SET(JAVA_HOME "$JAVA_HOME/")
-#SET(JAVA_INCLUDE_PATH "$JAVA_HOME/include")
-#SET(JAVA_AWT_INCLUDE_PATH "$JAVA_HOME/include")
-#SET(JAVA_INCLUDE_PATH2 "$JAVA_HOME/include/linux")
-
-#SET(JAVA_JVM_LIBRARY "$CROSS_OPENJDK_PATH/lib/${JAVA_INSTALLATION_TYPE}/libjvm.so")
-#SET(JAVA_AWT_LIBRARY "$CROSS_OPENJDK_PATH/lib/libawt.so")
+SET(JAVA_JVM_LIBRARY "${JAVA_HOME}/jre/lib/aarch64/server/libjvm.so")
+SET(JAVA_AWT_LIBRARY "${JAVA_HOME}/jre/lib/aarch64/libawt.so")
 
 
 # Only on aarch64 & armhf architecture
