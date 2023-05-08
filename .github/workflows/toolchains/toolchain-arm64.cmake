@@ -16,10 +16,10 @@ set(CMAKE_SYSROOT /usr/lib/aarch64-linux-gnu)
 set(CMAKE_AR /usr/bin/llvm-ar-10)
 
 # Set various compiler flags
-set(CMAKE_EXE_LINKER_FLAGS_INIT "-fuse-ld=lld -v")
-set(CMAKE_MODULE_LINKER_FLAGS_INIT "-fuse-ld=lld -v")
-set(CMAKE_SHARED_LINKER_FLAGS_INIT "-fuse-ld=lld -v")
-set(CMAKE_CXX_FLAGS_INIT "-stdlib=libc++")
+#set(CMAKE_EXE_LINKER_FLAGS_INIT "-fuse-ld=lld -v")
+#set(CMAKE_MODULE_LINKER_FLAGS_INIT "-fuse-ld=lld -v")
+#set(CMAKE_SHARED_LINKER_FLAGS_INIT "-fuse-ld=lld -v")
+#set(CMAKE_CXX_FLAGS_INIT "-stdlib=libc++")
 
 
 # Use our definitions for compiler tools
