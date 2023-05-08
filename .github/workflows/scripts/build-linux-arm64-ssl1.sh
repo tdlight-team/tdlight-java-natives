@@ -48,6 +48,7 @@ cd implementations/tdlight/build
 INSTALL_PREFIX="$(readlink -e ./td_bin/)"
 INSTALL_BINDIR="$(readlink -e ./td_bin/bin)"
 cmake \
+  --verbose \
   -DCMAKE_BUILD_TYPE=Release \
   -DTD_SKIP_BENCHMARK=ON -DTD_SKIP_TEST=ON -DTD_SKIP_TG_CLI=ON \
   -DTD_ENABLE_LTO=ON \
@@ -56,7 +57,7 @@ cmake \
   -DCMAKE_INSTALL_BINDIR:PATH="$INSTALL_BINDIR" \
   -DCMAKE_TOOLCHAIN_FILE="${TOOLCHAIN_FILE}" \
   ..
-cmake --build . --target install --config Release "-j$(nproc)"
+cmake --verbose --build . --target install --config Release "-j$(nproc)"
 cd ../../../
 
 cd natives/build
