@@ -3,4 +3,4 @@
 	url = https://git.ignuranza.net/tdlight-team/tdlight.git
 [submodule "tdlib-serializer"]
 	path = tdlib-serializer
-	url = https://git.ignuranza.net/windoz/tdlib-serializer
+	url = https://git.ignuranza.net/tdlight-team/tdlib-serializer
