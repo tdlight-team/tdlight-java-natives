@@ -26,7 +26,7 @@ SET(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 SET(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 
 # Optionally reduce compiler sanity check when cross-compiling.
-set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
+#set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 
 #include_directories("${CROSS_OPENJDK_PATH}/include/linux")
 
