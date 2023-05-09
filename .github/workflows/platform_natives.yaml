@@ -193,8 +193,8 @@ jobs:
             mvn -B -f natives/pom.xml -Drevision="$REVISION" -Dnative.type.classifier="$TYPE" clean package deploy
           else
             mvn -B -f natives/pom.xml -Drevision="$REVISION" -Dnative.type.classifier="$TYPE" clean package
-            mvn org.apache.maven.plugins:maven-deploy-plugin:3.1.1:deploy-file -Durl=https://mvn.mchv.eu/repository/mchv \
-                                                                              -DrepositoryId=mchv-release-distribution \
+            mvn org.apache.maven.plugins:maven-deploy-plugin:3.1.1:deploy-file -Durl=https://mvn.mchv.eu/repository/mchv-snapshot \
+                                                                              -DrepositoryId=mchv-snapshot-distribution \
                                                                               -Dfile=natives/target-$TYPE/tdlight-natives-$REVISION-$TYPE.jar \
                                                                               -DpomFile=natives/pom.xml \
                                                                               -Dclassifier=bin \
