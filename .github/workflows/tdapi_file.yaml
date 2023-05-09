@@ -90,15 +90,16 @@ jobs:
           echo "REVISION: $REVISION"
 
           echo "Building standard package"
-          mvn -f api/pom.xml clean package deploy -Drevision="1.0.0.0-SNAPSHOT"
+          mvn -f api/pom.xml clean package deploy -Drevision="$REVISION"
           echo "Deploying legacy package"
-          mvn -f api/pom.xml clean package -Dlegacy=true -Drevision="1.0.0.0-SNAPSHOT"
+          mvn -f api/pom.xml clean package -Dlegacy=true -Drevision="$REVISION"
           mvn org.apache.maven.plugins:maven-deploy-plugin:3.1.1:deploy-file -Durl=https://mvn.mchv.eu/repository/mchv-snapshot \
                                                                             -DrepositoryId=mchv-snapshot-distribution \
-                                                                            -Dfile=api/target/tdlight-api-$REVISION-legacy.jar \
+                                                                            -Dfile=api/target-legacy/tdlight-api-$REVISION-legacy.jar \
                                                                             -DpomFile=api/pom.xml \
-                                                                            -Dclassifier=bin \
-                                                                            -Drevision="1.0.0.0-SNAPSHOT"
+                                                                            -Dclassifier=legacy \
+                                                                            -Drevision="$REVISION" \
+                                                                            -Dlegacy=true
         env:
           MAVEN_USERNAME: ${{ secrets.MCHV_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.MCHV_TOKEN }}
@@ -118,8 +119,9 @@ jobs:
                                                                             -DrepositoryId=mchv-release-distribution \
                                                                             -Dfile=api/target-legacy/tdlight-api-$REVISION-legacy.jar \
                                                                             -DpomFile=api/pom.xml \
-                                                                            -Dclassifier=bin \
-                                                                            -Drevision="$REVISION"
+                                                                            -Dclassifier=legacy \
+                                                                            -Drevision="$REVISION" \
+                                                                            -Dlegacy=true
           
           
           echo "Deploying docs"
