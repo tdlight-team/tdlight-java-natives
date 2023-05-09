@@ -52,7 +52,7 @@ jobs:
       - name: Setup variables
         shell: bash
         run: |
-          set -eo pipefail
+          set -xeo pipefail
           # ====== Variables
           export REVISION=${{ github.run_number }}
           export GH_MATRIX_OS=${{ matrix.os }}
@@ -70,7 +70,7 @@ jobs:
       - name: Build
         shell: bash
         run: |
-          set -eo pipefail
+          set -xeo pipefail
           echo "REVISION: $REVISION"
 
           ./.github/workflows/scripts/build-api.sh
@@ -86,19 +86,22 @@ jobs:
         if: github.ref != 'refs/heads/master'
         shell: bash
         run: |
-          set -eo pipefail
+          set -xeo pipefail
           echo "REVISION: $REVISION"
 
           echo "Building standard package"
-          mvn -f api/pom.xml clean package deploy -Drevision="$REVISION"
+          mvn -B -f api/pom.xml clean package deploy -Drevision="$REVISION"
           echo "Deploying legacy package"
-          mvn -f api/pom.xml clean package -Dlegacy=true -Drevision="$REVISION"
-          mvn org.apache.maven.plugins:maven-deploy-plugin:3.1.1:deploy-file -Durl=https://mvn.mchv.eu/repository/mchv-snapshot \
+          mvn -B -f api/pom.xml clean package -Dlegacy=true -Drevision="$REVISION"
+          mvn -B org.apache.maven.plugins:maven-deploy-plugin:3.1.1:deploy-file -Durl=https://mvn.mchv.eu/repository/mchv-snapshot \
                                                                             -DrepositoryId=mchv-snapshot-distribution \
                                                                             -Dfile=api/target-legacy/tdlight-api-$REVISION-legacy.jar \
-                                                                            -DpomFile=api/pom.xml \
+                                                                            -Dpackaging=pom \
+                                                                            -DgroupId=it.tdlight \
+                                                                            -DartifactId=tdlight-api \
+                                                                            -Dversion=$REVISION \
+                                                                            -Drevision=$REVISION \
                                                                             -Dclassifier=legacy \
-                                                                            -Drevision="$REVISION" \
                                                                             -Dlegacy=true
         env:
           MAVEN_USERNAME: ${{ secrets.MCHV_USERNAME }}
@@ -107,20 +110,23 @@ jobs:
         if: github.ref == 'refs/heads/master'
         shell: bash
         run: |
-          set -eo pipefail
+          set -xeo pipefail
           echo "REVISION: $REVISION"
 
           echo "Deploying standard package"
-          mvn -f api/pom.xml clean package deploy -Drevision="$REVISION"
+          mvn -B -f api/pom.xml clean package deploy -Drevision="$REVISION"
           
           echo "Deploying legacy package"
-          mvn -f api/pom.xml clean package -Dlegacy=true -Drevision="$REVISION"
-          mvn org.apache.maven.plugins:maven-deploy-plugin:3.1.1:deploy-file -Durl=https://mvn.mchv.eu/repository/mchv \
+          mvn -B -f api/pom.xml clean package -Dlegacy=true -Drevision="$REVISION"
+          mvn -B org.apache.maven.plugins:maven-deploy-plugin:3.1.1:deploy-file -Durl=https://mvn.mchv.eu/repository/mchv \
                                                                             -DrepositoryId=mchv-release-distribution \
                                                                             -Dfile=api/target-legacy/tdlight-api-$REVISION-legacy.jar \
-                                                                            -DpomFile=api/pom.xml \
+                                                                            -Dpackaging=pom \
+                                                                            -DgroupId=it.tdlight \
+                                                                            -DartifactId=tdlight-api \
+                                                                            -Dversion=$REVISION \
+                                                                            -Drevision=$REVISION \
                                                                             -Dclassifier=legacy \
-                                                                            -Drevision="$REVISION" \
                                                                             -Dlegacy=true
           
           

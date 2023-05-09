@@ -31,7 +31,7 @@ jobs:
 
       - name: Get version
         run: |
-          set -eo pipefail
+          set -xeo pipefail
           # Get latest commit short hash
           HASH_VERSION=$(git rev-parse --short HEAD)
 
@@ -116,7 +116,7 @@ jobs:
       - name: Install custom dependencies
         shell: bash
         run: |
-          set -eo pipefail
+          set -xeo pipefail
           echo "REVISION: $REVISION"
 
           if [[ -f "./.github/workflows/scripts/install-deps-${SAFE_TYPE}.sh" ]]; then
@@ -168,13 +168,13 @@ jobs:
       - name: Install vcpkg deps
         if: matrix.os == 'windows-2019'
         run: |
-          set -eo pipefail
+          set -xeo pipefail
           $VCPKG_DIR/vcpkg install gperf openssl:x64-windows-static zlib:x64-windows-static
         shell: bash
       - name: Build
         shell: bash
         run: |
-          set -eo pipefail
+          set -xeo pipefail
           echo "REVISION: $REVISION"
           
           source ./.github/workflows/scripts/build-${SAFE_TYPE}.sh
@@ -186,27 +186,30 @@ jobs:
         if: github.ref == 'refs/heads/develop'
         shell: bash
         run: |
-          set -eo pipefail
+          set -xeo pipefail
           echo "REVISION: $REVISION"
           echo "TYPE: $TYPE"
           
           mvn -B -f natives/pom.xml -Drevision="$REVISION" -Dnative.type.classifier="$TYPE" clean package
-          mvn org.apache.maven.plugins:maven-deploy-plugin:3.1.1:deploy-file -Durl=https://mvn.mchv.eu/repository/mchv-snapshot \
+          mvn -B org.apache.maven.plugins:maven-deploy-plugin:3.1.1:deploy-file -Durl=https://mvn.mchv.eu/repository/mchv-snapshot \
                                                                             -DrepositoryId=mchv-snapshot-distribution \
                                                                             -Dfile=natives/target-$TYPE/tdlight-natives-$REVISION-$TYPE.jar \
-                                                                            -DpomFile=natives/pom.xml \
+                                                                            -Dpackaging=pom \
+                                                                            -DgroupId=it.tdlight \
+                                                                            -DartifactId=tdlight-natives \
+                                                                            -Dversion=$REVISION \
+                                                                            -Drevision=$REVISION \
                                                                             -Dclassifier=$TYPE \
-                                                                            -Drevision="$REVISION" \
                                                                             -Dnative.type.classifier="$TYPE"
           if [[ "$TYPE" == "linux-amd64-ssl1"]]; then
-            mvn org.apache.maven.plugins:maven-deploy-plugin:3.1.1:deploy-file -Durl=https://mvn.mchv.eu/repository/mchv-snapshot \
+            mvn -B org.apache.maven.plugins:maven-deploy-plugin:3.1.1:deploy-file -Durl=https://mvn.mchv.eu/repository/mchv-snapshot \
                                                                               -DrepositoryId=mchv-snapshot-distribution \
                                                                               -Dfile=natives/.ci-friendly-pom.xml \
                                                                               -Dpackaging=pom \
                                                                               -DgroupId=it.tdlight \
                                                                               -DartifactId=tdlight-natives \
                                                                               -Dversion=$REVISION \
-                                                                              -Drevision="$REVISION" \
+                                                                              -Drevision=$REVISION \
                                                                               -Dnative.type.classifier="$TYPE"
           fi
           
@@ -219,27 +222,30 @@ jobs:
         if: github.ref == 'refs/heads/master'
         shell: bash
         run: |
-          set -eo pipefail
+          set -xeo pipefail
           echo "REVISION: $REVISION"
           echo "TYPE: $TYPE"
           
           mvn -B -f natives/pom.xml -Drevision="$REVISION" -Dnative.type.classifier="$TYPE" clean package
-          mvn org.apache.maven.plugins:maven-deploy-plugin:3.1.1:deploy-file -Durl=https://mvn.mchv.eu/repository/mchv \
+          mvn -B org.apache.maven.plugins:maven-deploy-plugin:3.1.1:deploy-file -Durl=https://mvn.mchv.eu/repository/mchv \
                                                                             -DrepositoryId=mchv-release-distribution \
                                                                             -Dfile=natives/target-$TYPE/tdlight-natives-$REVISION-$TYPE.jar \
-                                                                            -DpomFile=natives/pom.xml \
+                                                                            -Dpackaging=pom \
+                                                                            -DgroupId=it.tdlight \
+                                                                            -DartifactId=tdlight-natives \
+                                                                            -Dversion=$REVISION \
+                                                                            -Drevision=$REVISION \
                                                                             -Dclassifier=$TYPE \
-                                                                            -Drevision="$REVISION" \
                                                                             -Dnative.type.classifier="$TYPE"
           if [[ "$TYPE" == "linux-amd64-ssl1"]]; then
-            mvn org.apache.maven.plugins:maven-deploy-plugin:3.1.1:deploy-file -Durl=https://mvn.mchv.eu/repository/mchv \
+            mvn -B org.apache.maven.plugins:maven-deploy-plugin:3.1.1:deploy-file -Durl=https://mvn.mchv.eu/repository/mchv \
                                                                               -DrepositoryId=mchv-release-distribution \
                                                                               -Dfile=natives/.ci-friendly-pom.xml \
                                                                               -Dpackaging=pom \
                                                                               -DgroupId=it.tdlight \
                                                                               -DartifactId=tdlight-natives \
                                                                               -Dversion=$REVISION \
-                                                                              -Drevision="$REVISION" \
+                                                                              -Drevision=$REVISION \
                                                                               -Dnative.type.classifier="$TYPE"
           fi
           
