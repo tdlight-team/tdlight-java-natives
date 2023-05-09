@@ -107,6 +107,7 @@ jobs:
           server-id: mchv-snapshot-distribution
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
+          cache: 'maven'
       - name: Setup Java (Release)
         if: github.ref != 'refs/heads/develop'
         uses: actions/setup-java@v3
@@ -116,6 +117,7 @@ jobs:
           server-id: mchv-release-distribution
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
+          cache: 'maven'
 
       - name: Setup PHP with Readline extension
         uses: shivammathur/setup-php@v2
