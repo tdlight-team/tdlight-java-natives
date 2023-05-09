@@ -25,7 +25,7 @@ jobs:
           #- { os: macos-12, type: "macos-amd64" }
     steps:
       - name: Checkout current repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           submodules: "recursive"
 
@@ -144,7 +144,7 @@ jobs:
         if: matrix.os == 'windows-2019'
         uses: lukka/get-cmake@latest
       - name: Set up Maven
-        uses: stCarolas/setup-maven@v4.2
+        uses: stCarolas/setup-maven@v4.5
         with:
           maven-version: 3.8.2
       - name: Setup NASM

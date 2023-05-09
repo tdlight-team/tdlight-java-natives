@@ -80,5 +80,5 @@ cmake \
 cmake --build . --target install --config Release "-j$(nproc)"
 cd ..
 mkdir -p src/main/resources/META-INF/tdlight-jni/
-mv tdjni_bin/libtdjni.so src/main/resources/META-INF/tdlight-jni/libtdjni.linux-amd64-ssl3.so
-mvn package -Dnative.type.classifier=linux-amd64-ssl3 -Drevision="$REVISION"
+mv tdjni_bin/libtdjni.so src/main/resources/META-INF/tdlight-jni/libtdjni.linux-arm64-ssl1.so
+mvn -B -f pom.xml -Drevision="$REVISION" -Dnative.type.classifier=linux-arm64-ssl1 package

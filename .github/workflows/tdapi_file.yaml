@@ -26,7 +26,7 @@ jobs:
           key: ${{ secrets.IG_SSH_KEY }}
           name: id_rsa
           known_hosts: ${{ secrets.IG_KNOWN_HOSTS }}
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           submodules: "recursive"
       - name: Setup Java (Snapshot)
@@ -49,6 +49,10 @@ jobs:
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
           cache: 'maven'
+      - name: Set up Maven
+        uses: stCarolas/setup-maven@v4.5
+        with:
+          maven-version: 3.8.2
       - name: Setup variables
         shell: bash
         run: |
