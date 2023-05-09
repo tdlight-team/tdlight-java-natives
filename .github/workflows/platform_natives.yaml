@@ -74,14 +74,6 @@ jobs:
           # Save env to file
           cat $GITHUB_ENV > github.env
 
-      - name: Cache Maven
-        uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-v3-maven-${{ env.SAFE_TYPE }}-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-v3-maven-${{ env.SAFE_TYPE }}-
-
       - name: Cache packages cache
         uses: actions/cache@v3
         with:
@@ -90,13 +82,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-v3-packages-${{ env.SAFE_TYPE }}-
 
-      - name: Cache ccache
-        uses: actions/cache@v3
+      - name: ccache
+        uses: hendrikmuhs/ccache-action@v1.2
         with:
-          path: ~/.ccache
-          key: ${{ runner.os }}-v2-ccache-${{ env.SAFE_TYPE }}-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-v2-ccache-${{ env.SAFE_TYPE }}-
+          key: ${{ github.job }}-${{ matrix.os }}-${{ matrix.type }}
 
       - name: Setup Java (Snapshot)
         if: github.ref == 'refs/heads/develop'
