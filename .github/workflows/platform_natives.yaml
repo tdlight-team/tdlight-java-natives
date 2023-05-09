@@ -188,9 +188,12 @@ jobs:
         run: |
           set -eo pipefail
           echo "REVISION: $REVISION"
-          echo "SSL TYPE: $SSL_TYPE"
+          echo "TYPE: $TYPE"
 
-          source ./scripts/continuous-integration/github-workflows/deploy-snapshot.sh
+          mvn -B -f natives/pom.xml -Drevision="$REVISION" -Dnative.type.classifier="$TYPE" clean package deploy
+          
+          echo "Done."
+          exit 0
         env:
           MAVEN_USERNAME: ${{ secrets.MCHV_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.MCHV_TOKEN }}
@@ -200,9 +203,12 @@ jobs:
         run: |
           set -eo pipefail
           echo "REVISION: $REVISION"
-          echo "SSL TYPE: $SSL_TYPE"
+          echo "TYPE: $TYPE"
 
-          source ./scripts/continuous-integration/github-workflows/deploy-release.sh
+          mvn -B -f natives/pom.xml -Drevision="$REVISION" -Dnative.type.classifier="$TYPE" clean package deploy
+          
+          echo "Done."
+          exit 0
         env:
           MAVEN_USERNAME: ${{ secrets.MCHV_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.MCHV_TOKEN }}
