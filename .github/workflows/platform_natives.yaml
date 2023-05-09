@@ -49,7 +49,7 @@ jobs:
           TYPE=${{ matrix.type }}
           SAFE_TYPE=${TYPE///}  # linux-amd64 -> linux-amd64
 
-          REVISION=${{ github.run_number }}
+          REVISION=4.0.${{ github.run_number }}
           GH_MATRIX_OS=${{ matrix.os }}
           GH_MATRIX_TYPE=${{ matrix.type }}
 
@@ -180,8 +180,8 @@ jobs:
           source ./.github/workflows/scripts/build-${SAFE_TYPE}.sh
       - uses: actions/upload-artifact@v3
         with:
-          name: natives/target/tdlight-natives-${{env.REVISION}}.jar
-          path: natives/target/tdlight-natives-${{env.REVISION}}.jar
+          name: natives/target-${{env.TYPE}}/tdlight-natives-${{env.REVISION}}-${{env.TYPE}}.jar
+          path: natives/target-${{env.TYPE}}/tdlight-natives-${{env.REVISION}}-${{env.TYPE}}.jar
       - name: Deploy to Maven (Snapshot)
         if: github.ref == 'refs/heads/develop'
         shell: bash
@@ -189,8 +189,17 @@ jobs:
           set -eo pipefail
           echo "REVISION: $REVISION"
           echo "TYPE: $TYPE"
-
-          mvn -B -f natives/pom.xml -Drevision="$REVISION" -Dnative.type.classifier="$TYPE" clean package deploy
+          if [[ "$TYPE" == "linux-amd64-ssl1"]]; then
+            mvn -B -f natives/pom.xml -Drevision="$REVISION" -Dnative.type.classifier="$TYPE" clean package deploy
+          else
+            mvn -B -f natives/pom.xml -Drevision="$REVISION" -Dnative.type.classifier="$TYPE" clean package
+            mvn org.apache.maven.plugins:maven-deploy-plugin:3.1.1:deploy-file -Durl=https://mvn.mchv.eu/repository/mchv \
+                                                                              -DrepositoryId=mchv-release-distribution \
+                                                                              -Dfile=natives/target-$TYPE/tdlight-natives-$REVISION-$TYPE.jar \
+                                                                              -DpomFile=natives/pom.xml \
+                                                                              -Dclassifier=bin \
+                                                                              -Drevision="$REVISION"
+          fi
           
           echo "Done."
           exit 0
@@ -204,8 +213,17 @@ jobs:
           set -eo pipefail
           echo "REVISION: $REVISION"
           echo "TYPE: $TYPE"
-
-          mvn -B -f natives/pom.xml -Drevision="$REVISION" -Dnative.type.classifier="$TYPE" clean package deploy
+          if [[ "$TYPE" == "linux-amd64-ssl1"]]; then
+            mvn -B -f natives/pom.xml -Drevision="$REVISION" -Dnative.type.classifier="$TYPE" clean package deploy
+          else
+            mvn -B -f natives/pom.xml -Drevision="$REVISION" -Dnative.type.classifier="$TYPE" clean package
+            mvn org.apache.maven.plugins:maven-deploy-plugin:3.1.1:deploy-file -Durl=https://mvn.mchv.eu/repository/mchv \
+                                                                              -DrepositoryId=mchv-release-distribution \
+                                                                              -Dfile=natives/target-$TYPE/tdlight-natives-$REVISION-$TYPE.jar \
+                                                                              -DpomFile=natives/pom.xml \
+                                                                              -Dclassifier=bin \
+                                                                              -Drevision="$REVISION"
+          fi
           
           echo "Done."
           exit 0
