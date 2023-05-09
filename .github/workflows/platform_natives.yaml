@@ -180,7 +180,7 @@ jobs:
           source ./.github/workflows/scripts/build-${SAFE_TYPE}.sh
       - uses: actions/upload-artifact@v3
         with:
-          name: natives/target-${{env.TYPE}}/tdlight-natives-${{env.REVISION}}-${{env.TYPE}}.jar
+          name: tdlight-natives-${{env.REVISION}}-${{env.TYPE}}.jar
           path: natives/target-${{env.TYPE}}/tdlight-natives-${{env.REVISION}}-${{env.TYPE}}.jar
       - name: Deploy to Maven (Snapshot)
         if: github.ref == 'refs/heads/develop'
