@@ -72,6 +72,14 @@ jobs:
           echo "REVISION: $REVISION"
 
           ./.github/workflows/scripts/build-api.sh
+      - uses: actions/upload-artifact@v3
+        with:
+          name: tdlight-api-${{env.REVISION}}.jar
+          path: api/target/tdlight-api-${{env.REVISION}}.jar
+      - uses: actions/upload-artifact@v3
+        with:
+          name: tdlight-api-${{env.REVISION}}-legacy.jar
+          path: api/target/tdlight-api-${{env.REVISION}}-legacy.jar
       - name: Deploy to Maven (Snapshot)
         if: github.ref != 'refs/heads/master'
         shell: bash
@@ -79,10 +87,16 @@ jobs:
           set -eo pipefail
           echo "REVISION: $REVISION"
 
-          echo "Deploying legacy package"
-          mvn -f api/pom.xml package deploy -Dlegacy=true -Drevision="-1.0.0.0-SNAPSHOT"
           echo "Building standard package"
-          mvn -f api/pom.xml package deploy -Drevision="-1.0.0.0-SNAPSHOT"
+          mvn -f api/pom.xml clean package deploy -Drevision="1.0.0.0-SNAPSHOT"
+          echo "Deploying legacy package"
+          mvn -f api/pom.xml clean package -Dlegacy=true -Drevision="1.0.0.0-SNAPSHOT"
+          mvn org.apache.maven.plugins:maven-deploy-plugin:3.1.1:deploy-file -Durl=https://mvn.mchv.eu/repository/mchv-snapshot \
+                                                                            -DrepositoryId=mchv-snapshot-distribution \
+                                                                            -Dfile=api/target/tdlight-api-$REVISION-legacy.jar \
+                                                                            -DpomFile=api/pom.xml \
+                                                                            -Dclassifier=bin \
+                                                                            -Drevision="1.0.0.0-SNAPSHOT"
         env:
           MAVEN_USERNAME: ${{ secrets.MCHV_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.MCHV_TOKEN }}
@@ -93,11 +107,17 @@ jobs:
           set -eo pipefail
           echo "REVISION: $REVISION"
 
-          echo "Deploying legacy package"
-          mvn -f api/pom.xml package deploy -Dlegacy=true -Drevision="$REVISION"
-
           echo "Deploying standard package"
-          mvn -f api/pom.xml package deploy -Drevision="$REVISION"
+          mvn -f api/pom.xml clean package deploy -Drevision="$REVISION"
+          
+          echo "Deploying legacy package"
+          mvn -f api/pom.xml clean package -Dlegacy=true -Drevision="$REVISION"
+          mvn org.apache.maven.plugins:maven-deploy-plugin:3.1.1:deploy-file -Durl=https://mvn.mchv.eu/repository/mchv \
+                                                                            -DrepositoryId=mchv-release-distribution \
+                                                                            -Dfile=api/target/tdlight-api-$REVISION-legacy.jar \
+                                                                            -DpomFile=api/pom.xml \
+                                                                            -Dclassifier=bin \
+                                                                            -Drevision="$REVISION"
           
           
           echo "Deploying docs"

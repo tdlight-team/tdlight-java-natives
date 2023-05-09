@@ -187,20 +187,10 @@ jobs:
           echo "REVISION: $REVISION"
           
           source ./.github/workflows/scripts/build-${SAFE_TYPE}.sh
-      - id: getfilename
-        shell: bash
-        run: |
-          set -eo pipefail
-          echo "::set-output name=file::$(cd generated/target; ls tdli*-natives-*.jar)"
-      - id: getfilepath
-        shell: bash
-        run: |
-          set -eo pipefail
-          echo "::set-output name=file::$(ls generated/target/tdli*-natives-*.jar)"
       - uses: actions/upload-artifact@v3
         with:
-          name: ${{ steps.getfilename.outputs.file }}
-          path: ${{ steps.getfilepath.outputs.file }}
+          name: natives/target/tdlight-natives-${{env.REVISION}}.jar
+          path: natives/target/tdlight-natives-${{env.REVISION}}.jar
       - name: Deploy to Maven (Snapshot)
         if: github.ref == 'refs/heads/develop'
         shell: bash
