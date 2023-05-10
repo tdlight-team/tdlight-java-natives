@@ -107,6 +107,7 @@ jobs:
                                                                             -Drevision=$REVISION \
                                                                             -Dclassifier=legacy \
                                                                             -Dlegacy=true
+          echo "Done."
         env:
           MAVEN_USERNAME: ${{ secrets.MCHV_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.MCHV_TOKEN }}
@@ -148,7 +149,6 @@ jobs:
           git add -A
           git commit -m "Update javadocs"
           git push --set-upstream origin "tdlight"
-          
           echo "Done."
         env:
           MAVEN_USERNAME: ${{ secrets.MCHV_USERNAME }}
