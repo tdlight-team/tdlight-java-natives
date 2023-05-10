@@ -119,13 +119,13 @@ cd ..
 
 # Copy to resources
 echo "Copying to resources..."
-[ -d  ./src/main/resources/META-INF/tdlight-jni/ ] || mkdir -p ./src/main/resources/META-INF/tdlight-jni/
+[ -d  ./src/main/resources/META-INF/tdlightjni/ ] || mkdir -p ./src/main/resources/META-INF/tdlightjni/
 if [[ "$OPERATING_SYSTEM_NAME" == "windows" ]]; then
-	cp ./tdjni_bin/tdjni.dll ./src/main/resources/META-INF/tdlight-jni/tdjni-${OPERATING_SYSTEM_NAME_SHORT}-${CPU_ARCHITECTURE_NAME}.dll
+	cp ./tdjni_bin/tdjni.dll ./src/main/resources/META-INF/tdlightjni/tdjni-${OPERATING_SYSTEM_NAME_SHORT}-${CPU_ARCHITECTURE_NAME}.dll
 elif [[ "$OPERATING_SYSTEM_NAME" == "osx" ]]; then
-	cp ./tdjni_bin/libtdjni.dylib ./src/main/resources/META-INF/tdlight-jni/tdjni-${OPERATING_SYSTEM_NAME_SHORT}-${CPU_ARCHITECTURE_NAME}.dylib
+	cp ./tdjni_bin/libtdjni.dylib ./src/main/resources/META-INF/tdlightjni/tdjni-${OPERATING_SYSTEM_NAME_SHORT}-${CPU_ARCHITECTURE_NAME}.dylib
 elif [[ "$OPERATING_SYSTEM_NAME" == "linux" ]]; then
-	cp ./tdjni_bin/libtdjni.so ./src/main/resources/META-INF/tdlight-jni/tdjni-${OPERATING_SYSTEM_NAME_SHORT}-${CPU_ARCHITECTURE_NAME}.so
+	cp ./tdjni_bin/libtdjni.so ./src/main/resources/META-INF/tdlightjni/tdjni-${OPERATING_SYSTEM_NAME_SHORT}-${CPU_ARCHITECTURE_NAME}.so
 fi
 
 echo "Done."
