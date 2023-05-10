@@ -71,6 +71,7 @@ jobs:
           fi
           echo "JAVA_HOME=$JAVA_HOME" >> $GITHUB_ENV
           echo "JAVA_INCLUDE_PATH=$JAVA_INCLUDE_PATH" >> $GITHUB_ENV
+          cat $GITHUB_ENV > github.env
       - name: Build
         shell: bash
         run: |
