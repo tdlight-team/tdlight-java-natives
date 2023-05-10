@@ -77,7 +77,7 @@ jobs:
           set -xeo pipefail
           echo "REVISION: $REVISION"
 
-          ./.github/workflows/scripts/build-api.sh
+          ./.github/workflows/scripts/build_api.sh
       - uses: actions/upload-artifact@v3
         with:
           name: tdlight-api-${{env.REVISION}}.jar

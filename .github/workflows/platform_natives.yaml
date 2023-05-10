@@ -15,13 +15,13 @@ jobs:
         include:
           # todo: re-enable
           #- { os: ubuntu-20.04, type: "linux-386-ssl1" }
-          - { os: ubuntu-20.04, type: "linux-amd64-ssl1" }
-          - { os: ubuntu-20.04, type: "linux-arm64-ssl1" }
+          - { os: ubuntu-20.04, type: "linux_amd64_ssl1" }
+          - { os: ubuntu-20.04, type: "linux_arm64_ssl1" }
           #- { os: ubuntu-20.04, type: "linux-s390x-ssl1" }
           #- { os: ubuntu-20.04, type: "linux-ppc64le-ssl1" }
-          - { os: ubuntu-22.04, type: "linux-amd64-ssl3" }
-          #- { os: ubuntu-22.04, type: "linux-arm64-ssl3" }
-          #- { os: windows-2019, type: "windows-amd64", vcpkgCommitId: "6ca56aeb457f033d344a7106cb3f9f1abf8f4e98", triplet: "x64-windows-static" }
+          - { os: ubuntu-22.04, type: "linux_amd64_ssl3" }
+          #- { os: ubuntu-22.04, type: "linux_arm64_ssl3" }
+          #- { os: windows-2019, type: "windows_amd64", vcpkgCommitId: "6ca56aeb457f033d344a7106cb3f9f1abf8f4e98", triplet: "x64-windows-static" }
           #- { os: macos-12, type: "macos-amd64" }
     steps:
       - name: Checkout current repo
@@ -47,7 +47,7 @@ jobs:
           HASH_VERSION=$(echo "$HASH_VERSION" | awk '{print tolower($0)}')
           VERSION=$(echo "$VERSION" | awk '{print tolower($0)}')
           TYPE=${{ matrix.type }}
-          SAFE_TYPE=${TYPE///}  # linux-amd64 -> linux-amd64
+          SAFE_TYPE=${TYPE///}  # linux_amd64_ -> linux_amd64_
 
           REVISION=4.0.${{ github.run_number }}
           GH_MATRIX_OS=${{ matrix.os }}
@@ -119,8 +119,8 @@ jobs:
           set -xeo pipefail
           echo "REVISION: $REVISION"
 
-          if [[ -f "./.github/workflows/scripts/install-deps-${SAFE_TYPE}.sh" ]]; then
-            sudo ./.github/workflows/scripts/install-deps-${SAFE_TYPE}.sh
+          if [[ -f "./.github/workflows/scripts/install_deps_${SAFE_TYPE}.sh" ]]; then
+            sudo ./.github/workflows/scripts/install_deps_${SAFE_TYPE}.sh
           fi
       - name: Install ubuntu 20.04 dependencies
         if: matrix.os == 'ubuntu-20.04'
@@ -177,7 +177,7 @@ jobs:
           set -xeo pipefail
           echo "REVISION: $REVISION"
           
-          source ./.github/workflows/scripts/build-${SAFE_TYPE}.sh
+          source ./.github/workflows/scripts/build_${SAFE_TYPE}.sh
       - uses: actions/upload-artifact@v3
         with:
           name: tdlight-natives-${{env.REVISION}}-${{env.TYPE}}.jar
@@ -201,7 +201,7 @@ jobs:
                                                                             -Drevision=$REVISION \
                                                                             -Dclassifier=$TYPE \
                                                                             -Dnative.type.classifier="$TYPE"
-          if [[ "$TYPE" == "linux-amd64-ssl1" ]]; then
+          if [[ "$TYPE" == "linux_amd64_ssl1" ]]; then
             mvn -B org.apache.maven.plugins:maven-deploy-plugin:3.1.1:deploy-file -Durl=https://mvn.mchv.eu/repository/mchv-snapshot \
                                                                               -DrepositoryId=mchv-snapshot-distribution \
                                                                               -Dfile=natives/.ci-friendly-pom.xml \
@@ -237,7 +237,7 @@ jobs:
                                                                             -Drevision=$REVISION \
                                                                             -Dclassifier=$TYPE \
                                                                             -Dnative.type.classifier="$TYPE"
-          if [[ "$TYPE" == "linux-amd64-ssl1" ]]; then
+          if [[ "$TYPE" == "linux_amd64_ssl1" ]]; then
             mvn -B org.apache.maven.plugins:maven-deploy-plugin:3.1.1:deploy-file -Durl=https://mvn.mchv.eu/repository/mchv \
                                                                               -DrepositoryId=mchv-release-distribution \
                                                                               -Dfile=natives/.ci-friendly-pom.xml \

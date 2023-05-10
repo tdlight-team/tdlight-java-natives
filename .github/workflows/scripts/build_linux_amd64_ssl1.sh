@@ -88,5 +88,5 @@ CXXFLAGS="-stdlib=libc++" CC="$HOST_CMAKE_C_COMPILER" CXX="$HOST_CMAKE_CXX_COMPI
 cmake --build . --target install --config Release "-j$(nproc)"
 cd ..
 mkdir -p src/main/resources/META-INF/tdlightjni/
-mv tdjni_bin/libtdjni.so src/main/resources/META-INF/tdlightjni/libtdjni.linux-amd64-ssl1.so
-mvn -B -f pom.xml -Drevision="$REVISION" -Dnative.type.classifier=linux-amd64-ssl1 package
+mv tdjni_bin/libtdjni.so src/main/resources/META-INF/tdlightjni/libtdjni.linux_amd64_ssl1.so
+mvn -B -f pom.xml -Drevision="$REVISION" -Dnative.type.classifier=linux_amd64_ssl1 package

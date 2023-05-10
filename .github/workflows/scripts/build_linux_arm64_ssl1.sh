@@ -1,7 +1,7 @@
 #!/bin/bash -ex
 # Ubuntu 20.04
 REVISION="${REVISION:-1.0.0.0-SNAPSHOT}"
-TOOLCHAIN_FILE="$(readlink -e ./.github/workflows/toolchains/toolchain-arm64.cmake)"
+TOOLCHAIN_FILE="$(readlink -e ./.github/workflows/toolchains/toolchain_arm64.cmake)"
 
 # Create missing dirs
 rm -rf implementations/tdlight/td_tools_build implementations/tdlight/build api/target-legacy api/target api/.ci-friendly-pom.xml implementations/tdlight/td/generate/auto natives/src/main/java/it/tdlight/jni natives/build natives/tdjni_bin natives/tdjni_docs
@@ -80,5 +80,5 @@ cmake \
 cmake --build . --target install --config Release "-j$(nproc)"
 cd ..
 mkdir -p src/main/resources/META-INF/tdlightjni/
-mv tdjni_bin/libtdjni.so src/main/resources/META-INF/tdlightjni/libtdjni.linux-arm64-ssl1.so
-mvn -B -f pom.xml -Drevision="$REVISION" -Dnative.type.classifier=linux-arm64-ssl1 package
+mv tdjni_bin/libtdjni.so src/main/resources/META-INF/tdlightjni/libtdjni.linux_arm64_ssl1.so
+mvn -B -f pom.xml -Drevision="$REVISION" -Dnative.type.classifier=linux_arm64_ssl1 package
