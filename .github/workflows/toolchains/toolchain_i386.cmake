@@ -1,7 +1,7 @@
 set(CMAKE_CROSSCOMPILING TRUE)
 SET(CMAKE_SYSTEM_NAME Linux)
-set(CMAKE_SYSTEM_PROCESSOR arm)
-set(TARGET_TRIPLE arm-linux-gnueabihf)
+set(CMAKE_SYSTEM_PROCESSOR i386)
+set(TARGET_TRIPLE i386-linux-gnu)
 
 if(EXISTS "/usr/bin/clang-10")
   set(CMAKE_C_COMPILER /usr/bin/clang-10)
@@ -24,11 +24,11 @@ set(CMAKE_C_COMPILER_TARGET ${TARGET_TRIPLE})
 set(CMAKE_CXX_COMPILER_TARGET ${TARGET_TRIPLE})
 set(CMAKE_ASM_COMPILER_TARGET ${TARGET_TRIPLE})
 
-set(CMAKE_FIND_ROOT_PATH /usr/arm-linux-gnueabihf /usr/lib/arm-linux-gnueabihf /usr/include/arm-linux-gnueabihf /usr/bin/arm-linux-gnueabihf)
-set(CMAKE_INCLUDE_PATH  /usr/include/arm-linux-gnueabihf)
-set(CMAKE_LIBRARY_PATH  /usr/lib/arm-linux-gnueabihf)
-set(CMAKE_PROGRAM_PATH  /usr/bin/arm-linux-gnueabihf)
-#set(CMAKE_SYSROOT /usr/lib/arm-linux-gnueabihf)
+set(CMAKE_FIND_ROOT_PATH /usr/i386-linux-gnu /usr/lib/i386-linux-gnu /usr/include/i386-linux-gnu /usr/bin/i386-linux-gnu)
+set(CMAKE_INCLUDE_PATH  /usr/include/i386-linux-gnu)
+set(CMAKE_LIBRARY_PATH  /usr/lib/i386-linux-gnu)
+set(CMAKE_PROGRAM_PATH  /usr/bin/i386-linux-gnu)
+#set(CMAKE_SYSROOT /usr/lib/i386-linux-gnu)
 #set(OPENSSL_INCLUDE_DIR /usr/include/openssl)
 #include_directories("/usr/include/openssl")
 
@@ -54,21 +54,13 @@ set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 #include_directories("${CROSS_OPENJDK_PATH}/include/linux")
 
 SET(JAVA_HOME "/usr/lib/jvm/default-java/")
-SET(JAVA_CROSS_HOME "/usr/lib/jvm/java-1.8.0-openjdk-armhf")
+SET(JAVA_CROSS_HOME "/usr/lib/jvm/java-8-openjdk-i386")
 SET(JAVA_INCLUDE_PATH "${JAVA_HOME}/include")
 SET(JAVA_AWT_INCLUDE_PATH "${JAVA_HOME}/include")
 SET(JAVA_INCLUDE_PATH2 "${JAVA_HOME}/include/linux")
 
-SET(JAVA_JVM_LIBRARY "${JAVA_CROSS_HOME}/jre/lib/arm/server/libjvm.so")
-SET(JAVA_AWT_LIBRARY "${JAVA_CROSS_HOME}/jre/lib/arm/libawt.so")
-
-
-# Only on aarch64 & armhf architecture
-set(CMAKE_THREAD_LIBS_INIT "-lpthread")
-set(CMAKE_HAVE_THREADS_LIBRARY 1)
-set(CMAKE_USE_WIN32_THREADS_INIT 0)
-set(CMAKE_USE_PTHREADS_INIT 1)
-set(THREADS_PREFER_PTHREAD_FLAG ON)
+SET(JAVA_JVM_LIBRARY "${JAVA_CROSS_HOME}/jre/lib/i386/server/libjvm.so")
+SET(JAVA_AWT_LIBRARY "${JAVA_CROSS_HOME}/jre/lib/i386/libawt.so")
 
 # Use LLD on linux
 #add_link_options("-fuse-ld=lld" "-rtlib=compiler-rt" "-unwindlib=libunwind" "-Wl,--as-needed")

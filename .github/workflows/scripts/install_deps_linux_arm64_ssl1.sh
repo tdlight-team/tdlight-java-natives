@@ -13,17 +13,12 @@ echo "deb [arch=arm64,armhf,ppc64el,riscv64,s390x] http://ports.ubuntu.com/ $(ls
 apt-get --assume-yes update
 
 # Install and bypass a bug in the cross-platform libc++ packages
-apt-get --assume-yes autoremove libc++-10-dev libc++abi-10-dev libc++1-10 libc++abi1-10 || true
-apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install libc++-10-dev:arm64 libc++abi-10-dev:arm64
-rm -r \
-  /usr/lib/aarch64-linux-gnu/libc++abi.so \
-  /usr/lib/aarch64-linux-gnu/libc++abi.so.1.0 \
-  /usr/lib/aarch64-linux-gnu/libc++.so.1.0
-mv -t /usr/lib/aarch64-linux-gnu/ \
-  /usr/lib/llvm-14/lib/libc++abi.so \
-  /usr/lib/llvm-14/lib/libc++abi.so.1.0 \
-  /usr/lib/llvm-14/lib/libc++.so.1.0
-apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install libc++-10-dev libc++abi-10-dev
+apt-get --assume-yes autoremove "libc++-10-dev:*" "libc++abi-10-dev:*" "libc++1-10:*" "libc++abi1-10:*" || true
+apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install libc++-10-dev:arm64 libc++abi-10-dev:arm64 libc++1-10:arm64 libc++abi1-10:arm64
+cp --remove-destination \
+  /usr/lib/llvm-10/lib/{libc++abi.so,libc++abi.so.1.0,libc++.so,libc++.so.1.0} \
+  /usr/lib/aarch64-linux-gnu/ || true
+apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install clang-10 libc++-10-dev libc++abi-10-dev libc++1-10 libc++abi1-10
 # End libc++ packages bugfix
 
 # Add arm64 common files

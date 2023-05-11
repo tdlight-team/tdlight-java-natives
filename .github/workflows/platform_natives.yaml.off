@@ -14,14 +14,14 @@ jobs:
       matrix:
         include:
           # todo: re-enable
-          - { os: ubuntu-20.04, type: "linux-386-ssl1" }
+          - { os: ubuntu-20.04, type: "linux-386-ssl3" }
           - { os: ubuntu-20.04, type: "linux_amd64_ssl1" }
-          - { os: ubuntu-20.04, type: "linux_arm64_ssl1" }
-          - { os: ubuntu-20.04, type: "linux-s390x-ssl1" }
-          - { os: ubuntu-20.04, type: "linux-ppc64le-ssl1" }
-          - { os: ubuntu-20.04, type: "linux-riscv64-ssl1" }
           - { os: ubuntu-22.04, type: "linux_amd64_ssl3" }
+          - { os: ubuntu-20.04, type: "linux_arm64_ssl1" }
           - { os: ubuntu-22.04, type: "linux_arm64_ssl3" }
+          - { os: ubuntu-20.04, type: "linux-s390x-ssl3" }
+          - { os: ubuntu-20.04, type: "linux-ppc64le-ssl3" }
+          - { os: ubuntu-20.04, type: "linux-riscv64-ssl3" }
           #- { os: windows-2019, type: "windows_amd64", vcpkgCommitId: "6ca56aeb457f033d344a7106cb3f9f1abf8f4e98", triplet: "x64-windows-static" }
           #- { os: macos-12, type: "macos-amd64" }
     steps:
