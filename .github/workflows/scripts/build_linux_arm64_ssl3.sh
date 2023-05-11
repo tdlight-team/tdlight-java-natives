@@ -14,6 +14,15 @@ HOST_CMAKE_C_FLAGS="-fuse-ld=lld"
 HOST_CMAKE_CXX_FLAGS="${HOST_CMAKE_C_FLAGS} -stdlib=libc++"
 HOST_CMAKE_EXE_LINKER_FLAGS="-lc++ -lc++abi -fuse-ld=lld -rtlib=compiler-rt -unwindlib=libunwind"
 
+# ccache
+CCACHE=$(which sccache)
+if [[ -x "$CCACHE" ]]; then
+  echo "found sccache: $CCACHE"
+else
+  echo "sccache not found"
+  CCACHE=$(which ccache)
+fi
+
 # Build tdlib tools
 cd implementations/tdlight/td_tools_build
 CXXFLAGS="-stdlib=libc++" CC="$HOST_CMAKE_C_COMPILER" CXX="$HOST_CMAKE_CXX_COMPILER" cmake \
@@ -24,8 +33,8 @@ CXXFLAGS="-stdlib=libc++" CC="$HOST_CMAKE_C_COMPILER" CXX="$HOST_CMAKE_CXX_COMPI
   -DCMAKE_EXE_LINKER_FLAGS="${CMAKE_EXE_LINKER_FLAGS} ${HOST_CMAKE_EXE_LINKER_FLAGS}" \
   \
   -DCMAKE_BUILD_TYPE=Release \
-  -DCMAKE_C_COMPILER_LAUNCHER=sccache \
-  -DCMAKE_CXX_COMPILER_LAUNCHER=sccache \
+  -DCMAKE_C_COMPILER_LAUNCHER="$CCACHE" \
+  -DCMAKE_CXX_COMPILER_LAUNCHER="$CCACHE" \
   -DCMAKE_C_FLAGS_RELEASE="" \
   -DCMAKE_CXX_FLAGS_RELEASE="-O0 -DNDEBUG" \
   -DTD_ENABLE_LTO=OFF \
@@ -52,8 +61,8 @@ INSTALL_BINDIR="$(readlink -e ./td_bin/bin)"
 cmake \
   -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON \
   -DCMAKE_BUILD_TYPE=Release \
-  -DCMAKE_C_COMPILER_LAUNCHER=sccache \
-  -DCMAKE_CXX_COMPILER_LAUNCHER=sccache \
+  -DCMAKE_C_COMPILER_LAUNCHER="$CCACHE" \
+  -DCMAKE_CXX_COMPILER_LAUNCHER="$CCACHE" \
   -DTD_SKIP_BENCHMARK=ON -DTD_SKIP_TEST=ON -DTD_SKIP_TG_CLI=ON \
   -DTD_ENABLE_LTO=ON \
   -DTD_ENABLE_JNI=ON \
@@ -68,8 +77,8 @@ cd natives/build
 cmake \
   -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON \
   -DCMAKE_BUILD_TYPE=Release \
-  -DCMAKE_C_COMPILER_LAUNCHER=sccache \
-  -DCMAKE_CXX_COMPILER_LAUNCHER=sccache \
+  -DCMAKE_C_COMPILER_LAUNCHER="$CCACHE" \
+  -DCMAKE_CXX_COMPILER_LAUNCHER="$CCACHE" \
   -DTD_GENERATED_BINARIES_DIR="$(readlink -e ../../implementations/tdlight/td_tools_build/td/generate)" \
   -DTD_SRC_DIR="$(readlink -e ../../implementations/tdlight)" \
   -DTD_ENABLE_LTO=ON \
