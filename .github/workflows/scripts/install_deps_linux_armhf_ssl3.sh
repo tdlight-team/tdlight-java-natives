@@ -27,4 +27,4 @@ dpkg-deb -xv libclang-common-14-dev_*_armhf.deb /
 
 
 # Install dependencies
-apt-get --assume-yes install libssl-dev:armhf zlib1g-dev:armhf openjdk-8-jdk-headless:armhf libgcc-12-dev:armhf libc6-dev:armhf
+apt-get --assume-yes install libssl-dev:armhf zlib1g-dev:armhf openjdk-17-jdk-headless:armhf libgcc-12-dev:armhf libc6-dev:armhf

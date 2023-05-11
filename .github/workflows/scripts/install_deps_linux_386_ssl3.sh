@@ -23,4 +23,4 @@ dpkg-deb -xv libclang-common-14-dev_*_i386.deb /
 
 
 # Install dependencies
-apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install libssl-dev:i386 zlib1g-dev:i386 openjdk-8-jdk-headless:i386 libgcc-12-dev:i386 libc6-dev:i386
+apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install libssl-dev:i386 zlib1g-dev:i386 openjdk-17-jdk-headless:i386 libgcc-12-dev:i386 libc6-dev:i386
