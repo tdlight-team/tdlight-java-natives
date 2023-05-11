@@ -15,11 +15,24 @@ apt-get --assume-yes update
 # Install and bypass a bug in the cross-platform libc++ packages
 apt-get --assume-yes autoremove libc++-14-dev libc++abi-14-dev libc++1-14 libc++abi1-14 || true
 apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install libc++-14-dev:arm64 libc++abi-14-dev:arm64
-rm -r /usr/lib/aarch64-linux-gnu/libc++.so.1.0 /usr/lib/aarch64-linux-gnu/libc++abi.so.1.0 /usr/lib/aarch64-linux-gnu/libc++abi.so /usr/lib/aarch64-linux-gnu/libunwind.so.1.0
-mv /usr/lib/llvm-14/lib/libc++.so.1.0 /usr/lib/aarch64-linux-gnu/
-mv /usr/lib/llvm-14/lib/libc++abi.so.1.0 /usr/lib/aarch64-linux-gnu/
-mv /usr/lib/llvm-14/lib/libc++abi.so /usr/lib/aarch64-linux-gnu/
-mv /usr/lib/llvm-14/lib/libunwind.so.1.0 /usr/lib/aarch64-linux-gnu/
+rm -r \
+  /usr/lib/aarch64-linux-gnu/libc++.a \
+  /usr/lib/aarch64-linux-gnu/libc++abi.so \
+  /usr/lib/aarch64-linux-gnu/libc++abi.so.1.0 \
+  /usr/lib/aarch64-linux-gnu/libclang-cpp.so.14 \
+  /usr/lib/aarch64-linux-gnu/libc++.so \
+  /usr/lib/aarch64-linux-gnu/libc++.so.1.0 \
+  /usr/lib/aarch64-linux-gnu/libunwind.a \
+  /usr/lib/aarch64-linux-gnu/libunwind.so
+mv -t /usr/lib/aarch64-linux-gnu/ \
+  /usr/lib/llvm-14/lib/libc++.a \
+  /usr/lib/llvm-14/lib/libc++abi.so \
+  /usr/lib/llvm-14/lib/libc++abi.so.1.0 \
+  /usr/lib/llvm-14/lib/libclang-cpp.so.14 \
+  /usr/lib/llvm-14/lib/libc++.so \
+  /usr/lib/llvm-14/lib/libc++.so.1.0 \
+  /usr/lib/llvm-14/lib/libunwind.a \
+  /usr/lib/llvm-14/lib/libunwind.so
 apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install libc++-14-dev libc++abi-14-dev
 # End libc++ packages bugfix
 
