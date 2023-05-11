@@ -15,7 +15,7 @@ HOST_CMAKE_CXX_FLAGS="${HOST_CMAKE_C_FLAGS} -stdlib=libc++"
 HOST_CMAKE_EXE_LINKER_FLAGS="-lc++ -lc++abi -fuse-ld=lld -rtlib=compiler-rt -unwindlib=libunwind"
 
 # ccache
-CCACHE=$(which sccache)
+CCACHE=$(which sccache || true)
 if [[ -x "$CCACHE" ]]; then
   echo "found sccache: $CCACHE"
 else
