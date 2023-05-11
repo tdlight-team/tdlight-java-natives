@@ -1,7 +1,7 @@
 set(CMAKE_CROSSCOMPILING TRUE)
 SET(CMAKE_SYSTEM_NAME Linux)
-set(CMAKE_SYSTEM_PROCESSOR aarch64)
-set(TARGET_TRIPLE aarch64-linux-gnu)
+set(CMAKE_SYSTEM_PROCESSOR arm)
+set(TARGET_TRIPLE arm-linux-gnueabihf
 
 if(EXISTS "/usr/bin/clang-10")
   set(CMAKE_C_COMPILER /usr/bin/clang-10)
