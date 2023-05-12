@@ -129,7 +129,7 @@ jobs:
         if: matrix.os == 'ubuntu-22.04'
         uses: awalsh128/cache-apt-pkgs-action@latest
         with:
-          packages: make git zlib1g-dev libssl-dev gperf php-cli cmake default-jdk clang-14 lld-14 libc++-14-dev libc++abi-14-dev libgcc-11-dev libunwind-14-dev libclang-common-14-dev ccache maven
+          packages: make git zlib1g-dev libssl-dev gperf php-cli cmake default-jdk clang-15 lld-15 libc++-15-dev libc++abi-15-dev libgcc-11-dev libunwind-15-dev libclang-common-15-dev ccache maven
           version: 1.0
       - name: Run sccache-cache
         uses: mozilla-actions/sccache-action@v0.0.3

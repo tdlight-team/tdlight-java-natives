@@ -7,8 +7,8 @@ rm -rf implementations/tdlight/td_tools_build implementations/tdlight/build api/
 mkdir -p implementations/tdlight/build  implementations/tdlight/build/td_bin/bin implementations/tdlight/td_tools_build/java/it/tdlight/jni api/src/main/java-legacy/it/tdlight/jni api/src/main/java-sealed/it/tdlight/jni natives/src/main/java/it/tdlight/jni natives/build natives/tdjni_bin natives/tdjni_docs
 
 # machine-specific flags
-HOST_CMAKE_C_COMPILER="/usr/bin/clang-14"
-HOST_CMAKE_CXX_COMPILER="/usr/bin/clang++-14"
+HOST_CMAKE_C_COMPILER="/usr/bin/clang-15"
+HOST_CMAKE_CXX_COMPILER="/usr/bin/clang++-15"
 HOST_CMAKE_C_FLAGS="-fuse-ld=lld"
 HOST_CMAKE_CXX_FLAGS="${HOST_CMAKE_C_FLAGS} -stdlib=libc++"
 HOST_CMAKE_EXE_LINKER_FLAGS="-lc++ -lc++abi -fuse-ld=lld -rtlib=compiler-rt -unwindlib=libunwind"
