@@ -125,6 +125,14 @@ jobs:
         with:
           packages: make git zlib1g-dev libssl-dev gperf php-cli cmake default-jdk clang-10 lld-10 libc++-10-dev libc++abi-10-dev libgcc-9-dev libunwind-dev libclang-common-10-dev ccache maven
           version: 1.0
+      - name: add updates ppa
+        if: matrix.os == 'ubuntu-22.04'
+        uses: myci-actions/add-deb-repo@11
+        with:
+          # noinspection HttpUrlsUsage
+          repo: deb http://archive.ubuntu.com/ubuntu/ jammy-updates main restricted universe multiverse
+          repo-name: jammy-updates
+          update: true
       - name: Install ubuntu 22.04 dependencies
         if: matrix.os == 'ubuntu-22.04'
         uses: awalsh128/cache-apt-pkgs-action@latest
