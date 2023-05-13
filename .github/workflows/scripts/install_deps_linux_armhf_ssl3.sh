@@ -13,8 +13,8 @@ echo "deb [arch=arm64,armhf,ppc64el,riscv64,s390x] http://ports.ubuntu.com/ $(ls
 apt-get --assume-yes update
 
 # Install and bypass a bug in the cross-platform libc++ packages
-apt-get --assume-yes autoremove "libc++-15-dev:*" "libc++abi-15-dev:*" "libc++1-15:*" "libc++abi1-15:*" "libunwind-15-dev:*" "libunwind-15:*" || true
-apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install libc++-15-dev:armhf libc++abi-15-dev:armhf libc++1-15:armhf libc++abi1-15:armhf libunwind-15-dev:armhf libunwind-15:armhf
+apt-get --assume-yes autoremove "libc++-14-dev:*" "libc++abi-14-dev:*" "libc++1-14:*" "libc++abi1-14:*" "libunwind-14-dev:*" "libunwind-14:*" || true
+apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install libc++-14-dev:armhf libc++abi-14-dev:armhf libc++1-14:armhf libc++abi1-15:armhf libunwind-15-dev:armhf libunwind-15:armhf
 cp --remove-destination \
   /usr/lib/llvm-15/lib/{libc++abi.so,libc++abi.so.1.0,libc++.so,libc++.so.1.0,libunwind.so.1.0} \
   /usr/lib/aarch64-linux-gnu/ || true

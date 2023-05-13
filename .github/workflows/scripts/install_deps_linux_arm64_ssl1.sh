@@ -13,17 +13,17 @@ echo "deb [arch=arm64,armhf,ppc64el,riscv64,s390x] http://ports.ubuntu.com/ $(ls
 apt-get --assume-yes update
 
 # Install and bypass a bug in the cross-platform libc++ packages
-apt-get --assume-yes autoremove "libc++-10-dev:*" "libc++abi-10-dev:*" "libc++1-10:*" "libc++abi1-10:*" || true
-apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install libc++-10-dev:arm64 libc++abi-10-dev:arm64 libc++1-10:arm64 libc++abi1-10:arm64
+apt-get --assume-yes autoremove "libc++-12-dev:*" "libc++abi-12-dev:*" "libc++1-12:*" "libc++abi1-12:*" || true
+apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install libc++-12-dev:arm64 libc++abi-12-dev:arm64 libc++1-12:arm64 libc++abi1-12:arm64
 cp --remove-destination \
-  /usr/lib/llvm-10/lib/{libc++abi.so,libc++abi.so.1.0,libc++.so,libc++.so.1.0} \
+  /usr/lib/llvm-12/lib/{libc++abi.so,libc++abi.so.1.0,libc++.so,libc++.so.1.0} \
   /usr/lib/aarch64-linux-gnu/ || true
-apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install clang-10 libc++-10-dev libc++abi-10-dev libc++1-10 libc++abi1-10
+apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install clang-12 libc++-12-dev libc++abi-12-dev libc++1-12 libc++abi1-12
 # End libc++ packages bugfix
 
 # Add arm64 common files
-apt-get download libclang-common-10-dev:arm64
-dpkg-deb -xv libclang-common-10-dev_*_arm64.deb /
+apt-get download libclang-common-12-dev:arm64
+dpkg-deb -xv libclang-common-12-dev_*_arm64.deb /
 
 
 # Install dependencies
