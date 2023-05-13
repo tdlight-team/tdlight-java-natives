@@ -109,15 +109,6 @@ jobs:
         with:
           php-version: '8.0'
           extensions: readline
-      - name: Install custom dependencies
-        shell: bash
-        run: |
-          set -xeo pipefail
-          echo "REVISION: $REVISION"
-
-          if [[ -f "./.github/workflows/scripts/install_deps_${SAFE_TYPE}.sh" ]]; then
-            sudo ./.github/workflows/scripts/install_deps_${SAFE_TYPE}.sh
-          fi
       - name: Install ubuntu 20.04 dependencies
         if: matrix.os == 'ubuntu-20.04'
         uses: awalsh128/cache-apt-pkgs-action@latest
@@ -130,6 +121,15 @@ jobs:
         with:
           packages: make git zlib1g-dev libssl-dev gperf php-cli cmake default-jdk clang-15 lld-15 libc++-15-dev libc++abi-15-dev libgcc-11-dev libunwind-15-dev libclang-common-15-dev ccache maven
           version: 1.0
+      - name: Install custom dependencies
+        shell: bash
+        run: |
+          set -xeo pipefail
+          echo "REVISION: $REVISION"
+
+          if [[ -f "./.github/workflows/scripts/install_deps_${SAFE_TYPE}.sh" ]]; then
+            sudo ./.github/workflows/scripts/install_deps_${SAFE_TYPE}.sh
+          fi
       - name: Run sccache-cache
         uses: mozilla-actions/sccache-action@v0.0.3
         env:
