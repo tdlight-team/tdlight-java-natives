@@ -54,13 +54,18 @@ set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 #include_directories("${CROSS_OPENJDK_PATH}/include/linux")
 
 SET(JAVA_HOME "/usr/lib/jvm/default-java/")
-SET(JAVA_CROSS_HOME "/usr/lib/jvm/java-17-openjdk-arm64")
+if(EXISTS "/usr/lib/jvm/java-17-openjdk-arm64")
+  SET(JAVA_CROSS_HOME "/usr/lib/jvm/java-17-openjdk-arm64")
+  SET(JAVA_JVM_LIBRARY "${JAVA_CROSS_HOME}/lib/server/libjvm.so")
+  SET(JAVA_AWT_LIBRARY "${JAVA_CROSS_HOME}/lib/libawt.so")
+else()
+  SET(JAVA_CROSS_HOME "/usr/lib/jvm/java-8-openjdk-arm64")
+  SET(JAVA_JVM_LIBRARY "${JAVA_CROSS_HOME}/jre/lib/aarch64/server/libjvm.so")
+  SET(JAVA_AWT_LIBRARY "${JAVA_CROSS_HOME}/jre/lib/aarch64/libawt.so")
+endif()
 SET(JAVA_INCLUDE_PATH "${JAVA_HOME}/include")
 SET(JAVA_AWT_INCLUDE_PATH "${JAVA_HOME}/include")
 SET(JAVA_INCLUDE_PATH2 "${JAVA_HOME}/include/linux")
-
-SET(JAVA_JVM_LIBRARY "${JAVA_CROSS_HOME}/lib/server/libjvm.so")
-SET(JAVA_AWT_LIBRARY "${JAVA_CROSS_HOME}/lib/libawt.so")
 
 
 # Only on aarch64 & armhf architecture
