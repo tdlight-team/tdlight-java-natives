@@ -143,7 +143,7 @@ jobs:
           echo "REVISION: $REVISION"
 
           if [[ -f "./.github/workflows/scripts/install_deps_${SAFE_TYPE}.sh" ]]; then
-            if [[ "$GH_MATRIX_OS" == *"windows"* ]]; then
+            if [[ "$GH_MATRIX_OS" == *"windows"* || "$GH_MATRIX_OS" == *"macos"* ]]; then
               ./.github/workflows/scripts/install_deps_${SAFE_TYPE}.sh
             else
               sudo ./.github/workflows/scripts/install_deps_${SAFE_TYPE}.sh
