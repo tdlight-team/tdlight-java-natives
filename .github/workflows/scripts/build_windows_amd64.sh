@@ -6,13 +6,6 @@ REVISION="${REVISION:-1.0.0.0-SNAPSHOT}"
 rm -rf implementations/tdlight/td_tools_build implementations/tdlight/build api/target-legacy api/target api/.ci-friendly-pom.xml implementations/tdlight/td/generate/auto natives/src/main/java/it/tdlight/jni natives/build natives/tdjni_bin natives/tdjni_docs
 mkdir -p implementations/tdlight/build  implementations/tdlight/build/td_bin/bin implementations/tdlight/td_tools_build/java/it/tdlight/jni api/src/main/java-legacy/it/tdlight/jni api/src/main/java-sealed/it/tdlight/jni natives/src/main/java/it/tdlight/jni natives/build natives/tdjni_bin natives/tdjni_docs
 
-# machine-specific flags
-HOST_CMAKE_C_COMPILER="/usr/bin/clang-14"
-HOST_CMAKE_CXX_COMPILER="/usr/bin/clang++-14"
-HOST_CMAKE_C_FLAGS="-fuse-ld=lld"
-HOST_CMAKE_CXX_FLAGS="${HOST_CMAKE_C_FLAGS} -stdlib=libc++"
-HOST_CMAKE_EXE_LINKER_FLAGS="-lc++ -lc++abi -fuse-ld=lld -rtlib=compiler-rt -unwindlib=libunwind"
-
 # ccache
 CCACHE=$(which sccache || true)
 if [[ -x "$CCACHE" ]]; then
@@ -24,13 +17,7 @@ fi
 
 # Build tdlib tools
 cd implementations/tdlight/td_tools_build
-CXXFLAGS="-stdlib=libc++" CC="$HOST_CMAKE_C_COMPILER" CXX="$HOST_CMAKE_CXX_COMPILER" cmake \
-  -DCMAKE_C_COMPILER="${HOST_CMAKE_C_COMPILER}" \
-  -DCMAKE_CXX_COMPILER="${HOST_CMAKE_CXX_COMPILER}" \
-  -DCMAKE_C_FLAGS="${CMAKE_C_FLAGS} ${HOST_CMAKE_C_FLAGS}" \
-  -DCMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} ${HOST_CMAKE_CXX_FLAGS}" \
-  -DCMAKE_EXE_LINKER_FLAGS="${CMAKE_EXE_LINKER_FLAGS} ${HOST_CMAKE_EXE_LINKER_FLAGS}" \
-  \
+cmake \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_C_COMPILER_LAUNCHER="$CCACHE" \
   -DCMAKE_CXX_COMPILER_LAUNCHER="$CCACHE" \
@@ -59,13 +46,7 @@ export CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -flto=thin -O3"
 cd implementations/tdlight/build
 INSTALL_PREFIX="$(readlink -e ./td_bin/)"
 INSTALL_BINDIR="$(readlink -e ./td_bin/bin)"
-CXXFLAGS="-stdlib=libc++" CC="$HOST_CMAKE_C_COMPILER" CXX="$HOST_CMAKE_CXX_COMPILER" cmake \
-  -DCMAKE_C_COMPILER="${HOST_CMAKE_C_COMPILER}" \
-  -DCMAKE_CXX_COMPILER="${HOST_CMAKE_CXX_COMPILER}" \
-  -DCMAKE_C_FLAGS="${CMAKE_C_FLAGS} ${HOST_CMAKE_C_FLAGS}" \
-  -DCMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} ${HOST_CMAKE_CXX_FLAGS}" \
-  -DCMAKE_EXE_LINKER_FLAGS="${CMAKE_EXE_LINKER_FLAGS} ${HOST_CMAKE_EXE_LINKER_FLAGS}" \
-  \
+cmake \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_C_COMPILER_LAUNCHER="$CCACHE" \
   -DCMAKE_CXX_COMPILER_LAUNCHER="$CCACHE" \
@@ -80,13 +61,7 @@ cmake --build . --target install --config Release "-j$(nproc)"
 cd ../../../
 
 cd natives/build
-CXXFLAGS="-stdlib=libc++" CC="$HOST_CMAKE_C_COMPILER" CXX="$HOST_CMAKE_CXX_COMPILER" cmake \
-  -DCMAKE_C_COMPILER="${HOST_CMAKE_C_COMPILER}" \
-  -DCMAKE_CXX_COMPILER="${HOST_CMAKE_CXX_COMPILER}" \
-  -DCMAKE_C_FLAGS="${CMAKE_C_FLAGS} ${HOST_CMAKE_C_FLAGS}" \
-  -DCMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} ${HOST_CMAKE_CXX_FLAGS}" \
-  -DCMAKE_EXE_LINKER_FLAGS="${CMAKE_EXE_LINKER_FLAGS} ${HOST_CMAKE_EXE_LINKER_FLAGS}" \
-  \
+cmake \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_C_COMPILER_LAUNCHER="$CCACHE" \
   -DCMAKE_CXX_COMPILER_LAUNCHER="$CCACHE" \
