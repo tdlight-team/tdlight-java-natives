@@ -37,7 +37,7 @@ set(CMAKE_PROGRAM_PATH  /usr/bin/riscv64-linux-gnu)
 set(CMAKE_EXE_LINKER_FLAGS_INIT "-fuse-ld=lld -rtlib=compiler-rt -unwindlib=libunwind")
 set(CMAKE_MODULE_LINKER_FLAGS_INIT "-fuse-ld=lld -rtlib=compiler-rt -unwindlib=libunwind")
 set(CMAKE_SHARED_LINKER_FLAGS_INIT "-fuse-ld=lld -rtlib=compiler-rt -unwindlib=libunwind")
-set(CMAKE_CXX_FLAGS_INIT "-stdlib=libc++")
+set(CMAKE_CXX_FLAGS_INIT "-stdlib=libc++ -std=c++14")
 
 
 # Use our definitions for compiler tools
