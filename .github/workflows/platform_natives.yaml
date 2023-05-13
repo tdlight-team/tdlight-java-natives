@@ -188,7 +188,7 @@ jobs:
         if: matrix.os == 'windows-2019'
         run: |
           set -xeo pipefail
-          $VCPKG_DIR/vcpkg install gperf openssl:x64-windows-static zlib:x64-windows-static
+          ./vcpkg/vcpkg install gperf openssl:x64-windows-static zlib:x64-windows-static
         shell: bash
       - name: Build
         shell: bash
