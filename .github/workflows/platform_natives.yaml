@@ -14,7 +14,7 @@ jobs:
       matrix:
         include:
           # todo: re-enable
-          - { os: ubuntu-22.04, type: "linux_386_ssl3" }
+          #- { os: ubuntu-22.04, type: "linux_386_ssl3" }
           - { os: ubuntu-20.04, type: "linux_amd64_ssl1" }
           - { os: ubuntu-22.04, type: "linux_amd64_ssl3" }
           - { os: ubuntu-20.04, type: "linux_arm64_ssl1" }
