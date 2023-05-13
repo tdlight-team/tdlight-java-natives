@@ -30,6 +30,7 @@ jobs:
           submodules: "recursive"
 
       - name: Get version
+        shell: bash
         run: |
           set -xeo pipefail
           # Get latest commit short hash
