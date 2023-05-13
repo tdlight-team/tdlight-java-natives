@@ -11,8 +11,6 @@ echo "deb [arch=arm64,armhf,ppc64el,riscv64,s390x] http://ports.ubuntu.com/ $(ls
 echo "deb [arch=arm64,armhf,ppc64el,riscv64,s390x] http://ports.ubuntu.com/ $(lsb_release -cs)-security main universe restricted multiverse" >> /etc/apt/sources.list.d/tdlight-multiarch.list
 
 apt-get --assume-yes update
-# workaround
-apt-get --assume-yes full-upgrade
 
 # Install and bypass a bug in the cross-platform libc++ packages
 apt-get --assume-yes autoremove "libc++-15-dev:*" "libc++abi-15-dev:*" "libc++1-15:*" "libc++abi1-15:*" "libunwind-15-dev:*" "libunwind-15:*" || true
@@ -29,4 +27,19 @@ dpkg-deb -xv libclang-common-15-dev_*_riscv64.deb /
 
 
 # Install dependencies
+#
+#I don't know why this command fails in github actions only with risc-v:
+#Reading package lists...
+#Building dependency tree...
+#Reading state information...
+#Some packages could not be installed. This may mean that you have
+#requested an impossible situation or if you are using the unstable
+#distribution that some required packages have not yet been created
+#or been moved out of Incoming.
+#The following information may help to resolve the situation:
+#
+#The following packages have unmet dependencies:
+# libselinux1:riscv64 : Depends: libpcre2-8-0:riscv64 (>= 10.22) but it is not going to be installed
+#E: Unable to correct problems, you have held broken packages.
+#
 apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install libssl-dev:riscv64 zlib1g-dev:riscv64 openjdk-17-jdk-headless:riscv64 libgcc-12-dev:riscv64 libc6-dev:riscv64
