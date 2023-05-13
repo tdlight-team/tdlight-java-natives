@@ -14,12 +14,12 @@ apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install libc++-14-de
 cp --remove-destination \
   /usr/lib/llvm-14/lib/{libc++abi.so,libc++abi.so.1.0,libc++.so,libc++.so.1.0,libunwind.so.1.0} \
   /usr/lib/aarch64-linux-gnu/ || true
-apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install clang-14 libc++-14-dev libc++abi-14-dev libc++1-14 libc++abi1-14 libunwind-15-dev libunwind-15
+apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install clang-14 libc++-14-dev libc++abi-14-dev libc++1-14 libc++abi1-14 libunwind-14-dev libunwind-14
 # End libc++ packages bugfix
 
 # Add i386 common files
-apt-get download libclang-common-15-dev:i386
-dpkg-deb -xv libclang-common-15-dev_*_i386.deb /
+apt-get download libclang-common-14-dev:i386
+dpkg-deb -xv libclang-common-14-dev_*_i386.deb /
 
 
 # Install dependencies

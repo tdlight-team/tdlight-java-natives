@@ -116,12 +116,12 @@ jobs:
         run: |  
           export DEBIAN_FRONTEND=noninteractive
           sudo apt-get --assume-yes update
-          sudo apt-get --assume-yes install make git zlib1g-dev libssl-dev gperf php-cli cmake default-jdk clang-10 lld-10 libc++-10-dev libc++abi-10-dev libgcc-9-dev libunwind-dev libclang-common-10-dev ccache maven
+          sudo apt-get --assume-yes install make git zlib1g-dev libssl-dev gperf php-cli cmake default-jdk clang-12 lld-12 libc++-12-dev libc++abi-12-dev libgcc-9-dev libunwind-dev libclang-common-12-dev ccache maven
 #      - name: Install ubuntu 20.04 dependencies (cached)
 #        if: matrix.os == 'ubuntu-20.04'
 #        uses: awalsh128/cache-apt-pkgs-action@latest
 #        with:
-#          packages: make git zlib1g-dev libssl-dev gperf php-cli cmake default-jdk clang-10 lld-10 libc++-10-dev libc++abi-10-dev libgcc-9-dev libunwind-dev libclang-common-10-dev ccache maven
+#          packages: make git zlib1g-dev libssl-dev gperf php-cli cmake default-jdk clang-12 lld-12 libc++-12-dev libc++abi-12-dev libgcc-9-dev libunwind-dev libclang-common-12-dev ccache maven
 #          version: 1.0
       - name: Install ubuntu 22.04 dependencies
         if: matrix.os == 'ubuntu-22.04'
@@ -129,12 +129,12 @@ jobs:
         run: |
           export DEBIAN_FRONTEND=noninteractive
           sudo apt-get --assume-yes update
-          sudo apt-get --assume-yes install make git zlib1g-dev libssl-dev gperf php-cli cmake default-jdk clang-15 lld-15 libc++-15-dev libc++abi-15-dev libgcc-11-dev libunwind-15-dev libclang-common-15-dev ccache maven
+          sudo apt-get --assume-yes install make git zlib1g-dev libssl-dev gperf php-cli cmake default-jdk clang-14 lld-14 libc++-14-dev libc++abi-14-dev libgcc-11-dev libunwind-14-dev libclang-common-14-dev ccache maven
 #      - name: Install ubuntu 22.04 dependencies (cached)
 #        if: matrix.os == 'ubuntu-22.04'
 #        uses: awalsh128/cache-apt-pkgs-action@latest
 #        with:
-#          packages: make git zlib1g-dev libssl-dev gperf php-cli cmake default-jdk clang-15 lld-15 libc++-15-dev libc++abi-15-dev libgcc-11-dev libunwind-15-dev libclang-common-15-dev ccache maven
+#          packages: make git zlib1g-dev libssl-dev gperf php-cli cmake default-jdk clang-14 lld-14 libc++-14-dev libc++abi-14-dev libgcc-11-dev libunwind-14-dev libclang-common-14-dev ccache maven
 #          version: 1.0
       - name: Install custom dependencies
         shell: bash
