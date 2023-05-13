@@ -21,8 +21,8 @@ jobs:
           - { os: ubuntu-22.04, type: "linux_arm64_ssl3" }
           - { os: ubuntu-22.04, type: "linux_ppc64le_ssl3" }
           #- { os: ubuntu-22.04, type: "linux_riscv64_ssl3" }
-          #- { os: windows-2019, type: "windows_amd64", vcpkgCommitId: "6ca56aeb457f033d344a7106cb3f9f1abf8f4e98", triplet: "x64-windows-static" }
-          #- { os: macos-12, type: "macos_amd64" }
+          - { os: windows-2019, type: "windows_amd64", vcpkgCommitId: "6ca56aeb457f033d344a7106cb3f9f1abf8f4e98", triplet: "x64-windows-static" }
+          - { os: macos-12, type: "macos_amd64" }
     steps:
       - name: Checkout current repo
         uses: actions/checkout@v3
