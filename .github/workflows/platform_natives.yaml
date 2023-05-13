@@ -129,7 +129,11 @@ jobs:
           echo "REVISION: $REVISION"
 
           if [[ -f "./.github/workflows/scripts/install_deps_${SAFE_TYPE}.sh" ]]; then
-            sudo ./.github/workflows/scripts/install_deps_${SAFE_TYPE}.sh
+            if [[ "$GH_MATRIX_OS" == *"windows"* ]]; then
+              ./.github/workflows/scripts/install_deps_${SAFE_TYPE}.sh
+            else
+              sudo ./.github/workflows/scripts/install_deps_${SAFE_TYPE}.sh
+            fi
           fi
       - name: Run sccache-cache
         uses: mozilla-actions/sccache-action@v0.0.3
