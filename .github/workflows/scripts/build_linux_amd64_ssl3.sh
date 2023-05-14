@@ -42,8 +42,8 @@ CXXFLAGS="-stdlib=libc++" CC="$HOST_CMAKE_C_COMPILER" CXX="$HOST_CMAKE_CXX_COMPI
   -DTD_ENABLE_LTO=OFF \
   -DTD_ENABLE_JNI=ON \
   ..
-cmake --build . --target prepare_cross_compiling "-j$(nproc)"
-cmake --build . --target td_generate_java_api "-j$(nproc)"
+cmake --build . --target prepare_cross_compiling --parallel "$(nproc)"
+cmake --build . --target td_generate_java_api --parallel "$(nproc)"
 cd ../../../
 
 # Generate TdApi.java
@@ -77,7 +77,7 @@ CXXFLAGS="-stdlib=libc++" CC="$HOST_CMAKE_C_COMPILER" CXX="$HOST_CMAKE_CXX_COMPI
   -DCMAKE_INSTALL_PREFIX:PATH="$INSTALL_PREFIX" \
   -DCMAKE_INSTALL_BINDIR:PATH="$INSTALL_BINDIR" \
   ..
-cmake --build . --target install --config Release "-j$(nproc)"
+cmake --build . --target install --config Release --parallel "$(nproc)"
 cd ../../../
 
 cd natives/build
@@ -100,7 +100,7 @@ CXXFLAGS="-stdlib=libc++" CC="$HOST_CMAKE_C_COMPILER" CXX="$HOST_CMAKE_CXX_COMPI
   -DJAVA_SRC_DIR="$(readlink -e ../src/main/java)" \
   -DTDNATIVES_CPP_SRC_DIR="$(readlink -e ../src/main/cpp)" \
   ../src/main/cpp
-cmake --build . --target install --config Release "-j$(nproc)"
+cmake --build . --target install --config Release --parallel "$(nproc)"
 cd ..
 mkdir -p src/main/resources/META-INF/tdlightjni/
 mv tdjni_bin/libtdjni.so src/main/resources/META-INF/tdlightjni/libtdjni.linux_amd64_ssl3.so

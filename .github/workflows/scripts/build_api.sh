@@ -17,8 +17,8 @@ cmake \
   -DTD_ENABLE_LTO=OFF \
   -DTD_ENABLE_JNI=ON \
   ..
-cmake --build . --target prepare_cross_compiling --config Release "-j$(nproc)"
-cmake --build . --target td_generate_java_api --config Release "-j$(nproc)"
+cmake --build . --target prepare_cross_compiling --config Release --parallel "$(nproc)"
+cmake --build . --target td_generate_java_api --config Release --parallel "$(nproc)"
 cd ../../../
 
 # Generate TdApi.java

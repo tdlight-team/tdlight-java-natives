@@ -15,9 +15,8 @@ apt-get --assume-yes update
 # Install and bypass a bug in the cross-platform libc++ packages
 apt-get --assume-yes autoremove "libc++-14-dev:*" "libc++abi-14-dev:*" "libc++1-14:*" "libc++abi1-14:*" "libunwind-14-dev:*" "libunwind-14:*" || true
 apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install libc++-14-dev:arm64 libc++abi-14-dev:arm64 libc++1-14:arm64 libc++abi1-14:arm64 libunwind-14-dev:arm64 libunwind-14:arm64
-cp --remove-destination \
-  /usr/lib/llvm-14/lib/{libc++abi.so,libc++abi.so.1.0,libc++.so,libc++.so.1.0,libunwind.so.1.0} \
-  /usr/lib/aarch64-linux-gnu/ || true
+# shellcheck disable=SC2016
+find /usr/lib/aarch64-linux-gnu/ -lname "*llvm-14*" -print0 | xargs -0 -i sh -c 'cp --remove-destination $(readlink -e "{}") "{}" '
 apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install clang-14 libc++-14-dev libc++abi-14-dev libc++1-14 libc++abi1-14 libunwind-14-dev libunwind-14
 # End libc++ packages bugfix
 

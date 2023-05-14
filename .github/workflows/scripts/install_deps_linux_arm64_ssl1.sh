@@ -15,9 +15,8 @@ apt-get --assume-yes update
 # Install and bypass a bug in the cross-platform libc++ packages
 apt-get --assume-yes autoremove "libc++-12-dev:*" "libc++abi-12-dev:*" "libc++1-12:*" "libc++abi1-12:*" || true
 apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install libc++-12-dev:arm64 libc++abi-12-dev:arm64 libc++1-12:arm64 libc++abi1-12:arm64
-cp --remove-destination \
-  /usr/lib/llvm-12/lib/{libc++abi.so,libc++abi.so.1.0,libc++.so,libc++.so.1.0} \
-  /usr/lib/aarch64-linux-gnu/ || true
+# shellcheck disable=SC2016
+find /usr/lib/aarch64-linux-gnu/ -lname "*llvm-12*" -print0 | xargs -0 -i sh -c 'cp --remove-destination $(readlink -e "{}") "{}" '
 apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install clang-12 libc++-12-dev libc++abi-12-dev libc++1-12 libc++abi1-12
 # End libc++ packages bugfix
 
