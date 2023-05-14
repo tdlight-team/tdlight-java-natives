@@ -9,10 +9,11 @@ mkdir -p implementations/tdlight/build  implementations/tdlight/build/td_bin/bin
 # ccache
 CCACHE=$(which sccache || true)
 if [[ -x "$CCACHE" ]]; then
+  CCACHE="sccache"
   echo "found sccache: $CCACHE"
 else
   echo "sccache not found"
-  CCACHE=$(which ccache)
+  CCACHE="ccache"
 fi
 
 # Fix path
@@ -82,5 +83,5 @@ cmake \
 cmake --build . --target install --config Release --parallel "$(nproc)"
 cd ..
 mkdir -p src/main/resources/META-INF/tdlightjni/
-mv tdjni_bin/libtdjni.dll src/main/resources/META-INF/tdlightjni/libtdjni.linux_amd64_ssl3.dll
+mv tdjni_bin/tdjni.dll src/main/resources/META-INF/tdlightjni/libtdjni.linux_amd64_ssl3.dll
 mvn -B -f pom.xml -Drevision="$REVISION" -Dnative.type.classifier=linux_amd64_ssl3 package
