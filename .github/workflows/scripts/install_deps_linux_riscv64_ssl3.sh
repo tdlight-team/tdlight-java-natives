@@ -13,13 +13,13 @@ echo "deb [arch=arm64,armhf,ppc64el,riscv64,s390x] http://ports.ubuntu.com/ $(ls
 apt-get --assume-yes update
 
 #debug
-apt-get list --installed
+apt list --installed
 
 # Install and bypass a bug in the cross-platform libc++ packages
 apt-get --assume-yes autoremove "libc++-14-dev:*" "libc++abi-14-dev:*" "libc++1-14:*" "libc++abi1-14:*" "libunwind-14-dev:*" "libunwind-14:*" || true
 
 #debug
-apt-get list --installed
+apt list --installed
 
 apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install libc++-14-dev:riscv64 libc++abi-14-dev:riscv64 libc++1-14:riscv64 libc++abi1-14:riscv64 libunwind-14-dev:riscv64 libunwind-14:riscv64
 # shellcheck disable=SC2016
