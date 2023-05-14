@@ -5,7 +5,7 @@ cat /etc/apt/sources.list
 echo "Manually installed:"
 apt-mark showmanual
 
-export DEBIAN_FRONTEND=noninteractive
+#export DEBIAN_FRONTEND=noninteractive
 
 dpkg --add-architecture riscv64
 sed 's/deb http/deb \[arch=amd64,i386\] http/' -i /etc/apt/sources.list
@@ -54,4 +54,4 @@ dpkg-deb -xv libclang-common-14-dev_*_riscv64.deb /
 # libselinux1:riscv64 : Depends: libpcre2-8-0:riscv64 (>= 10.22) but it is not going to be installed
 #E: Unable to correct problems, you have held broken packages.
 #
-apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install libssl-dev:riscv64 zlib1g-dev:riscv64 openjdk-17-jdk-headless:riscv64 libgcc-12-dev:riscv64 libc6-dev:riscv64 libgomp1:riscv64 libasan8:riscv64 libpcre2-8-0:riscv64 libstdc++6:riscv64
+apt-get install libssl-dev:riscv64 zlib1g-dev:riscv64 openjdk-17-jdk-headless:riscv64 libgcc-12-dev:riscv64 libc6-dev:riscv64 libstdc++6:riscv64
