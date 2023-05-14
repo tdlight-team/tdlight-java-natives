@@ -22,7 +22,6 @@ export VCPKG_DIR="$(readlink -e ./vcpkg)"
 # Build tdlib tools
 cd implementations/tdlight/td_tools_build
 cmake \
-  -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_C_COMPILER_LAUNCHER="$CCACHE" \
   -DCMAKE_CXX_COMPILER_LAUNCHER="$CCACHE" \
   -DOPENSSL_USE_STATIC_LIBS=True \
@@ -32,8 +31,8 @@ cmake \
   -DTD_ENABLE_LTO=OFF \
   -DTD_ENABLE_JNI=ON \
   ..
-cmake --build . --target prepare_cross_compiling "-j$(nproc)"
-cmake --build . --target td_generate_java_api "-j$(nproc)"
+cmake --build . --target prepare_cross_compiling --config Release "-j$(nproc)"
+cmake --build . --target td_generate_java_api --config Release "-j$(nproc)"
 cd ../../../
 
 # Generate TdApi.java
@@ -52,7 +51,6 @@ cd implementations/tdlight/build
 INSTALL_PREFIX="$(readlink -e ./td_bin/)"
 INSTALL_BINDIR="$(readlink -e ./td_bin/bin)"
 cmake \
-  -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_C_COMPILER_LAUNCHER="$CCACHE" \
   -DCMAKE_CXX_COMPILER_LAUNCHER="$CCACHE" \
   -DOPENSSL_USE_STATIC_LIBS=True \
@@ -68,7 +66,6 @@ cd ../../../
 
 cd natives/build
 cmake \
-  -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_C_COMPILER_LAUNCHER="$CCACHE" \
   -DCMAKE_CXX_COMPILER_LAUNCHER="$CCACHE" \
   -DOPENSSL_USE_STATIC_LIBS=True \
