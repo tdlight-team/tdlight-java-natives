@@ -4,11 +4,9 @@ This repository generates JNI packages for each architecture and OS used by [TDL
 
 ## Building
 
-Go to `scripts/utils` and run
+**todo**
 
-- `./compile-natives-package.sh` for natives
-
-- `./compile-tdapi-package.sh` for tdapi
+look at .github/workflows/scripts/build_linux_amd64_ssl1.sh, it's a decent example
 
 ## Download
 
