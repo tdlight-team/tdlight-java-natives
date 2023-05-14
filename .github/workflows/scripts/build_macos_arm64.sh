@@ -22,7 +22,7 @@ cmake \
   -DCMAKE_C_COMPILER_LAUNCHER="$CCACHE" \
   -DCMAKE_CXX_COMPILER_LAUNCHER="$CCACHE" \
   -DOPENSSL_USE_STATIC_LIBS=True \
-  -DOPENSSL_ROOT_DIR=/usr/local/opt/openssl/ \
+  -DOPENSSL_ROOT_DIR=/opt/homebrew/opt/openssl/ \
   -DCMAKE_C_FLAGS_RELEASE="" \
   -DCMAKE_CXX_FLAGS_RELEASE="-O0 -DNDEBUG" \
   -DTD_ENABLE_LTO=OFF \
@@ -52,7 +52,7 @@ cmake \
   -DCMAKE_C_COMPILER_LAUNCHER="$CCACHE" \
   -DCMAKE_CXX_COMPILER_LAUNCHER="$CCACHE" \
   -DOPENSSL_USE_STATIC_LIBS=True \
-  -DOPENSSL_ROOT_DIR=/usr/local/opt/openssl/ \
+  -DOPENSSL_ROOT_DIR=/opt/homebrew/opt/openssl/ \
   -DTD_SKIP_BENCHMARK=ON -DTD_SKIP_TEST=ON -DTD_SKIP_TG_CLI=ON \
   -DTD_ENABLE_LTO=ON \
   -DTD_ENABLE_JNI=ON \
@@ -80,5 +80,5 @@ cmake \
 cmake --build . --target install --config Release --parallel "$(nproc)"
 cd ..
 mkdir -p src/main/resources/META-INF/tdlightjni/
-mv tdjni_bin/libtdjni.dylib src/main/resources/META-INF/tdlightjni/libtdjni.linux_amd64_ssl3.dylib
-mvn -B -f pom.xml -Drevision="$REVISION" -Dnative.type.classifier=linux_amd64_ssl3 package
+mv tdjni_bin/tdjni.dylib src/main/resources/META-INF/tdlightjni/libtdjni.linux_arm64_ssl3.dylib
+mvn -B -f pom.xml -Drevision="$REVISION" -Dnative.type.classifier=linux_arm64_ssl3 package
