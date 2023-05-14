@@ -1,7 +1,7 @@
 #!/bin/bash -ex
 # Ubuntu 22.04
 
-cat /etc/apt/sources.lis
+cat /etc/apt/sources.list
 echo "Manually installed:"
 apt-mark showmanual
 
