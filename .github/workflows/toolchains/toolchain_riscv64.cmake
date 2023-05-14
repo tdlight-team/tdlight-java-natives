@@ -55,7 +55,7 @@ set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 
 SET(JAVA_HOME "/usr/lib/jvm/default-java/")
 if(EXISTS "/usr/lib/jvm/java-17-openjdk-riscv64")
-  SET(JAVA_CROSS_HOME "/usr/lib/jvm/java-8-openjdk-riscv64")
+  SET(JAVA_CROSS_HOME "/usr/lib/jvm/java-17-openjdk-riscv64")
 else()
   SET(JAVA_CROSS_HOME "/usr/lib/jvm/java-8-openjdk-riscv64")
 endif()
