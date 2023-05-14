@@ -14,6 +14,9 @@ HOST_CMAKE_C_FLAGS="-fuse-ld=lld"
 HOST_CMAKE_CXX_FLAGS="${HOST_CMAKE_C_FLAGS} -stdlib=libc++"
 HOST_CMAKE_EXE_LINKER_FLAGS="-lc++ -lc++abi -fuse-ld=lld -rtlib=compiler-rt -unwindlib=libunwind"
 
+# Use c++11
+export CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -std=c++14"
+
 # ccache
 CCACHE=$(which sccache || true)
 if [[ -x "$CCACHE" ]]; then
