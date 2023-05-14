@@ -1,6 +1,9 @@
 #!/bin/bash -ex
 # Ubuntu 22.04
 
+echo "Manually installed:"
+apt-mark showmanual
+
 export DEBIAN_FRONTEND=noninteractive
 
 dpkg --add-architecture riscv64
