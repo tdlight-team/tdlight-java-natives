@@ -12,7 +12,7 @@ apt-get --assume-yes update
 apt-get --assume-yes autoremove "libc++-14-dev:*" "libc++abi-14-dev:*" "libc++1-14:*" "libc++abi1-14:*" "libunwind-14-dev:*" "libunwind-14:*" || true
 apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install libc++-14-dev:i386 libc++abi-14-dev:i386 libc++1-14:i386 libc++abi1-14:i386 libunwind-14-dev:i386 libunwind-14:i386
 # shellcheck disable=SC2016
-find /usr/lib/i386-linux-gnu/ -lname "*llvm-14*" -print0 | xargs -0 -i sh -c 'cp --remove-destination $(readlink -e "{}") "{}" '
+find /usr/lib/ -path "*-linux-*" -lname "*llvm*" -print0 | xargs -0 -I{} sh -c 'cp --remove-destination $(realpath "{}") "{}"'
 apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install clang-14 libc++-14-dev libc++abi-14-dev libc++1-14 libc++abi1-14 libunwind-14-dev libunwind-14
 # End libc++ packages bugfix
 

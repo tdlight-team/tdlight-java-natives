@@ -16,7 +16,7 @@ apt-get --assume-yes update
 apt-get --assume-yes autoremove "libc++-12-dev:*" "libc++abi-12-dev:*" "libc++1-12:*" "libc++abi1-12:*" || true
 apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install libc++-12-dev:arm64 libc++abi-12-dev:arm64 libc++1-12:arm64 libc++abi1-12:arm64
 # shellcheck disable=SC2016
-find /usr/lib/aarch64-linux-gnu/ -lname "*llvm-12*" -print0 | xargs -0 -i sh -c 'cp --remove-destination $(readlink -e "{}") "{}" '
+find /usr/lib/ -path "*-linux-*" -lname "*llvm*" -print0 | xargs -0 -I{} sh -c 'cp --remove-destination $(realpath "{}") "{}"'
 apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install clang-12 libc++-12-dev libc++abi-12-dev libc++1-12 libc++abi1-12
 # End libc++ packages bugfix
 
