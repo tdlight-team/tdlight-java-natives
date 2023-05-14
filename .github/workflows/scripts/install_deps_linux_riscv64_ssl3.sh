@@ -1,11 +1,7 @@
 #!/bin/bash -ex
 # Ubuntu 22.04
 
-cat /etc/apt/sources.list
-echo "Manually installed:"
-apt-mark showmanual
-
-#export DEBIAN_FRONTEND=noninteractive
+export DEBIAN_FRONTEND=noninteractive
 
 dpkg --add-architecture riscv64
 sed 's/deb http/deb \[arch=amd64,i386\] http/' -i /etc/apt/sources.list
@@ -16,14 +12,8 @@ echo "deb [arch=arm64,armhf,ppc64el,riscv64,s390x] http://ports.ubuntu.com/ $(ls
 
 apt-get --assume-yes update
 
-#debug
-apt list --installed
-
 # Install and bypass a bug in the cross-platform libc++ packages
 apt-get --assume-yes autoremove "libc++-14-dev:*" "libc++abi-14-dev:*" "libc++1-14:*" "libc++abi1-14:*" "libunwind-14-dev:*" "libunwind-14:*" || true
-
-#debug
-apt list --installed
 
 apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install libc++-14-dev:riscv64 libc++abi-14-dev:riscv64 libc++1-14:riscv64 libc++abi1-14:riscv64 libunwind-14-dev:riscv64 libunwind-14:riscv64 libatomic1:riscv64  libgcc-s1:riscv64
 # shellcheck disable=SC2016
@@ -51,7 +41,8 @@ dpkg-deb -xv libclang-common-14-dev_*_riscv64.deb /
 #The following information may help to resolve the situation:
 #
 #The following packages have unmet dependencies:
+# libgcc-12-dev:riscv64 : Depends: libgomp1:riscv64 (>= 12.1.0-2ubuntu1~22.04) but it is not going to be installed
+#                         Depends: libasan8:riscv64 (>= 12.1.0-2ubuntu1~22.04) but it is not going to be installed
 # libselinux1:riscv64 : Depends: libpcre2-8-0:riscv64 (>= 10.22) but it is not going to be installed
 #E: Unable to correct problems, you have held broken packages.
-#
-apt-get install libssl-dev:riscv64 zlib1g-dev:riscv64 openjdk-17-jdk-headless:riscv64 libgcc-12-dev:riscv64 libc6-dev:riscv64 libstdc++6:riscv64
+apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install libssl-dev:riscv64 zlib1g-dev:riscv64 openjdk-17-jdk-headless:riscv64 libgcc-12-dev:riscv64 libc6-dev:riscv64 libstdc++6:riscv64
