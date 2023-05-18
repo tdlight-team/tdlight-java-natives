@@ -80,5 +80,5 @@ cmake \
 cmake --build . --target install --config Release --parallel "$(nproc)"
 cd ..
 mkdir -p src/main/resources/META-INF/tdlightjni/
-mv tdjni_bin/libtdjni.dylib src/main/resources/META-INF/tdlightjni/libtdjni.linux_amd64_ssl3.dylib
-mvn -B -f pom.xml -Drevision="$REVISION" -Dnative.type.classifier=linux_amd64_ssl3 package
+mv tdjni_bin/libtdjni.dylib src/main/resources/META-INF/tdlightjni/libtdjni.macos_amd64.dylib
+mvn -B -f pom.xml -Drevision="$REVISION" -Dnative.type.classifier=macos_amd64 package
