@@ -83,5 +83,5 @@ cmake \
 cmake --build . --target install --config Release --parallel "$(nproc)"
 cd ..
 mkdir -p src/main/resources/META-INF/tdlightjni/
-mv tdjni_bin/tdjni.dll src/main/resources/META-INF/tdlightjni/libtdjni.windows_amd64.dll
+mv tdjni_bin/tdjni.dll src/main/resources/META-INF/tdlightjni/tdjni.windows_amd64.dll
 mvn -B -f pom.xml -Drevision="$REVISION" -Dnative.type.classifier=windows_amd64 package
