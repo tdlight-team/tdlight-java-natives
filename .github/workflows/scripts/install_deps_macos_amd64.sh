@@ -1,5 +1,5 @@
 #!/bin/bash -ex
-brew update
+export HOMEBREW_NO_AUTO_UPDATE=1
 brew install --force gperf
 brew install --force coreutils
 brew install --force openjdk
