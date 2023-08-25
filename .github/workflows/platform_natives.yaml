@@ -21,6 +21,7 @@ jobs:
           - { os: ubuntu-22.04, type: "linux_amd64_gcc_ssl3" }
           - { os: ubuntu-20.04, type: "linux_arm64_ssl1" }
           - { os: ubuntu-22.04, type: "linux_arm64_ssl3" }
+          - { os: ubuntu-22.04, type: "linux_armhf_ssl3" }
           - { os: ubuntu-22.04, type: "linux_ppc64le_ssl3" }
           # todo: broken ubuntu dependencies, accepting PRs
           #- { os: ubuntu-22.04, type: "linux_riscv64_ssl3" }
