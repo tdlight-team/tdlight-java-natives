@@ -6,9 +6,9 @@ export DEBIAN_FRONTEND=noninteractive
 dpkg --add-architecture armhf
 cat /etc/apt/sources.list
 cat /etc/apt/apt-mirrors.txt
-sed 's/deb http/deb \[arch=amd64,i386\] http/' -i /etc/apt/sources.list
-[ -d "/etc/apt/apt-mirrors.txt" ] && sed 's/deb http/deb \[arch=amd64,i386\] http/' -i /etc/apt/apt-mirrors.txt
 [ -d "/etc/apt/sources.list.d" ] && find /etc/apt/sources.list.d -name "*.list" -type f -exec cat {} \;
+sed 's/deb http/deb \[arch=amd64,i386\] http/' -i /etc/apt/sources.list
+sed 's/deb mirror/deb \[arch=amd64,i386\] mirror/' -i /etc/apt/sources.list
 [ -d "/etc/apt/sources.list.d" ] && find /etc/apt/sources.list.d -name "*.list" -type f -exec sed 's/deb http/deb \[arch=amd64,i386\] http/' -i {} \;
 echo "# tdlight multiarch" > /etc/apt/sources.list.d/tdlight-multiarch.list
 echo "deb [arch=arm64,armhf,ppc64el,riscv64,s390x] http://ports.ubuntu.com/ $(lsb_release -cs) main universe restricted multiverse" >> /etc/apt/sources.list.d/tdlight-multiarch.list
