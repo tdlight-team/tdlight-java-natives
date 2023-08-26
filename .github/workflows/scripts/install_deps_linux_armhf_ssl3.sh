@@ -15,7 +15,7 @@ echo "deb [arch=arm64,armhf,ppc64el,riscv64,s390x] http://ports.ubuntu.com/ $(ls
 apt-get --assume-yes update
 
 # Install and bypass a bug in the cross-platform libc++ packages
-apt-get --assume-yes autoremove "libc++-14-dev:*" "libc++abi-14-dev:*" "libc++1-14:*" "libc++abi1-14:*" "libunwind-14-dev:*" "libunwind-14:*" "libc6-dev" "gcc" || true
+apt-get --assume-yes autoremove "libc++-14-dev:*" "libc++abi-14-dev:*" "libc++1-14:*" "libc++abi1-14:*" "libunwind-14-dev:*" "libunwind-14:*" "libc6-dev" "gcc" "gcc-12" "libgcc-12-dev" "libgfortran-12-dev" "libasan8" "libtsan2" || true
 aptitude -y -o Dpkg::Options::="--force-overwrite" install libc++-14-dev:armhf libc++abi-14-dev:armhf libunwind-14-dev:armhf libunwind-14:armhf
 # shellcheck disable=SC2016
 find /usr/lib/ -path "*-linux-*" -lname "*llvm*" -print0 | xargs -0 -I{} sh -c 'cp --remove-destination $(realpath "{}") "{}"'
