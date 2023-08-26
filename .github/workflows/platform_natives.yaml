@@ -121,7 +121,7 @@ jobs:
         run: |  
           export DEBIAN_FRONTEND=noninteractive
           sudo apt-get --assume-yes update
-          sudo apt-get --assume-yes install make git zlib1g-dev libssl-dev gperf php-cli cmake default-jdk clang-12 lld-12 libc++-12-dev libc++abi-12-dev libgcc-9-dev libunwind-dev libclang-common-12-dev ccache maven aptitude
+          sudo apt-get --assume-yes install make git zlib1g-dev libssl-dev gperf php-cli cmake default-jdk clang-12 lld-12 libc++-12-dev libc++abi-12-dev libgcc-9-dev libunwind-dev libclang-common-12-dev ccache maven
 #      - name: Install ubuntu 20.04 dependencies (cached)
 #        if: matrix.os == 'ubuntu-20.04'
 #        uses: awalsh128/cache-apt-pkgs-action@latest
@@ -134,7 +134,7 @@ jobs:
         run: |
           export DEBIAN_FRONTEND=noninteractive
           sudo apt-get --assume-yes update
-          sudo apt-get --assume-yes install make git zlib1g-dev libssl-dev gperf php-cli cmake default-jdk clang-14 lld-14 libc++-14-dev libc++abi-14-dev libgcc-11-dev libunwind-14-dev libclang-common-14-dev ccache maven aptitude
+          sudo apt-get --assume-yes install make git zlib1g-dev libssl-dev gperf php-cli cmake default-jdk clang-14 lld-14 libc++-14-dev libc++abi-14-dev libgcc-11-dev libunwind-14-dev libclang-common-14-dev ccache maven
 #      - name: Install ubuntu 22.04 dependencies (cached)
 #        if: matrix.os == 'ubuntu-22.04'
 #        uses: awalsh128/cache-apt-pkgs-action@latest
@@ -196,8 +196,8 @@ jobs:
           ./vcpkg/vcpkg install gperf openssl:x64-windows-static zlib:x64-windows-static
         shell: bash
 
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
+    #  - name: Setup tmate session
+    #    uses: mxschmitt/action-tmate@v3
 
       - name: Build
         shell: bash

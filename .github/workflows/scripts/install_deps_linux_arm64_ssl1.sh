@@ -16,12 +16,12 @@ apt-get --assume-yes update
 
 # Install and bypass a bug in the cross-platform libc++ packages
 apt-get --assume-yes autoremove "libc++-12-dev:*" "libc++abi-12-dev:*" "libc++1-12:*" "libc++abi1-12:*" "libc6-dev" "gcc" "gcc-9" "libgcc-9-dev" "libgfortran-9-dev" "libasan8" "libtsan2" || true
-aptitude -y -o Dpkg::Options::="--force-overwrite" install libc++-12-dev:arm64 libc++abi-12-dev:arm64
+apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install libc++-12-dev:arm64 libc++abi-12-dev:arm64
 # shellcheck disable=SC2016
 find /usr/lib/ -path "*-linux-*" -lname "*llvm*" -print0 | xargs -0 -I{} sh -c 'cp --remove-destination $(realpath "{}") "{}"'
 find /usr/lib/ -maxdepth 1 -path "*-linux-*" -type d -print0 | xargs -0 -I{} sh -c 'ln -s "{}/libunwind.so.1" "{}/libunwind.so" || true'
 find /usr/lib/ -maxdepth 1 -path "*-linux-*" -type d -print0 | xargs -0 -I{} sh -c 'ln -s "{}/libc++.so.1" "{}/libc++.so" || true'
-aptitude -y -o Dpkg::Options::="--force-overwrite" install clang-12 libc++-12-dev libc++abi-12-dev
+apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install clang-12 libc++-12-dev libc++abi-12-dev zlib1g-dev
 # End libc++ packages bugfix
 
 # Add arm64 common files
@@ -30,4 +30,4 @@ dpkg-deb -xv libclang-common-12-dev_*_arm64.deb /
 
 
 # Install dependencies
-aptitude -y install libssl-dev:arm64 zlib1g-dev:arm64 openjdk-8-jdk-headless:arm64 libgcc-9-dev:arm64 libc6-dev:arm64 libunwind-dev:arm64
+apt-get --assume-yes install libssl-dev:arm64 zlib1g-dev:arm64 openjdk-8-jdk-headless:arm64 libgcc-9-dev:arm64 libc6-dev:arm64 libunwind-dev:arm64
