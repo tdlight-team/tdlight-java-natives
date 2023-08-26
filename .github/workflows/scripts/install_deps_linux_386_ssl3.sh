@@ -11,7 +11,7 @@ sed 's/deb mirror/deb \[arch=amd64,i386\] mirror/' -i /etc/apt/sources.list
 aptitude -y update
 
 # Install and bypass a bug in the cross-platform libc++ packages
-aptitude -y autoremove "libc++-14-dev:*" "libc++abi-14-dev:*" "libc++1-14:*" "libc++abi1-14:*" "libunwind-14-dev:*" "libunwind-14:*" "libc6-dev" "gcc" "gcc-12" "libgcc-12-dev" "libgfortran-12-dev" "libasan8" "libtsan2" || true
+apt-get --assume-yes autoremove "libc++-14-dev:*" "libc++abi-14-dev:*" "libc++1-14:*" "libc++abi1-14:*" "libunwind-14-dev:*" "libunwind-14:*" "libc6-dev" "gcc" "gcc-12" "libgcc-12-dev" "libgfortran-12-dev" "libasan8" "libtsan2" "g++-12" "gfortran-12" "libgfortran-12-dev" "libstdc++-12-dev" || true
 aptitude -y -o Dpkg::Options::="--force-overwrite" install libc++-14-dev:i386 libc++abi-14-dev:i386 libunwind-14-dev:i386 libunwind-14:i386
 # shellcheck disable=SC2016
 find /usr/lib/ -path "*-linux-*" -lname "*llvm*" -print0 | xargs -0 -I{} sh -c 'cp --remove-destination $(realpath "{}") "{}"'

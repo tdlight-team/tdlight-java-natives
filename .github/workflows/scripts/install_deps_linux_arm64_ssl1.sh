@@ -15,7 +15,7 @@ echo "deb [arch=arm64,armhf,ppc64el,riscv64,s390x] http://ports.ubuntu.com/ $(ls
 aptitude -y update
 
 # Install and bypass a bug in the cross-platform libc++ packages
-aptitude -y autoremove "libc++-12-dev:*" "libc++abi-12-dev:*" "libc++1-12:*" "libc++abi1-12:*" "libc6-dev" "gcc" "gcc-9" "libgcc-9-dev" "libgfortran-9-dev" "libasan8" "libtsan2" || true
+apt-get --assume-yes autoremove "libc++-12-dev:*" "libc++abi-12-dev:*" "libc++1-12:*" "libc++abi1-12:*" "libc6-dev" "gcc" "gcc-*" "libgcc-*-dev" "libgfortran-*-dev" "libasan8" "libtsan2" "g++-*" "gfortran-*" "libgfortran-*-dev" "libstdc++-*-dev" || true
 aptitude -y -o Dpkg::Options::="--force-overwrite" install libc++-12-dev:arm64 libc++abi-12-dev:arm64
 # shellcheck disable=SC2016
 find /usr/lib/ -path "*-linux-*" -lname "*llvm*" -print0 | xargs -0 -I{} sh -c 'cp --remove-destination $(realpath "{}") "{}"'
