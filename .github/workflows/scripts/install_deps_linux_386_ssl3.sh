@@ -5,6 +5,8 @@ export DEBIAN_FRONTEND=noninteractive
 
 dpkg --add-architecture i386
 sed 's/deb http/deb \[arch=amd64,i386\] http/' -i /etc/apt/sources.list
+sed 's/deb mirror/deb \[arch=amd64,i386\] mirror/' -i /etc/apt/sources.list
+[ -d "/etc/apt/sources.list.d" ] && find /etc/apt/sources.list.d -name "*.list" -type f -exec sed 's/deb http/deb \[arch=amd64,i386\] http/' -i {} \;
 
 apt-get --assume-yes update
 
