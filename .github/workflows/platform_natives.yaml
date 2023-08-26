@@ -141,10 +141,6 @@ jobs:
 #        with:
 #          packages: make git zlib1g-dev libssl-dev gperf php-cli cmake default-jdk clang-14 lld-14 libc++-14-dev libc++abi-14-dev libgcc-11-dev libunwind-14-dev libclang-common-14-dev ccache maven
 #          version: 1.0
-
-#      - name: Setup tmate session
-#        uses: mxschmitt/action-tmate@v3
-
       - name: Install custom dependencies
         shell: bash
         run: |
@@ -199,6 +195,10 @@ jobs:
           set -xeo pipefail
           ./vcpkg/vcpkg install gperf openssl:x64-windows-static zlib:x64-windows-static
         shell: bash
+
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+
       - name: Build
         shell: bash
         run: |
