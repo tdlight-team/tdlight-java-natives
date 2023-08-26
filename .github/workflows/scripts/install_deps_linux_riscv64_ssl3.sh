@@ -17,12 +17,12 @@ apt-get --assume-yes update
 # Install and bypass a bug in the cross-platform libc++ packages
 apt-get --assume-yes autoremove "libc++-14-dev:*" "libc++abi-14-dev:*" "libc++1-14:*" "libc++abi1-14:*" "libunwind-14-dev:*" "libunwind-14:*" || true
 
-apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install libc++-14-dev:riscv64 libc++abi-14-dev:riscv64 libc++1-14:riscv64 libunwind-14-dev:riscv64 libunwind-14:riscv64 libatomic1:riscv64  libgcc-s1:riscv64
+apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install libc++-14-dev:riscv64 libc++abi-14-dev:riscv64 libunwind-14-dev:riscv64 libunwind-14:riscv64 libatomic1:riscv64  libgcc-s1:riscv64
 # shellcheck disable=SC2016
 find /usr/lib/ -path "*-linux-*" -lname "*llvm*" -print0 | xargs -0 -I{} sh -c 'cp --remove-destination $(realpath "{}") "{}"'
 find /usr/lib/ -maxdepth 1 -path "*-linux-*" -type d -print0 | xargs -0 -I{} sh -c 'ln -s "{}/libunwind.so.1" "{}/libunwind.so" || true'
 find /usr/lib/ -maxdepth 1 -path "*-linux-*" -type d -print0 | xargs -0 -I{} sh -c 'ln -s "{}/libc++.so.1" "{}/libc++.so" || true'
-apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install clang-14 libc++-14-dev libc++abi-14-dev libc++1-14 libunwind-14-dev libunwind-14
+apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install clang-14 libc++-14-dev libc++abi-14-dev libunwind-14-dev libunwind-14
 # End libc++ packages bugfix
 
 # Add riscv64 common files

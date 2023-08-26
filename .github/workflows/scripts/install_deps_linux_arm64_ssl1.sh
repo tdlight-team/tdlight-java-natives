@@ -16,12 +16,12 @@ apt-get --assume-yes update
 
 # Install and bypass a bug in the cross-platform libc++ packages
 apt-get --assume-yes autoremove "libc++-12-dev:*" "libc++abi-12-dev:*" "libc++1-12:*" "libc++abi1-12:*" || true
-apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install libc++-12-dev:arm64 libc++abi-12-dev:arm64 libc++1-12:arm64
+apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install libc++-12-dev:arm64 libc++abi-12-dev:arm64
 # shellcheck disable=SC2016
 find /usr/lib/ -path "*-linux-*" -lname "*llvm*" -print0 | xargs -0 -I{} sh -c 'cp --remove-destination $(realpath "{}") "{}"'
 find /usr/lib/ -maxdepth 1 -path "*-linux-*" -type d -print0 | xargs -0 -I{} sh -c 'ln -s "{}/libunwind.so.1" "{}/libunwind.so" || true'
 find /usr/lib/ -maxdepth 1 -path "*-linux-*" -type d -print0 | xargs -0 -I{} sh -c 'ln -s "{}/libc++.so.1" "{}/libc++.so" || true'
-apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install clang-12 libc++-12-dev libc++abi-12-dev libc++1-12
+apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install clang-12 libc++-12-dev libc++abi-12-dev
 # End libc++ packages bugfix
 
 # Add arm64 common files
