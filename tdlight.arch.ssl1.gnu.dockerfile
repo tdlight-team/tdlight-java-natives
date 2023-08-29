@@ -9,7 +9,7 @@ ARG ARCH_DEBIAN
 ARG ARCH_TRIPLE
 # gnu, gnueabihf (armhf)
 ARG TRIPLE_GNU
-ARG NATIVE=false
+ARG NATIVE="false"
 ARG SCCACHE_GHA_ENABLED=off
 ARG ACTIONS_CACHE_URL
 ARG ACTIONS_RUNTIME_TOKEN
@@ -24,11 +24,11 @@ RUN rm -f /etc/apt/apt.conf.d/docker-clean; echo 'Binary::apt::APT::Keep-Downloa
 ENV DEBIAN_FRONTEND=noninteractive
 COPY .docker ./.docker
 # Install sccache to greatly speedup builds in the CI
-RUN --mount=type=cache,target=/opt/sccache,sharing=locked --mount=type=cache,target=/var/lib/apt,sharing=locked --mount=type=cache,target=/var/cache/sccache,sharing=locked .docker/install-sccache.sh
+RUN --mount=type=cache,target=/opt/sccache,sharing=locked --mount=type=cache,target=/var/lib/apt,sharing=locked --mount=type=cache,target=/var/cache/sccache2,sharing=locked .docker/install-sccache.sh
 
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 --mount=type=cache,target=/var/lib/apt,sharing=locked \
---mount=type=cache,target=/var/cache/sccache,sharing=locked <<"EOF"
+--mount=type=cache,target=/var/cache/sccache2,sharing=locked <<"EOF"
 dpkg --add-architecture ${ARCH_DEBIAN}
 apt-get --assume-yes update
 apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install --no-install-recommends openjdk-11-jdk-headless
@@ -42,7 +42,7 @@ if [[ "$NATIVE" != "true" ]]; then
     ./.docker/SymlinkPrefix.javash "/root/cross-build-pkgs/" "/" "./"
 fi
 apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install --no-install-recommends \
-  g++-8 gcc-8 zlib1g-dev libssl-dev gperf \
+  g++ gcc libstdc++-8-dev zlib1g-dev libssl-dev gperf \
   tree git maven php-cli php-readline make cmake
 
 if [[ "$NATIVE" != "true" ]]; then
@@ -65,31 +65,71 @@ ARG ACTIONS_CACHE_URL
 ARG ACTIONS_RUNTIME_TOKEN
 
 ENV TOOLCHAIN_FILE="toolchain.cmake"
-ENV TOOLCHAIN_NATIVE_FILE="toolchain_native.cmake"
-ENV SCCACHE_DIR=/var/cache/sccache
+ENV SCCACHE_DIR=/var/cache/sccache2
 
 # Use c++11
-ENV CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -std=c++14"
+ENV CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS}"
 
-ENV CC="/usr/bin/gcc-8"
-ENV CXX="/usr/bin/g++-8"
 ENV CMAKE_C_FLAGS="${CMAKE_C_FLAGS}"
 ENV CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -fno-omit-frame-pointer -ffunction-sections -fdata-sections -fno-exceptions -fno-rtti"
 ENV CMAKE_SHARED_LINKER_FLAGS="${CMAKE_SHARED_LINKER_FLAGS} -Wl,--gc-sections -Wl,--exclude-libs,ALL"
-ENV CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -O3"
+ENV CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -flto -O3"
 ENV CCACHE=/opt/sccache/sccache
 ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 
 COPY --link . ./
 
+COPY <<EOF ./toolchain_native.cmake
+set(CMAKE_CROSSCOMPILING FALSE)
+SET(CMAKE_SYSTEM_NAME Linux)
+set(CMAKE_SYSTEM_PROCESSOR $ARCH_TRIPLE)
+set(TARGET_TRIPLE $ARCH_TRIPLE-linux-$TRIPLE_GNU)
+
+set(CMAKE_C_COMPILER /usr/bin/gcc-8)
+set(CMAKE_CXX_COMPILER /usr/bin/g++-8)
+set(CMAKE_AR "/usr/bin/gcc-ar-8" CACHE FILEPATH "" FORCE)
+
+set(CMAKE_C_COMPILER_TARGET \${TARGET_TRIPLE})
+set(CMAKE_CXX_COMPILER_TARGET \${TARGET_TRIPLE})
+set(CMAKE_ASM_COMPILER_TARGET \${TARGET_TRIPLE})
+
+set(CMAKE_INCLUDE_PATH /usr/include/\${TARGET_TRIPLE} /usr/include)
+set(CMAKE_LIBRARY_PATH /usr/lib/\${TARGET_TRIPLE} /lib/\${TARGET_TRIPLE})
+set(CMAKE_PROGRAM_PATH /usr/bin/\${TARGET_TRIPLE})
+
+# Set various compiler flags
+set(CMAKE_EXE_LINKER_FLAGS_INIT "-fuse-ld=lld -flto -fno-fat-lto-objects")
+set(CMAKE_MODULE_LINKER_FLAGS_INIT "-fuse-ld=lld -flto -fno-fat-lto-objects")
+set(CMAKE_SHARED_LINKER_FLAGS_INIT "-fuse-ld=lld -flto -fno-fat-lto-objects")
+set(CMAKE_CXX_FLAGS_INIT "-fuse-ld=lld -flto -fno-fat-lto-objects")
+
+#set(CMAKE_SYSROOT /root/cross-build-pkgs)
+
+# This must be set or compiler checks fail when linking
+#set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
+#SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+
+if(EXISTS "/usr/lib/jvm/java-11-openjdk-amd64")
+  SET(JAVA_HOME "/usr/lib/jvm/java-11-openjdk-amd64")
+else()
+  SET(JAVA_HOME "/usr/lib/jvm/default-java")
+endif()
+SET(JAVA_INCLUDE_PATH "\${JAVA_HOME}/include")
+SET(JAVA_AWT_INCLUDE_PATH "\${JAVA_HOME}/include")
+SET(JAVA_INCLUDE_PATH2 "\${JAVA_HOME}/include/linux")
+SET(JAVA_CROSS_HOME "/usr/lib/jvm/java-11-openjdk-$ARCH_DEBIAN")
+SET(JAVA_JVM_LIBRARY "\${JAVA_CROSS_HOME}/lib/server/libjvm.so")
+SET(JAVA_AWT_LIBRARY "\${JAVA_CROSS_HOME}/lib/libawt.so")
+EOF
+
 RUN --mount=type=cache,target=/opt/sccache,sharing=locked \
---mount=type=cache,target=/var/cache/sccache,sharing=locked \
+--mount=type=cache,target=/var/cache/sccache2,sharing=locked \
 --mount=type=cache,target=/root/.m2 <<"EOF"
+export TOOLCHAIN_ARGS; if [[ "$NATIVE" == "true" ]]; then TOOLCHAIN_ARGS="toolchain_native.cmake"; else TOOLCHAIN_ARGS="toolchain.cmake"; fi
 rm -rf implementations/tdlight/td_tools_build implementations/tdlight/build api/target-legacy api/target api/.ci-friendly-pom.xml implementations/tdlight/td/generate/auto natives/src/main/java/it/tdlight/jni natives/build natives/tdjni_bin natives/tdjni_docs
 mkdir -p implementations/tdlight/build  implementations/tdlight/build/td_bin/bin implementations/tdlight/td_tools_build/java/it/tdlight/jni api/src/main/java-legacy/it/tdlight/jni api/src/main/java-sealed/it/tdlight/jni natives/src/main/java/it/tdlight/jni natives/build natives/tdjni_bin natives/tdjni_docs
 cd implementations/tdlight/td_tools_build
 cmake \
-  -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_C_COMPILER_LAUNCHER="$CCACHE" \
   -DCMAKE_CXX_COMPILER_LAUNCHER="$CCACHE" \
@@ -99,11 +139,14 @@ cmake \
   -DTD_ENABLE_JNI=ON \
   -DJAVA_AWT_LIBRARY=/dev/null \
   -DJAVA_AWT_INCLUDE_PATH=/dev/null \
+  -DCMAKE_TOOLCHAIN_FILE="../../../toolchain_native.cmake" \
   ..
 cmake --build . --target prepare_cross_compiling --parallel "$(nproc)"
 cmake --build . --target td_generate_java_api --parallel "$(nproc)"
 cd ../../../
+EOF
 
+RUN <<"EOF"
 ./implementations/tdlight/td_tools_build/td/generate/td_generate_java_api TdApi "./implementations/tdlight/td/generate/auto/tlo/td_api.tlo" "./natives/src/main/java" "it/tdlight/jni"
 EOF
 
@@ -158,19 +201,13 @@ endif()
 EOF
 
 RUN --mount=type=cache,target=/opt/sccache,sharing=locked \
---mount=type=cache,target=/var/cache/sccache,sharing=locked \
+--mount=type=cache,target=/var/cache/sccache2,sharing=locked \
 --mount=type=cache,target=/root/.m2 <<"EOF"
+export TOOLCHAIN_ARGS; if [[ "$NATIVE" == "true" ]]; then TOOLCHAIN_ARGS="toolchain_native.cmake"; else TOOLCHAIN_ARGS="toolchain.cmake"; fi
 cd implementations/tdlight/build
 export INSTALL_PREFIX="$(readlink -e ./td_bin/)"
 export INSTALL_BINDIR="$(readlink -e ./td_bin/bin)"
-export TOOLCHAIN_ARGS
-if [[ "$NATIVE" == "true" ]]; then
-    TOOLCHAIN_ARGS=""
-else
-    TOOLCHAIN_ARGS="-DCMAKE_TOOLCHAIN_FILE=\"../../../toolchain.cmake\""
-fi
 cmake \
-  -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_C_COMPILER_LAUNCHER="$CCACHE" \
   -DCMAKE_CXX_COMPILER_LAUNCHER="$CCACHE" \
@@ -181,25 +218,23 @@ cmake \
   -DCMAKE_INSTALL_BINDIR:PATH="$INSTALL_BINDIR" \
   -DJAVA_AWT_LIBRARY=/dev/null \
   -DJAVA_AWT_INCLUDE_PATH=/dev/null \
-  $TOOLCHAIN_ARGS ..
+  -DCMAKE_TOOLCHAIN_FILE="../../../$TOOLCHAIN_ARGS" \
+   ..
 cmake --build . --target install --config Release --parallel "$(nproc)"
 cd ../../../
+EOF
 
+RUN --mount=type=cache,target=/opt/sccache,sharing=locked \
+--mount=type=cache,target=/var/cache/sccache2,sharing=locked \
+--mount=type=cache,target=/root/.m2 <<"EOF"
+export TOOLCHAIN_ARGS; if [[ "$NATIVE" == "true" ]]; then TOOLCHAIN_ARGS="toolchain_native.cmake"; else TOOLCHAIN_ARGS="toolchain.cmake"; fi
 cd natives/build
-export TOOLCHAIN_ARGS
-if [[ "$NATIVE" == "true" ]]; then
-    TOOLCHAIN_ARGS=""
-else
-    TOOLCHAIN_ARGS="-DCMAKE_TOOLCHAIN_FILE=\"../../toolchain.cmake\""
-fi
 cmake \
-  -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_C_COMPILER_LAUNCHER="$CCACHE" \
   -DCMAKE_CXX_COMPILER_LAUNCHER="$CCACHE" \
   -DTD_GENERATED_BINARIES_DIR="$(readlink -e ../../implementations/tdlight/td_tools_build/td/generate)" \
   -DTD_SRC_DIR="$(readlink -e ../../implementations/tdlight)" \
-  -DTD_ENABLE_LTO=ON \
   -DTDNATIVES_BIN_DIR="$(readlink -e ../tdjni_bin/)" \
   -DTDNATIVES_DOCS_BIN_DIR="$(readlink -e ../tdjni_docs/)" \
   -DTd_DIR:PATH="$(readlink -e ../../implementations/tdlight/build/td_bin/lib/cmake/Td)" \
@@ -207,10 +242,15 @@ cmake \
   -DTDNATIVES_CPP_SRC_DIR="$(readlink -e ../src/main/cpp)" \
   -DJAVA_AWT_LIBRARY=/dev/null \
   -DJAVA_AWT_INCLUDE_PATH=/dev/null \
-  $TOOLCHAIN_ARGS \
+  -DCMAKE_TOOLCHAIN_FILE="../../$TOOLCHAIN_ARGS" \
   ../src/main/cpp
 cmake --build . --target install --config Release --parallel "$(nproc)"
 cd ..
+EOF
+
+RUN --mount=type=cache,target=/opt/sccache,sharing=locked \
+--mount=type=cache,target=/var/cache/sccache2,sharing=locked \
+--mount=type=cache,target=/root/.m2 <<"EOF"
 mkdir -p src/main/resources/META-INF/tdlightjni/
 mv tdjni_bin/libtdjni.so src/main/resources/META-INF/tdlightjni/libtdjni.linux_${ARCH_DEBIAN}_gnu_ssl1.so
 mvn -B -f pom.xml -Drevision="$REVISION" -Dnative.type.classifier=linux_${ARCH_DEBIAN}_gnu_ssl1 package

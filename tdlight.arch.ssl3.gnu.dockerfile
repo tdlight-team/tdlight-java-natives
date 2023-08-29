@@ -26,11 +26,11 @@ RUN rm -f /etc/apt/apt.conf.d/docker-clean; echo 'Binary::apt::APT::Keep-Downloa
 ENV DEBIAN_FRONTEND=noninteractive
 COPY .docker ./.docker
 # Install sccache to greatly speedup builds in the CI
-RUN --mount=type=cache,target=/opt/sccache,sharing=locked --mount=type=cache,target=/var/lib/apt,sharing=locked --mount=type=cache,target=/var/cache/sccache,sharing=locked .docker/install-sccache.sh
+RUN --mount=type=cache,target=/opt/sccache,sharing=locked --mount=type=cache,target=/var/lib/apt,sharing=locked --mount=type=cache,target=/var/cache/sccache2,sharing=locked .docker/install-sccache.sh
 
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 --mount=type=cache,target=/var/lib/apt,sharing=locked \
---mount=type=cache,target=/var/cache/sccache,sharing=locked <<"EOF"
+--mount=type=cache,target=/var/cache/sccache2,sharing=locked <<"EOF"
 dpkg --add-architecture ${ARCH_DEBIAN}
 apt-get --assume-yes update
 apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install --no-install-recommends openjdk-17-jdk-headless
@@ -68,24 +68,24 @@ ARG ACTIONS_RUNTIME_TOKEN
 
 ENV TOOLCHAIN_FILE="toolchain.cmake"
 ENV TOOLCHAIN_NATIVE_FILE="toolchain_native.cmake"
-ENV SCCACHE_DIR=/var/cache/sccache
+ENV SCCACHE_DIR=/var/cache/sccache2
 
 # Use c++11
-ENV CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -std=c++14"
+ENV CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS}"
 
 ENV CC="/usr/bin/gcc-12"
 ENV CXX="/usr/bin/g++-12"
 ENV CMAKE_C_FLAGS="${CMAKE_C_FLAGS}"
 ENV CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -fno-omit-frame-pointer -ffunction-sections -fdata-sections -fno-exceptions -fno-rtti"
 ENV CMAKE_SHARED_LINKER_FLAGS="${CMAKE_SHARED_LINKER_FLAGS} -Wl,--gc-sections -Wl,--exclude-libs,ALL"
-ENV CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -O3"
+ENV CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -flto -O3"
 ENV CCACHE=/opt/sccache/sccache
 ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 
 COPY --link . ./
 
 RUN --mount=type=cache,target=/opt/sccache,sharing=locked \
---mount=type=cache,target=/var/cache/sccache,sharing=locked \
+--mount=type=cache,target=/var/cache/sccache2,sharing=locked \
 --mount=type=cache,target=/root/.m2 <<"EOF"
 rm -rf implementations/tdlight/td_tools_build implementations/tdlight/build api/target-legacy api/target api/.ci-friendly-pom.xml implementations/tdlight/td/generate/auto natives/src/main/java/it/tdlight/jni natives/build natives/tdjni_bin natives/tdjni_docs
 mkdir -p implementations/tdlight/build  implementations/tdlight/build/td_bin/bin implementations/tdlight/td_tools_build/java/it/tdlight/jni api/src/main/java-legacy/it/tdlight/jni api/src/main/java-sealed/it/tdlight/jni natives/src/main/java/it/tdlight/jni natives/build natives/tdjni_bin natives/tdjni_docs
@@ -160,7 +160,7 @@ endif()
 EOF
 
 RUN --mount=type=cache,target=/opt/sccache,sharing=locked \
---mount=type=cache,target=/var/cache/sccache,sharing=locked \
+--mount=type=cache,target=/var/cache/sccache2,sharing=locked \
 --mount=type=cache,target=/root/.m2 <<"EOF"
 cd implementations/tdlight/build
 export INSTALL_PREFIX="$(readlink -e ./td_bin/)"
