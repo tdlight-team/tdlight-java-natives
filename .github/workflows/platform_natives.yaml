@@ -214,15 +214,15 @@ jobs:
         with:
           context: .
           push: false
-          file: tdlight.arch.${{SSL}}.${{COMPILER}}.dockerfile
-          tags: tdlight.${{DEBIAN_ARCH}}.${{SSL}}.${{COMPILER}}
+          file: tdlight.arch.${{env.SSL}}.${{env.COMPILER}}.dockerfile
+          tags: tdlight.${{env.DEBIAN_ARCH}}.${{env.SSL}}.${{env.COMPILER}}
           build-args: |
             SCCACHE_GHA_ENABLED=on
-            ACTIONS_CACHE_URL=${{ACTIONS_CACHE_URL}}
-            ACTIONS_RUNTIME_TOKEN=${{ACTIONS_RUNTIME_TOKEN}}
-            ARCH_DEBIAN=${{DEBIAN_ARCH}}
-            ARCH_TRIPLE=${{TRIPLE_ARCH}}
-            TRIPLE_GNU=${{TRIPLE_GNU}}
+            ACTIONS_CACHE_URL=${{env.ACTIONS_CACHE_URL}}
+            ACTIONS_RUNTIME_TOKEN=${{env.ACTIONS_RUNTIME_TOKEN}}
+            ARCH_DEBIAN=${{env.DEBIAN_ARCH}}
+            ARCH_TRIPLE=${{env.TRIPLE_ARCH}}
+            TRIPLE_GNU=${{env.TRIPLE_GNU}}
           cache-from: type=gha
           cache-to: type=gha,mode=max
       - name: Build
