@@ -41,7 +41,7 @@ apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install --no-install
 apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install --no-install-recommends \
   g++-8 gcc-8 zlib1g-dev libssl-dev gperf \
   tree git maven php-cli php-readline make cmake \
-  g++-8-${ARCH_TRIPLE}-linux-${TRIPLE_GNU} gcc-8-${ARCH_TRIPLE}-linux-${TRIPLE_GNU} \
+  g++-8-${ARCH_TRIPLE/_/-}-linux-${TRIPLE_GNU} gcc-8-${ARCH_TRIPLE/_/-}-linux-${TRIPLE_GNU} \
   libatomic1-${ARCH_DEBIAN}-cross libc6-dev-${ARCH_DEBIAN}-cross libgcc-8-dev-${ARCH_DEBIAN}-cross libstdc++-8-dev-${ARCH_DEBIAN}-cross
 
 EOF

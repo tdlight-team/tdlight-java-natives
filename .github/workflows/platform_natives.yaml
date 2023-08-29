@@ -213,29 +213,11 @@ jobs:
         uses: docker/setup-buildx-action@v2
       - name: Build
         uses: docker/build-push-action@v4
-        if: matrix.os == 'ubuntu-22.04' && !(matrix.debianArch == 'amd64' && matrix.ssl == 'ssl1')
+        if: matrix.os == 'ubuntu-22.04'
         with:
           context: .
           push: false
           file: tdlight.arch.${{env.SSL}}.${{env.COMPILER}}.dockerfile
-          tags: tdlight.${{env.DEBIAN_ARCH}}.${{env.SSL}}.${{env.COMPILER}}
-          build-args: |
-            SCCACHE_GHA_ENABLED=on
-            ACTIONS_CACHE_URL=${{env.ACTIONS_CACHE_URL}}
-            ACTIONS_RUNTIME_TOKEN=${{env.ACTIONS_RUNTIME_TOKEN}}
-            ARCH_DEBIAN=${{env.DEBIAN_ARCH}}
-            ARCH_TRIPLE=${{env.TRIPLE_ARCH}}
-            TRIPLE_GNU=${{env.TRIPLE_GNU}}
-            DEBIAN_VERSION=${{env.DEBIAN_VERSION}}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-      - name: Build
-        uses: docker/build-push-action@v4
-        if: matrix.os == 'ubuntu-22.04' && matrix.debianArch == 'amd64' && matrix.ssl == 'ssl1'
-        with:
-          context: .
-          push: false
-          file: tdlight.${{env.DEBIAN_ARCH}}.${{env.SSL}}.${{env.COMPILER}}.dockerfile
           tags: tdlight.${{env.DEBIAN_ARCH}}.${{env.SSL}}.${{env.COMPILER}}
           build-args: |
             SCCACHE_GHA_ENABLED=on

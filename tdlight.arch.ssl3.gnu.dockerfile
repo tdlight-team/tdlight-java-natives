@@ -43,7 +43,7 @@ apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install --no-install
 apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install --no-install-recommends \
   g++-12 gcc-12 zlib1g-dev libssl-dev gperf \
   tree git maven php-cli php-readline make cmake \
-  g++-12-${ARCH_TRIPLE}-linux-${TRIPLE_GNU} gcc-12-${ARCH_TRIPLE}-linux-${TRIPLE_GNU} \
+  g++-12-${ARCH_TRIPLE/_/-}-linux-${TRIPLE_GNU} gcc-12-${ARCH_TRIPLE/_/-}-linux-${TRIPLE_GNU} \
   libatomic1-${ARCH_DEBIAN}-cross libc6-dev-${ARCH_DEBIAN}-cross libgcc-12-dev-${ARCH_DEBIAN}-cross libstdc++-12-dev-${ARCH_DEBIAN}-cross
 
 EOF
