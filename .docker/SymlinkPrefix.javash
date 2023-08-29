@@ -1,0 +1,27 @@
+#!/usr/bin/java --source 11
+import java.io.IOException; import java.nio.file.*; import java.nio.file.attribute.BasicFileAttributes;
+public class Main {
+    /** @param args directory, sourcePrefix, targetPrefix */
+    public static void main(String[] args) throws IOException {
+        Path dir = Path.of(args[0]).toAbsolutePath().normalize();
+        Path sourcePrefix = dir.resolve(Path.of(args[1])).normalize();
+        Path targetPrefix = dir.resolve(Path.of(args[2])).normalize();
+        System.out.printf("Replacing symlinks in '%s' from '%s' to '%s'%n", dir, sourcePrefix, targetPrefix);
+        Files.walkFileTree(dir, new SimpleFileVisitor<>() {
+            @Override public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                if (attrs.isSymbolicLink()) {
+                    var originalTarget = Files.readSymbolicLink(file).normalize();
+                    if (originalTarget.startsWith(sourcePrefix)) {
+                        var symlinkFileDir = file.getParent();
+                        originalTarget = symlinkFileDir.resolve(originalTarget);
+                        Files.delete(file);
+                        var target = symlinkFileDir.relativize(targetPrefix.resolve(sourcePrefix.relativize(originalTarget))).normalize();
+                        Files.createSymbolicLink(file, target);
+                        System.out.printf("Symlink at '%s' pointing at '%s' is now pointing at '%s'%n", file, originalTarget, target);
+                    }
+                }
+                return FileVisitResult.CONTINUE;
+            }
+        });
+    }
+}

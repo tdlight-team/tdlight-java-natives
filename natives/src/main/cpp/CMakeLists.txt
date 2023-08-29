@@ -12,7 +12,8 @@ endif()
 find_package(Td REQUIRED)
 
 if (NOT JNI_FOUND)
-  find_package(JNI REQUIRED)
+  SET(JNI_FIND_REQUIRED_AWT FALSE CACHE BOOL "" FORCE)
+  find_package(JNI REQUIRED COMPONENTS JVM)
 endif()
 message(STATUS "Found JNI: ${JNI_INCLUDE_DIRS} ${JNI_LIBRARIES}")
 

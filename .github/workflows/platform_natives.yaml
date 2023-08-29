@@ -13,18 +13,18 @@ jobs:
     strategy:
       matrix:
         include:
-          # todo: broken ubuntu dependencies, accepting PRs
-          #- { os: ubuntu-22.04, type: "linux_386_ssl3" }
-          - { os: ubuntu-20.04, type: "linux_amd64_ssl1" }
-          - { os: ubuntu-22.04, type: "linux_amd64_ssl3" }
-          - { os: ubuntu-20.04, type: "linux_amd64_gcc_ssl1" }
-          - { os: ubuntu-22.04, type: "linux_amd64_gcc_ssl3" }
-          - { os: ubuntu-20.04, type: "linux_arm64_ssl1" }
-          - { os: ubuntu-22.04, type: "linux_arm64_ssl3" }
-          - { os: ubuntu-22.04, type: "linux_armhf_ssl3" }
-          - { os: ubuntu-22.04, type: "linux_ppc64le_ssl3" }
-          # todo: broken ubuntu dependencies, accepting PRs
-          #- { os: ubuntu-22.04, type: "linux_riscv64_ssl3" }
+          - { os: ubuntu-22.04, type: "linux_amd64_gnu_ssl1", compiler: "gnu", ssl: "ssl1", debianArch: "amd64", tripleArch: "x86_64", tripleGnu: "gnu" }
+          - { os: ubuntu-22.04, type: "linux_amd64_gnu_ssl3", compiler: "gnu", ssl: "ssl3", debianArch: "amd64", tripleArch: "x86_64", tripleGnu: "gnu" }
+          - { os: ubuntu-22.04, type: "linux_amd64_clang_ssl3", compiler: "clang", ssl: "ssl3", debianArch: "amd64", tripleArch: "x86_64", tripleGnu: "gnu" }
+          - { os: ubuntu-22.04, type: "linux_i386_gnu_ssl1", compiler: "gnu", ssl: "ssl1", debianArch: "i386", tripleArch: "i386", tripleGnu: "gnu" }
+          - { os: ubuntu-22.04, type: "linux_i386_gnu_ssl3", compiler: "gnu", ssl: "ssl3", debianArch: "i386", tripleArch: "i386", tripleGnu: "gnu" }
+          - { os: ubuntu-22.04, type: "linux_ppc64el_gnu_ssl3", compiler: "gnu", ssl: "ssl3", debianArch: "ppc64el", tripleArch: "powerpc64le", tripleGnu: "gnu" }
+          - { os: ubuntu-22.04, type: "linux_riscv64_gnu_ssl3", compiler: "gnu", ssl: "ssl3", debianArch: "riscv64", tripleArch: "riscv64", tripleGnu: "gnu" }
+          - { os: ubuntu-22.04, type: "linux_armhf_gnu_ssl1", compiler: "gnu", ssl: "ssl1", debianArch: "armhf", tripleArch: "arm", tripleGnu: "gnueabihf" }
+          - { os: ubuntu-22.04, type: "linux_armhf_gnu_ssl3", compiler: "gnu", ssl: "ssl3", debianArch: "armhf", tripleArch: "arm", tripleGnu: "gnueabihf" }
+          - { os: ubuntu-22.04, type: "linux_arm64_gnu_ssl1", compiler: "gnu", ssl: "ssl1", debianArch: "arm64", tripleArch: "aarch64", tripleGnu: "gnu" }
+          - { os: ubuntu-22.04, type: "linux_arm64_gnu_ssl3", compiler: "gnu", ssl: "ssl3", debianArch: "arm64", tripleArch: "aarch64", tripleGnu: "gnu" }
+          - { os: ubuntu-22.04, type: "linux_arm64_clang_ssl3", compiler: "clang", ssl: "ssl3", debianArch: "arm64", tripleArch: "aarch64", tripleGnu: "gnu" }
           - { os: windows-2019, type: "windows_amd64", vcpkgCommitId: "6ca56aeb457f033d344a7106cb3f9f1abf8f4e98", triplet: "x64-windows-static" }
           - { os: macos-12, type: "macos_amd64" }
           # todo: do not enable until github actions adds support to apple silicon, accepting PRs
@@ -54,6 +54,11 @@ jobs:
           VERSION=$(echo "$VERSION" | awk '{print tolower($0)}')
           TYPE=${{ matrix.type }}
           SAFE_TYPE=${TYPE///}  # linux_amd64_ -> linux_amd64_
+          COMPILER=${{ matrix.compiler }}
+          SSL=${{ matrix.ssl }}
+          DEBIAN_ARCH=${{ matrix.debianArch }}
+          TRIPLE_ARCH=${{ matrix.tripleArch }}
+          TRIPLE_GNU=${{ matrix.tripleGnu }}
 
           REVISION=4.0.${{ github.run_number }}
           GH_MATRIX_OS=${{ matrix.os }}
@@ -64,7 +69,10 @@ jobs:
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "TYPE=$TYPE" >> $GITHUB_ENV
           echo "SAFE_TYPE=$SAFE_TYPE" >> $GITHUB_ENV
-          echo "SSL_TYPE=$SSL_TYPE" >> $GITHUB_ENV
+          echo "SSL=$SSL" >> $GITHUB_ENV
+          echo "DEBIAN_ARCH=$DEBIAN_ARCH" >> $GITHUB_ENV
+          echo "TRIPLE_ARCH=$TRIPLE_ARCH" >> $GITHUB_ENV
+          echo "TRIPLE_GNU=$TRIPLE_GNU" >> $GITHUB_ENV
           echo "REVISION=$REVISION" >> $GITHUB_ENV
           echo "GH_MATRIX_OS=$GH_MATRIX_OS" >> $GITHUB_ENV
           echo "GH_MATRIX_TYPE=$GH_MATRIX_TYPE" >> $GITHUB_ENV
@@ -73,21 +81,15 @@ jobs:
           echo "hash version: $HASH_VERSION"
           echo "version: $VERSION"
           echo "safe arch: $SAFE_ARCH"
-          echo "ssl type: $SSL_TYPE"
+          echo "ssl: $SSL"
+          echo "debian arch: $DEBIAN_ARCH"
+          echo "triple arch: $TRIPLE_ARCH"
+          echo "triple gnu: $TRIPLE_GNU"
 
           echo "Variables:"
           
           # Save env to file
           cat $GITHUB_ENV > github.env
-
-      - name: Cache packages cache
-        uses: actions/cache@v3
-        with:
-          path:  ~/tdlight-java-natives/tdlight-java-natives/.cache
-          key: ${{ runner.os }}-v3-packages-${{ env.SAFE_TYPE }}-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-v3-packages-${{ env.SAFE_TYPE }}-
-
 
       - name: Setup Java (Snapshot)
         if: github.ref == 'refs/heads/develop'
@@ -115,33 +117,34 @@ jobs:
         with:
           php-version: '8.0'
           extensions: readline
-      - name: Install ubuntu 20.04 dependencies
-        if: matrix.os == 'ubuntu-20.04'
-        shell: bash
-        run: |  
-          export DEBIAN_FRONTEND=noninteractive
-          sudo apt-get --assume-yes update
-          sudo apt-get --assume-yes install make git zlib1g-dev libssl-dev gperf php-cli cmake default-jdk clang-12 lld-12 libc++-12-dev libc++abi-12-dev libgcc-9-dev libunwind-dev libclang-common-12-dev ccache maven aptitude
-#      - name: Install ubuntu 20.04 dependencies (cached)
+#      - name: Install ubuntu 20.04 dependencies
 #        if: matrix.os == 'ubuntu-20.04'
-#        uses: awalsh128/cache-apt-pkgs-action@latest
-#        with:
-#          packages: make git zlib1g-dev libssl-dev gperf php-cli cmake default-jdk clang-12 lld-12 libc++-12-dev libc++abi-12-dev libgcc-9-dev libunwind-dev libclang-common-12-dev ccache maven
-#          version: 1.0
-      - name: Install ubuntu 22.04 dependencies
-        if: matrix.os == 'ubuntu-22.04'
-        shell: bash
-        run: |
-          export DEBIAN_FRONTEND=noninteractive
-          sudo apt-get --assume-yes update
-          sudo apt-get --assume-yes install make git zlib1g-dev libssl-dev gperf php-cli cmake default-jdk clang-14 lld-14 libc++-14-dev libc++abi-14-dev libgcc-11-dev libunwind-14-dev libclang-common-14-dev ccache maven aptitude
-#      - name: Install ubuntu 22.04 dependencies (cached)
+#        shell: bash
+#        run: |
+#          export DEBIAN_FRONTEND=noninteractive
+#          sudo apt-get --assume-yes update
+#          sudo apt-get --assume-yes install make git zlib1g-dev libssl-dev gperf php-cli cmake default-jdk clang-12 lld-12 libc++-12-dev libc++abi-12-dev libgcc-9-dev libunwind-dev libclang-common-12-dev maven
+      - name: Install ubuntu 20.04 dependencies (cached)
+        if: matrix.os == 'ubuntu-20.04'
+        uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: make git zlib1g-dev libssl-dev gperf php-cli cmake default-jdk clang-12 lld-12 libc++-12-dev libc++abi-12-dev libgcc-9-dev libunwind-dev libclang-common-12-dev maven
+          version: 1.0
+#      - name: Install ubuntu 22.04 dependencies
 #        if: matrix.os == 'ubuntu-22.04'
-#        uses: awalsh128/cache-apt-pkgs-action@latest
-#        with:
-#          packages: make git zlib1g-dev libssl-dev gperf php-cli cmake default-jdk clang-14 lld-14 libc++-14-dev libc++abi-14-dev libgcc-11-dev libunwind-14-dev libclang-common-14-dev ccache maven
-#          version: 1.0
+#        shell: bash
+#        run: |
+#          export DEBIAN_FRONTEND=noninteractive
+#          sudo apt-get --assume-yes update
+#          sudo apt-get --assume-yes install make git zlib1g-dev libssl-dev gperf php-cli cmake default-jdk clang-14 lld-14 libc++-14-dev libc++abi-14-dev libgcc-11-dev libunwind-14-dev libclang-common-14-dev maven
+      - name: Install ubuntu 22.04 dependencies (cached)
+        if: matrix.os == 'ubuntu-22.04'
+        uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: make git zlib1g-dev libssl-dev gperf php-cli cmake default-jdk clang-14 lld-14 libc++-14-dev libc++abi-14-dev libgcc-11-dev libunwind-14-dev libclang-common-14-dev maven
+          version: 1.0
       - name: Install custom dependencies
+        if: matrix.os == 'macos-12' || matrix.os == 'windows-2019'
         shell: bash
         run: |
           set -xeo pipefail
@@ -156,8 +159,6 @@ jobs:
           fi
       - name: Run sccache-cache
         uses: mozilla-actions/sccache-action@v0.0.3
-        env:
-          SCCACHE_GHA_ENABLED: "true"
       - name: Install MSVC
         if: matrix.os == 'windows-2019'
         uses: ilammy/msvc-dev-cmd@v1
@@ -195,11 +196,8 @@ jobs:
           set -xeo pipefail
           ./vcpkg/vcpkg install gperf openssl:x64-windows-static zlib:x64-windows-static
         shell: bash
-
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
-
       - name: Build
+        if: matrix.os == 'macos-12' || matrix.os == 'windows-2019'
         shell: bash
         run: |
           set -xeo pipefail
@@ -207,7 +205,37 @@ jobs:
           
           source ./.github/workflows/scripts/build_${SAFE_TYPE}.sh
         env:
-          SCCACHE_GHA_ENABLED: "true"
+          SCCACHE_GHA_ENABLED: "on"
+      - name: Set up Docker buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Build
+        uses: docker/build-push-action@v4
+        if: matrix.os == 'ubuntu-22.04'
+        with:
+          context: .
+          push: false
+          file: tdlight.arch.${{SSL}}.${{COMPILER}}.dockerfile
+          tags: tdlight.${{DEBIAN_ARCH}}.${{SSL}}.${{COMPILER}}
+          build-args: |
+            SCCACHE_GHA_ENABLED=on
+            ACTIONS_CACHE_URL=${{ACTIONS_CACHE_URL}}
+            ACTIONS_RUNTIME_TOKEN=${{ACTIONS_RUNTIME_TOKEN}}
+            ARCH_DEBIAN=${{DEBIAN_ARCH}}
+            ARCH_TRIPLE=${{TRIPLE_ARCH}}
+            TRIPLE_GNU=${{TRIPLE_GNU}}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      - name: Build
+        if: matrix.os == 'ubuntu-22.04'
+        shell: bash
+        run: |
+          set -xeo pipefail
+          echo "REVISION: $REVISION"
+          
+          rm -rf natives
+          docker cp "tdlight.${DEBIAN_ARCH}.${SSL}.${COMPILER}:/out/natives" "natives"
+          docker cp "tdlight.${DEBIAN_ARCH}.${SSL}.${COMPILER}:/out/libtdjni.so" "libtdjni.${env.REVISION}-${env.TYPE}.so"
+          docker cp "tdlight.${DEBIAN_ARCH}.${SSL}.${COMPILER}:/out/tdlight-natives.jar" "natives/target-${TYPE}/tdlight-natives-${REVISION}-${TYPE}.jar"
       - uses: actions/upload-artifact@v3
         with:
           name: tdlight-natives-${{env.REVISION}}-${{env.TYPE}}.jar
