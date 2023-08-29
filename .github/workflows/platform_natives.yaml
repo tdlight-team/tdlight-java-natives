@@ -213,7 +213,7 @@ jobs:
         uses: docker/setup-buildx-action@v2
       - name: Build
         uses: docker/build-push-action@v4
-        if: matrix.os == 'ubuntu-22.04' && !(matrix.debianArch == "amd64" && matrix.ssl == "ssl1")
+        if: matrix.os == 'ubuntu-22.04' && !(matrix.debianArch == 'amd64' && matrix.ssl == 'ssl1')
         with:
           context: .
           push: false
@@ -231,7 +231,7 @@ jobs:
           cache-to: type=gha,mode=max
       - name: Build
         uses: docker/build-push-action@v4
-        if: matrix.os == 'ubuntu-22.04' && matrix.debianArch == "amd64" && matrix.ssl == "ssl1"
+        if: matrix.os == 'ubuntu-22.04' && matrix.debianArch == 'amd64' && matrix.ssl == 'ssl1'
         with:
           context: .
           push: false
