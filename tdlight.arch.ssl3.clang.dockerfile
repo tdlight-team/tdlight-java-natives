@@ -67,6 +67,8 @@ ENV HOST_CMAKE_EXE_LINKER_FLAGS="-lc++ -lc++abi -fuse-ld=lld -rtlib=compiler-rt 
 # Use c++11
 ENV CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -std=c++14"
 
+ENV CC="/usr/bin/gcc-8"
+ENV CXX="/usr/bin/g++-8"
 ENV CMAKE_C_FLAGS="${CMAKE_C_FLAGS}"
 ENV CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -fno-omit-frame-pointer -ffunction-sections -fdata-sections -fno-exceptions -fno-rtti"
 ENV CMAKE_SHARED_LINKER_FLAGS="${CMAKE_SHARED_LINKER_FLAGS} -Wl,--gc-sections -Wl,--exclude-libs,ALL"

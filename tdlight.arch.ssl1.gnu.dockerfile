@@ -65,18 +65,14 @@ ARG ACTIONS_CACHE_URL
 ARG ACTIONS_RUNTIME_TOKEN
 
 ENV TOOLCHAIN_FILE="toolchain.cmake"
+ENV TOOLCHAIN_NATIVE_FILE="toolchain_native.cmake"
 ENV SCCACHE_DIR=/var/cache/sccache
-
-# machine-specific flags
-ENV HOST_CMAKE_C_COMPILER="/usr/bin/gcc-8"
-ENV HOST_CMAKE_CXX_COMPILER="/usr/bin/g++-8"
-ENV HOST_CMAKE_C_FLAGS=""
-ENV HOST_CMAKE_CXX_FLAGS="${HOST_CMAKE_C_FLAGS}"
-ENV HOST_CMAKE_EXE_LINKER_FLAGS=""
 
 # Use c++11
 ENV CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -std=c++14"
 
+ENV CC="/usr/bin/gcc-8"
+ENV CXX="/usr/bin/g++-8"
 ENV CMAKE_C_FLAGS="${CMAKE_C_FLAGS}"
 ENV CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -fno-omit-frame-pointer -ffunction-sections -fdata-sections -fno-exceptions -fno-rtti"
 ENV CMAKE_SHARED_LINKER_FLAGS="${CMAKE_SHARED_LINKER_FLAGS} -Wl,--gc-sections -Wl,--exclude-libs,ALL"
@@ -92,22 +88,18 @@ RUN --mount=type=cache,target=/opt/sccache,sharing=locked \
 rm -rf implementations/tdlight/td_tools_build implementations/tdlight/build api/target-legacy api/target api/.ci-friendly-pom.xml implementations/tdlight/td/generate/auto natives/src/main/java/it/tdlight/jni natives/build natives/tdjni_bin natives/tdjni_docs
 mkdir -p implementations/tdlight/build  implementations/tdlight/build/td_bin/bin implementations/tdlight/td_tools_build/java/it/tdlight/jni api/src/main/java-legacy/it/tdlight/jni api/src/main/java-sealed/it/tdlight/jni natives/src/main/java/it/tdlight/jni natives/build natives/tdjni_bin natives/tdjni_docs
 cd implementations/tdlight/td_tools_build
-CC="$HOST_CMAKE_C_COMPILER" CXX="$HOST_CMAKE_CXX_COMPILER" cmake \
-  -DCMAKE_C_COMPILER="${HOST_CMAKE_C_COMPILER}" \
-  -DCMAKE_CXX_COMPILER="${HOST_CMAKE_CXX_COMPILER}" \
-  -DCMAKE_C_FLAGS="${CMAKE_C_FLAGS} ${HOST_CMAKE_C_FLAGS}" \
-  -DCMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} ${HOST_CMAKE_CXX_FLAGS}" \
-  -DCMAKE_EXE_LINKER_FLAGS="${CMAKE_EXE_LINKER_FLAGS} ${HOST_CMAKE_EXE_LINKER_FLAGS}" \
-  -DJAVA_AWT_LIBRARY="/dev/null" \
-  -DJAVA_AWT_INCLUDE_PATH="/dev/null" \
-  \
+cmake \
+  -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_C_COMPILER_LAUNCHER="$CCACHE" \
   -DCMAKE_CXX_COMPILER_LAUNCHER="$CCACHE" \
   -DCMAKE_C_FLAGS_RELEASE="" \
   -DCMAKE_CXX_FLAGS_RELEASE="-O0 -DNDEBUG" \
   -DTD_ENABLE_LTO=OFF \
-  -DTD_ENABLE_JNI=ON ..
+  -DTD_ENABLE_JNI=ON \
+  -DJAVA_AWT_LIBRARY=/dev/null \
+  -DJAVA_AWT_INCLUDE_PATH=/dev/null \
+  ..
 cmake --build . --target prepare_cross_compiling --parallel "$(nproc)"
 cmake --build . --target td_generate_java_api --parallel "$(nproc)"
 cd ../../../
@@ -134,11 +126,10 @@ set(CMAKE_LIBRARY_PATH /usr/lib/\${TARGET_TRIPLE} /root/cross-build-pkgs/usr/lib
 set(CMAKE_PROGRAM_PATH /usr/bin/\${TARGET_TRIPLE} /root/cross-build-pkgs/usr/bin/\${TARGET_TRIPLE})
 
 # Set various compiler flags
-set(CMAKE_EXE_LINKER_FLAGS_INIT "-fno-fat-lto-objects")
-set(CMAKE_MODULE_LINKER_FLAGS_INIT "-fno-fat-lto-objects")
-set(CMAKE_SHARED_LINKER_FLAGS_INIT "-fno-fat-lto-objects")
-set(CMAKE_CXX_FLAGS_INIT "-fno-fat-lto-objects")
-set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
+set(CMAKE_EXE_LINKER_FLAGS_INIT "-flto -fno-fat-lto-objects")
+set(CMAKE_MODULE_LINKER_FLAGS_INIT "-flto -fno-fat-lto-objects")
+set(CMAKE_SHARED_LINKER_FLAGS_INIT "-flto -fno-fat-lto-objects")
+set(CMAKE_CXX_FLAGS_INIT "-flto -fno-fat-lto-objects")
 
 set(CMAKE_SYSROOT /root/cross-build-pkgs)
 
@@ -172,11 +163,11 @@ RUN --mount=type=cache,target=/opt/sccache,sharing=locked \
 cd implementations/tdlight/build
 export INSTALL_PREFIX="$(readlink -e ./td_bin/)"
 export INSTALL_BINDIR="$(readlink -e ./td_bin/bin)"
-export TOOLCHAIN_ARG
-if [[ "$NATIVE" != "true" ]]; then
-    TOOLCHAIN_ARG=""
+export TOOLCHAIN_ARGS
+if [[ "$NATIVE" == "true" ]]; then
+    TOOLCHAIN_ARGS=""
 else
-    TOOLCHAIN_ARG="-DCMAKE_TOOLCHAIN_FILE=\"../../../${TOOLCHAIN_FILE}\""
+    TOOLCHAIN_ARGS="-DCMAKE_TOOLCHAIN_FILE=\"../../../toolchain.cmake\""
 fi
 cmake \
   -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON \
@@ -188,16 +179,18 @@ cmake \
   -DTD_ENABLE_JNI=ON \
   -DCMAKE_INSTALL_PREFIX:PATH="$INSTALL_PREFIX" \
   -DCMAKE_INSTALL_BINDIR:PATH="$INSTALL_BINDIR" \
-  $TOOLCHAIN_ARG ..
+  -DJAVA_AWT_LIBRARY=/dev/null \
+  -DJAVA_AWT_INCLUDE_PATH=/dev/null \
+  $TOOLCHAIN_ARGS ..
 cmake --build . --target install --config Release --parallel "$(nproc)"
 cd ../../../
 
 cd natives/build
-export TOOLCHAIN_ARG
-if [[ "$NATIVE" != "true" ]]; then
-    TOOLCHAIN_ARG=""
+export TOOLCHAIN_ARGS
+if [[ "$NATIVE" == "true" ]]; then
+    TOOLCHAIN_ARGS=""
 else
-    TOOLCHAIN_ARG="-DCMAKE_TOOLCHAIN_FILE=\"../../${TOOLCHAIN_FILE}\""
+    TOOLCHAIN_ARGS="-DCMAKE_TOOLCHAIN_FILE=\"../../toolchain.cmake\""
 fi
 cmake \
   -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON \
@@ -212,7 +205,9 @@ cmake \
   -DTd_DIR:PATH="$(readlink -e ../../implementations/tdlight/build/td_bin/lib/cmake/Td)" \
   -DJAVA_SRC_DIR="$(readlink -e ../src/main/java)" \
   -DTDNATIVES_CPP_SRC_DIR="$(readlink -e ../src/main/cpp)" \
-  $TOOLCHAIN_ARG \
+  -DJAVA_AWT_LIBRARY=/dev/null \
+  -DJAVA_AWT_INCLUDE_PATH=/dev/null \
+  $TOOLCHAIN_ARGS \
   ../src/main/cpp
 cmake --build . --target install --config Release --parallel "$(nproc)"
 cd ..
