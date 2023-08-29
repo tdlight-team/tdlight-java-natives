@@ -42,7 +42,7 @@ if [[ "$NATIVE" != "true" ]]; then
     ./.docker/SymlinkPrefix.javash "/root/cross-build-pkgs/" "/" "./"
 fi
 apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install --no-install-recommends \
-  g++ gcc libstdc++-8-dev zlib1g-dev libssl-dev gperf \
+  g++ gcc-8 libstdc++-8-dev zlib1g-dev libssl-dev gperf \
   tree git maven php-cli php-readline make cmake
 
 if [[ "$NATIVE" != "true" ]]; then
@@ -64,7 +64,6 @@ ARG SCCACHE_GHA_ENABLED=off
 ARG ACTIONS_CACHE_URL
 ARG ACTIONS_RUNTIME_TOKEN
 
-ENV TOOLCHAIN_FILE="toolchain.cmake"
 ENV SCCACHE_DIR=/var/cache/sccache2
 
 # Use c++11
@@ -140,7 +139,7 @@ cmake --build . --target td_generate_java_api --parallel "$(nproc)"
 cd ../../../
 EOF
 
-RUN <<"EOF"
+RUN --mount=type=cache,target=/root/.m2 <<"EOF"
 ./implementations/tdlight/td_tools_build/td/generate/td_generate_java_api TdApi "./implementations/tdlight/td/generate/auto/tlo/td_api.tlo" "./natives/src/main/java" "it/tdlight/jni"
 EOF
 
@@ -239,15 +238,17 @@ cmake \
   -DCMAKE_TOOLCHAIN_FILE="../../$TOOLCHAIN_ARGS" \
   ../src/main/cpp
 cmake --build . --target install --config Release --parallel "$(nproc)"
-cd ..
+cd ../../
 EOF
 
 RUN --mount=type=cache,target=/opt/sccache,sharing=locked \
 --mount=type=cache,target=/var/cache/sccache2,sharing=locked \
 --mount=type=cache,target=/root/.m2 <<"EOF"
+cd natives
 mkdir -p src/main/resources/META-INF/tdlightjni/
 mv tdjni_bin/libtdjni.so src/main/resources/META-INF/tdlightjni/libtdjni.linux_${ARCH_DEBIAN}_gnu_ssl1.so
 mvn -B -f pom.xml -Drevision="$REVISION" -Dnative.type.classifier=linux_${ARCH_DEBIAN}_gnu_ssl1 package
+cd ..
 EOF
 
 FROM debian:buster-backports AS maven

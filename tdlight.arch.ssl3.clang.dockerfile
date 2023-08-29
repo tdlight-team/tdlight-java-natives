@@ -23,11 +23,11 @@ RUN rm -f /etc/apt/apt.conf.d/docker-clean; echo 'Binary::apt::APT::Keep-Downloa
 ENV DEBIAN_FRONTEND=noninteractive
 COPY .docker ./.docker
 # Install sccache to greatly speedup builds in the CI
-RUN --mount=type=cache,target=/opt/sccache,sharing=locked --mount=type=cache,target=/var/lib/apt,sharing=locked --mount=type=cache,target=/var/cache/sccache,sharing=locked .docker/install-sccache.sh
+RUN --mount=type=cache,target=/opt/sccache,sharing=locked --mount=type=cache,target=/var/lib/apt,sharing=locked --mount=type=cache,target=/var/cache/sccache2,sharing=locked .docker/install-sccache.sh
 
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 --mount=type=cache,target=/var/lib/apt,sharing=locked \
---mount=type=cache,target=/var/cache/sccache,sharing=locked <<"EOF"
+--mount=type=cache,target=/var/cache/sccache2,sharing=locked <<"EOF"
 dpkg --add-architecture ${ARCH_DEBIAN}
 apt-get --assume-yes update
 
@@ -50,12 +50,15 @@ EOF
 FROM ssl3_debian AS build
 SHELL ["/bin/bash", "-exc"]
 ARG REVISION="1.0.0.0-SNAPSHOT"
+ARG ARCH_DEBIAN
+ARG ARCH_TRIPLE
+ARG TRIPLE_GNU
 ARG SCCACHE_GHA_ENABLED=off
 ARG ACTIONS_CACHE_URL
 ARG ACTIONS_RUNTIME_TOKEN
 
 ENV TOOLCHAIN_FILE="toolchain.cmake"
-ENV SCCACHE_DIR=/var/cache/sccache
+ENV SCCACHE_DIR=/var/cache/sccache2
 
 # machine-specific flags
 ENV HOST_CMAKE_C_COMPILER="/usr/bin/clang-14"
@@ -79,7 +82,7 @@ ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 COPY --link . ./
 
 RUN --mount=type=cache,target=/opt/sccache,sharing=locked \
---mount=type=cache,target=/var/cache/sccache,sharing=locked \
+--mount=type=cache,target=/var/cache/sccache2,sharing=locked \
 --mount=type=cache,target=/root/.m2 <<"EOF"
 rm -rf implementations/tdlight/td_tools_build implementations/tdlight/build api/target-legacy api/target api/.ci-friendly-pom.xml implementations/tdlight/td/generate/auto natives/src/main/java/it/tdlight/jni natives/build natives/tdjni_bin natives/tdjni_docs
 mkdir -p implementations/tdlight/build  implementations/tdlight/build/td_bin/bin implementations/tdlight/td_tools_build/java/it/tdlight/jni api/src/main/java-legacy/it/tdlight/jni api/src/main/java-sealed/it/tdlight/jni natives/src/main/java/it/tdlight/jni natives/build natives/tdjni_bin natives/tdjni_docs
@@ -101,7 +104,9 @@ CXXFLAGS="-stdlib=libc++" CC="$HOST_CMAKE_C_COMPILER" CXX="$HOST_CMAKE_CXX_COMPI
 cmake --build . --target prepare_cross_compiling --parallel "$(nproc)"
 cmake --build . --target td_generate_java_api --parallel "$(nproc)"
 cd ../../../
+EOF
 
+RUN --mount=type=cache,target=/root/.m2 <<"EOF"
 ./implementations/tdlight/td_tools_build/td/generate/td_generate_java_api TdApi "./implementations/tdlight/td/generate/auto/tlo/td_api.tlo" "./natives/src/main/java" "it/tdlight/jni"
 EOF
 
@@ -176,13 +181,12 @@ endif()
 EOF
 
 RUN --mount=type=cache,target=/opt/sccache,sharing=locked \
---mount=type=cache,target=/var/cache/sccache,sharing=locked \
+--mount=type=cache,target=/var/cache/sccache2,sharing=locked \
 --mount=type=cache,target=/root/.m2 <<"EOF"
 cd implementations/tdlight/build
 export INSTALL_PREFIX="$(readlink -e ./td_bin/)"
 export INSTALL_BINDIR="$(readlink -e ./td_bin/bin)"
 cmake \
-  -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_C_COMPILER_LAUNCHER="$CCACHE" \
   -DCMAKE_CXX_COMPILER_LAUNCHER="$CCACHE" \
@@ -194,16 +198,18 @@ cmake \
   -DCMAKE_TOOLCHAIN_FILE="../../../${TOOLCHAIN_FILE}" ..
 cmake --build . --target install --config Release --parallel "$(nproc)"
 cd ../../../
+EOF
 
+RUN --mount=type=cache,target=/opt/sccache,sharing=locked \
+--mount=type=cache,target=/var/cache/sccache2,sharing=locked \
+--mount=type=cache,target=/root/.m2 <<"EOF"
 cd natives/build
 cmake \
-  -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_C_COMPILER_LAUNCHER="$CCACHE" \
   -DCMAKE_CXX_COMPILER_LAUNCHER="$CCACHE" \
   -DTD_GENERATED_BINARIES_DIR="$(readlink -e ../../implementations/tdlight/td_tools_build/td/generate)" \
   -DTD_SRC_DIR="$(readlink -e ../../implementations/tdlight)" \
-  -DTD_ENABLE_LTO=ON \
   -DTDNATIVES_BIN_DIR="$(readlink -e ../tdjni_bin/)" \
   -DTDNATIVES_DOCS_BIN_DIR="$(readlink -e ../tdjni_docs/)" \
   -DTd_DIR:PATH="$(readlink -e ../../implementations/tdlight/build/td_bin/lib/cmake/Td)" \
@@ -212,11 +218,24 @@ cmake \
   -DCMAKE_TOOLCHAIN_FILE="../../${TOOLCHAIN_FILE}" \
   ../src/main/cpp
 cmake --build . --target install --config Release --parallel "$(nproc)"
-cd ..
+cd ../../
+EOF
+
+RUN --mount=type=cache,target=/opt/sccache,sharing=locked \
+--mount=type=cache,target=/var/cache/sccache2,sharing=locked \
+--mount=type=cache,target=/root/.m2 <<"EOF"
+cd natives
 mkdir -p src/main/resources/META-INF/tdlightjni/
 mv tdjni_bin/libtdjni.so src/main/resources/META-INF/tdlightjni/libtdjni.linux_${ARCH_DEBIAN}_clang_ssl3.so
 mvn -B -f pom.xml -Drevision="$REVISION" -Dnative.type.classifier=linux_${ARCH_DEBIAN}_clang_ssl3 package
+cd ..
 EOF
+
+FROM debian:bookworm-backports AS maven
+SHELL ["/bin/bash", "-exc"]
+WORKDIR /source
+COPY --from=build /build/natives /source/natives
+ENTRYPOINT ["/bin/true"]
 
 FROM debian:bookworm-backports
 ARG REVISION="1.0.0.0-SNAPSHOT"
