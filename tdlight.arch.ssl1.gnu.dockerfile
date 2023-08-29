@@ -98,16 +98,10 @@ set(CMAKE_LIBRARY_PATH /usr/lib/\${TARGET_TRIPLE} /lib/\${TARGET_TRIPLE})
 set(CMAKE_PROGRAM_PATH /usr/bin/\${TARGET_TRIPLE})
 
 # Set various compiler flags
-set(CMAKE_EXE_LINKER_FLAGS_INIT "-fuse-ld=lld -flto -fno-fat-lto-objects")
-set(CMAKE_MODULE_LINKER_FLAGS_INIT "-fuse-ld=lld -flto -fno-fat-lto-objects")
-set(CMAKE_SHARED_LINKER_FLAGS_INIT "-fuse-ld=lld -flto -fno-fat-lto-objects")
-set(CMAKE_CXX_FLAGS_INIT "-fuse-ld=lld -flto -fno-fat-lto-objects")
-
-#set(CMAKE_SYSROOT /root/cross-build-pkgs)
-
-# This must be set or compiler checks fail when linking
-#set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
-#SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+set(CMAKE_EXE_LINKER_FLAGS_INIT "-flto -fno-fat-lto-objects")
+set(CMAKE_MODULE_LINKER_FLAGS_INIT "-flto -fno-fat-lto-objects")
+set(CMAKE_SHARED_LINKER_FLAGS_INIT "-flto -fno-fat-lto-objects")
+set(CMAKE_CXX_FLAGS_INIT "-flto -fno-fat-lto-objects")
 
 if(EXISTS "/usr/lib/jvm/java-11-openjdk-amd64")
   SET(JAVA_HOME "/usr/lib/jvm/java-11-openjdk-amd64")
