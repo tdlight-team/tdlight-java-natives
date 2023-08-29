@@ -16,8 +16,8 @@ jobs:
           - { os: ubuntu-22.04, type: "linux_amd64_gnu_ssl1", compiler: "gnu", ssl: "ssl1", debianArch: "amd64", tripleArch: "x86_64", tripleGnu: "gnu", debianVersion: "buster-backports", native: "true" }
           - { os: ubuntu-22.04, type: "linux_amd64_gnu_ssl3", compiler: "gnu", ssl: "ssl3", debianArch: "amd64", tripleArch: "x86_64", tripleGnu: "gnu", debianVersion: "bookworm-backports", native: "true" }
           - { os: ubuntu-22.04, type: "linux_amd64_clang_ssl3", compiler: "clang", ssl: "ssl3", debianArch: "amd64", tripleArch: "x86_64", tripleGnu: "gnu", debianVersion: "bookworm-backports", native: "true" }
-          - { os: ubuntu-22.04, type: "linux_i386_gnu_ssl1", compiler: "gnu", ssl: "ssl1", debianArch: "i386", tripleArch: "i386", tripleGnu: "gnu", debianVersion: "buster-backports", native: "false" }
-          - { os: ubuntu-22.04, type: "linux_i386_gnu_ssl3", compiler: "gnu", ssl: "ssl3", debianArch: "i386", tripleArch: "i386", tripleGnu: "gnu", debianVersion: "bookworm-backports", native: "false" }
+          #- { os: ubuntu-22.04, type: "linux_i386_gnu_ssl1", compiler: "gnu", ssl: "ssl1", debianArch: "i386", tripleArch: "i386", tripleGnu: "gnu", debianVersion: "buster-backports", native: "false" }
+          #- { os: ubuntu-22.04, type: "linux_i386_gnu_ssl3", compiler: "gnu", ssl: "ssl3", debianArch: "i386", tripleArch: "i386", tripleGnu: "gnu", debianVersion: "bookworm-backports", native: "false" }
           - { os: ubuntu-22.04, type: "linux_ppc64el_gnu_ssl3", compiler: "gnu", ssl: "ssl3", debianArch: "ppc64el", tripleArch: "powerpc64le", tripleGnu: "gnu", debianVersion: "bookworm-backports", native: "false" }
           - { os: ubuntu-22.04, type: "linux_riscv64_gnu_ssl3", compiler: "gnu", ssl: "ssl3", debianArch: "riscv64", tripleArch: "riscv64", tripleGnu: "gnu", debianVersion: "sid", native: "false" }
           - { os: ubuntu-22.04, type: "linux_armhf_gnu_ssl1", compiler: "gnu", ssl: "ssl1", debianArch: "armhf", tripleArch: "arm", tripleGnu: "gnueabihf", debianVersion: "buster-backports", native: "false" }
