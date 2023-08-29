@@ -77,7 +77,7 @@ ENV CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -fno-omit-frame-pointer -ffunction-secti
 ENV CMAKE_SHARED_LINKER_FLAGS="${CMAKE_SHARED_LINKER_FLAGS} -Wl,--gc-sections -Wl,--exclude-libs,ALL"
 ENV CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -flto=thin -O3"
 ENV CCACHE=/opt/sccache/sccache
-ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 
 COPY --link . ./
 
