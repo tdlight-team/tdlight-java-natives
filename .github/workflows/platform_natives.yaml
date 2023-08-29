@@ -69,6 +69,7 @@ jobs:
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "TYPE=$TYPE" >> $GITHUB_ENV
           echo "SAFE_TYPE=$SAFE_TYPE" >> $GITHUB_ENV
+          echo "COMPILER=$COMPILER" >> $GITHUB_ENV
           echo "SSL=$SSL" >> $GITHUB_ENV
           echo "DEBIAN_ARCH=$DEBIAN_ARCH" >> $GITHUB_ENV
           echo "TRIPLE_ARCH=$TRIPLE_ARCH" >> $GITHUB_ENV
