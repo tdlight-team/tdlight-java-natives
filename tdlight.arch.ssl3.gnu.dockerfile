@@ -44,7 +44,7 @@ if [[ "$NATIVE" != "true" ]]; then
     ./.docker/SymlinkPrefix.javash "/root/cross-build-pkgs/" "/" "./"
 fi
 apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install --no-install-recommends \
-  g++-12 gcc-12 libstdc++-12-dev zlib1g-dev libssl-dev gperf \
+  g++-12 gcc libstdc++-12-dev zlib1g-dev libssl-dev gperf \
   tree git maven php-cli php-readline make cmake
 
 if [[ "$NATIVE" != "true" ]]; then
