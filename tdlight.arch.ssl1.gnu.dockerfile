@@ -9,6 +9,7 @@ ARG ARCH_DEBIAN
 ARG ARCH_TRIPLE
 # gnu, gnueabihf (armhf)
 ARG TRIPLE_GNU
+ARG NATIVE=false
 ARG SCCACHE_GHA_ENABLED=off
 ARG ACTIONS_CACHE_URL
 ARG ACTIONS_RUNTIME_TOKEN
@@ -31,24 +32,34 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 dpkg --add-architecture ${ARCH_DEBIAN}
 apt-get --assume-yes update
 apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install --no-install-recommends openjdk-11-jdk-headless
-./.docker/downloadthis.sh /var/cache/apt/downloaded_tmp libssl-dev:${ARCH_DEBIAN} /root/cross-build-pkgs/
-./.docker/downloadthis.sh /var/cache/apt/downloaded_tmp libssl1.1:${ARCH_DEBIAN} /root/cross-build-pkgs/
-./.docker/downloadthis.sh /var/cache/apt/downloaded_tmp zlib1g-dev:${ARCH_DEBIAN} /root/cross-build-pkgs/
-./.docker/downloadthis.sh /var/cache/apt/downloaded_tmp zlib1g:${ARCH_DEBIAN} /root/cross-build-pkgs/
-./.docker/downloadthis.sh /var/cache/apt/downloaded_tmp openjdk-11-jre-headless:${ARCH_DEBIAN} /root/cross-build-pkgs/
-./.docker/downloadthis.sh /var/cache/apt/downloaded_tmp openjdk-11-jdk-headless:${ARCH_DEBIAN} /root/cross-build-pkgs/
-./.docker/SymlinkPrefix.javash "/root/cross-build-pkgs/" "/" "./"
+if [[ "$NATIVE" != "true" ]]; then
+    ./.docker/downloadthis.sh /var/cache/apt/downloaded_tmp libssl-dev:${ARCH_DEBIAN} /root/cross-build-pkgs/
+    ./.docker/downloadthis.sh /var/cache/apt/downloaded_tmp libssl1.1:${ARCH_DEBIAN} /root/cross-build-pkgs/
+    ./.docker/downloadthis.sh /var/cache/apt/downloaded_tmp zlib1g-dev:${ARCH_DEBIAN} /root/cross-build-pkgs/
+    ./.docker/downloadthis.sh /var/cache/apt/downloaded_tmp zlib1g:${ARCH_DEBIAN} /root/cross-build-pkgs/
+    ./.docker/downloadthis.sh /var/cache/apt/downloaded_tmp openjdk-11-jre-headless:${ARCH_DEBIAN} /root/cross-build-pkgs/
+    ./.docker/downloadthis.sh /var/cache/apt/downloaded_tmp openjdk-11-jdk-headless:${ARCH_DEBIAN} /root/cross-build-pkgs/
+    ./.docker/SymlinkPrefix.javash "/root/cross-build-pkgs/" "/" "./"
+fi
 apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install --no-install-recommends \
   g++-8 gcc-8 zlib1g-dev libssl-dev gperf \
-  tree git maven php-cli php-readline make cmake \
-  g++-8-${ARCH_TRIPLE/_/-}-linux-${TRIPLE_GNU} gcc-8-${ARCH_TRIPLE/_/-}-linux-${TRIPLE_GNU} \
-  libatomic1-${ARCH_DEBIAN}-cross libc6-dev-${ARCH_DEBIAN}-cross libgcc-8-dev-${ARCH_DEBIAN}-cross libstdc++-8-dev-${ARCH_DEBIAN}-cross
+  tree git maven php-cli php-readline make cmake
+
+if [[ "$NATIVE" != "true" ]]; then
+    apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install --no-install-recommends \
+      g++-8-${ARCH_TRIPLE/_/-}-linux-${TRIPLE_GNU} gcc-8-${ARCH_TRIPLE/_/-}-linux-${TRIPLE_GNU} \
+      libatomic1-${ARCH_DEBIAN}-cross libc6-dev-${ARCH_DEBIAN}-cross libgcc-8-dev-${ARCH_DEBIAN}-cross libstdc++-8-dev-${ARCH_DEBIAN}-cross
+fi
 
 EOF
 
 FROM ssl1_debian AS build
 SHELL ["/bin/bash", "-exc"]
 ARG REVISION="1.0.0.0-SNAPSHOT"
+ARG ARCH_DEBIAN
+ARG ARCH_TRIPLE
+ARG TRIPLE_GNU
+ARG NATIVE=false
 ARG SCCACHE_GHA_ENABLED=off
 ARG ACTIONS_CACHE_URL
 ARG ACTIONS_RUNTIME_TOKEN
@@ -161,6 +172,12 @@ RUN --mount=type=cache,target=/opt/sccache,sharing=locked \
 cd implementations/tdlight/build
 export INSTALL_PREFIX="$(readlink -e ./td_bin/)"
 export INSTALL_BINDIR="$(readlink -e ./td_bin/bin)"
+export TOOLCHAIN_ARG
+if [[ "$NATIVE" != "true" ]]; then
+    TOOLCHAIN_ARG=""
+else
+    TOOLCHAIN_ARG="-DCMAKE_TOOLCHAIN_FILE=\"../../../${TOOLCHAIN_FILE}\""
+fi
 cmake \
   -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON \
   -DCMAKE_BUILD_TYPE=Release \
@@ -171,11 +188,17 @@ cmake \
   -DTD_ENABLE_JNI=ON \
   -DCMAKE_INSTALL_PREFIX:PATH="$INSTALL_PREFIX" \
   -DCMAKE_INSTALL_BINDIR:PATH="$INSTALL_BINDIR" \
-  -DCMAKE_TOOLCHAIN_FILE="../../../${TOOLCHAIN_FILE}" ..
+  $TOOLCHAIN_ARG ..
 cmake --build . --target install --config Release --parallel "$(nproc)"
 cd ../../../
 
 cd natives/build
+export TOOLCHAIN_ARG
+if [[ "$NATIVE" != "true" ]]; then
+    TOOLCHAIN_ARG=""
+else
+    TOOLCHAIN_ARG="-DCMAKE_TOOLCHAIN_FILE=\"../../${TOOLCHAIN_FILE}\""
+fi
 cmake \
   -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON \
   -DCMAKE_BUILD_TYPE=Release \
@@ -189,7 +212,7 @@ cmake \
   -DTd_DIR:PATH="$(readlink -e ../../implementations/tdlight/build/td_bin/lib/cmake/Td)" \
   -DJAVA_SRC_DIR="$(readlink -e ../src/main/java)" \
   -DTDNATIVES_CPP_SRC_DIR="$(readlink -e ../src/main/cpp)" \
-  -DCMAKE_TOOLCHAIN_FILE="../../${TOOLCHAIN_FILE}" \
+  $TOOLCHAIN_ARG \
   ../src/main/cpp
 cmake --build . --target install --config Release --parallel "$(nproc)"
 cd ..
@@ -209,6 +232,7 @@ ARG REVISION="1.0.0.0-SNAPSHOT"
 ARG ARCH_DEBIAN
 ARG ARCH_TRIPLE
 ARG TRIPLE_GNU
+ARG NATIVE=off
 WORKDIR /out
 COPY --from=build /build/natives natives
 COPY --from=build /build/natives/src/main/resources/META-INF/tdlightjni/libtdjni.linux_${ARCH_DEBIAN}_gnu_ssl1.so libtdjni.so

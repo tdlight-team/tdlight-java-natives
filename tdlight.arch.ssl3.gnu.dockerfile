@@ -11,6 +11,7 @@ ARG ARCH_DEBIAN
 ARG ARCH_TRIPLE
 # gnu, gnueabihf (armhf)
 ARG TRIPLE_GNU
+ARG NATIVE=false
 ARG SCCACHE_GHA_ENABLED=off
 ARG ACTIONS_CACHE_URL
 ARG ACTIONS_RUNTIME_TOKEN
@@ -33,24 +34,34 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 dpkg --add-architecture ${ARCH_DEBIAN}
 apt-get --assume-yes update
 apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install --no-install-recommends openjdk-17-jdk-headless
-./.docker/downloadthis.sh /var/cache/apt/downloaded_tmp libssl-dev:${ARCH_DEBIAN} /root/cross-build-pkgs/
-./.docker/downloadthis.sh /var/cache/apt/downloaded_tmp libssl3:${ARCH_DEBIAN} /root/cross-build-pkgs/
-./.docker/downloadthis.sh /var/cache/apt/downloaded_tmp zlib1g-dev:${ARCH_DEBIAN} /root/cross-build-pkgs/
-./.docker/downloadthis.sh /var/cache/apt/downloaded_tmp zlib1g:${ARCH_DEBIAN} /root/cross-build-pkgs/
-./.docker/downloadthis.sh /var/cache/apt/downloaded_tmp openjdk-17-jre-headless:${ARCH_DEBIAN} /root/cross-build-pkgs/
-./.docker/downloadthis.sh /var/cache/apt/downloaded_tmp openjdk-17-jdk-headless:${ARCH_DEBIAN} /root/cross-build-pkgs/
-./.docker/SymlinkPrefix.javash "/root/cross-build-pkgs/" "/" "./"
+if [[ "$NATIVE" != "true" ]]; then
+    ./.docker/downloadthis.sh /var/cache/apt/downloaded_tmp libssl-dev:${ARCH_DEBIAN} /root/cross-build-pkgs/
+    ./.docker/downloadthis.sh /var/cache/apt/downloaded_tmp libssl3:${ARCH_DEBIAN} /root/cross-build-pkgs/
+    ./.docker/downloadthis.sh /var/cache/apt/downloaded_tmp zlib1g-dev:${ARCH_DEBIAN} /root/cross-build-pkgs/
+    ./.docker/downloadthis.sh /var/cache/apt/downloaded_tmp zlib1g:${ARCH_DEBIAN} /root/cross-build-pkgs/
+    ./.docker/downloadthis.sh /var/cache/apt/downloaded_tmp openjdk-17-jre-headless:${ARCH_DEBIAN} /root/cross-build-pkgs/
+    ./.docker/downloadthis.sh /var/cache/apt/downloaded_tmp openjdk-17-jdk-headless:${ARCH_DEBIAN} /root/cross-build-pkgs/
+    ./.docker/SymlinkPrefix.javash "/root/cross-build-pkgs/" "/" "./"
+fi
 apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install --no-install-recommends \
   g++-12 gcc-12 zlib1g-dev libssl-dev gperf \
-  tree git maven php-cli php-readline make cmake \
-  g++-12-${ARCH_TRIPLE/_/-}-linux-${TRIPLE_GNU} gcc-12-${ARCH_TRIPLE/_/-}-linux-${TRIPLE_GNU} \
-  libatomic1-${ARCH_DEBIAN}-cross libc6-dev-${ARCH_DEBIAN}-cross libgcc-12-dev-${ARCH_DEBIAN}-cross libstdc++-12-dev-${ARCH_DEBIAN}-cross
+  tree git maven php-cli php-readline make cmake
+
+if [[ "$NATIVE" != "true" ]]; then
+    apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install --no-install-recommends \
+      g++-12-${ARCH_TRIPLE/_/-}-linux-${TRIPLE_GNU} gcc-12-${ARCH_TRIPLE/_/-}-linux-${TRIPLE_GNU} \
+      libatomic1-${ARCH_DEBIAN}-cross libc6-dev-${ARCH_DEBIAN}-cross libgcc-12-dev-${ARCH_DEBIAN}-cross libstdc++-12-dev-${ARCH_DEBIAN}-cross
+fi
 
 EOF
 
 FROM ssl3_debian AS build
 SHELL ["/bin/bash", "-exc"]
 ARG REVISION="1.0.0.0-SNAPSHOT"
+ARG ARCH_DEBIAN
+ARG ARCH_TRIPLE
+ARG TRIPLE_GNU
+ARG NATIVE=false
 ARG SCCACHE_GHA_ENABLED=off
 ARG ACTIONS_CACHE_URL
 ARG ACTIONS_RUNTIME_TOKEN
@@ -161,6 +172,12 @@ RUN --mount=type=cache,target=/opt/sccache,sharing=locked \
 cd implementations/tdlight/build
 export INSTALL_PREFIX="$(readlink -e ./td_bin/)"
 export INSTALL_BINDIR="$(readlink -e ./td_bin/bin)"
+export TOOLCHAIN_ARG
+if [[ "$NATIVE" != "true" ]]; then
+    TOOLCHAIN_ARG=""
+else
+    TOOLCHAIN_ARG="-DCMAKE_TOOLCHAIN_FILE=\"../../../${TOOLCHAIN_FILE}\""
+fi
 cmake \
   -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON \
   -DCMAKE_BUILD_TYPE=Release \
@@ -171,11 +188,17 @@ cmake \
   -DTD_ENABLE_JNI=ON \
   -DCMAKE_INSTALL_PREFIX:PATH="$INSTALL_PREFIX" \
   -DCMAKE_INSTALL_BINDIR:PATH="$INSTALL_BINDIR" \
-  -DCMAKE_TOOLCHAIN_FILE="../../../${TOOLCHAIN_FILE}" ..
+  $TOOLCHAIN_ARG ..
 cmake --build . --target install --config Release --parallel "$(nproc)"
 cd ../../../
 
 cd natives/build
+export TOOLCHAIN_ARG
+if [[ "$NATIVE" != "true" ]]; then
+    TOOLCHAIN_ARG=""
+else
+    TOOLCHAIN_ARG="-DCMAKE_TOOLCHAIN_FILE=\"../../${TOOLCHAIN_FILE}\""
+fi
 cmake \
   -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON \
   -DCMAKE_BUILD_TYPE=Release \
@@ -189,85 +212,13 @@ cmake \
   -DTd_DIR:PATH="$(readlink -e ../../implementations/tdlight/build/td_bin/lib/cmake/Td)" \
   -DJAVA_SRC_DIR="$(readlink -e ../src/main/java)" \
   -DTDNATIVES_CPP_SRC_DIR="$(readlink -e ../src/main/cpp)" \
-  -DCMAKE_TOOLCHAIN_FILE="../../${TOOLCHAIN_FILE}" \
+  $TOOLCHAIN_ARG \
   ../src/main/cpp
 cmake --build . --target install --config Release --parallel "$(nproc)"
 cd ..
 mkdir -p src/main/resources/META-INF/tdlightjni/
 mv tdjni_bin/libtdjni.so src/main/resources/META-INF/tdlightjni/libtdjni.linux_${ARCH_DEBIAN}_gnu_ssl3.so
 mvn -B -f pom.xml -Drevision="$REVISION" -Dnative.type.classifier=linux_${ARCH_DEBIAN}_gnu_ssl3 package
-EOF
-
-FROM debian:buster-backports AS deploy-release
-SHELL ["/bin/bash", "-exc"]
-ARG REVISION="1.0.0.0-SNAPSHOT"
-ARG ARCH_DEBIAN
-ARG ARCH_TRIPLE
-ARG TRIPLE_GNU
-WORKDIR /source
-COPY --from=build /build/natives /source/natives
-
-RUN --mount=type=cache,target=/root/.m2 <<"EOF"
-export TYPE=linux_${ARCH_DEBIAN}_gnu_ssl3
-
-mvn -B -f natives/pom.xml -Drevision="$REVISION" -Dnative.type.classifier="$TYPE" clean package
-mvn -B org.apache.maven.plugins:maven-deploy-plugin:3.1.1:deploy-file -Durl=https://mvn.mchv.eu/repository/mchv \
-    -DrepositoryId=mchv-release-distribution \
-    -Dfile=natives/target-$TYPE/tdlight-natives-$REVISION-$TYPE.jar \
-    -Dpackaging=pom \
-    -DgroupId=it.tdlight \
-    -DartifactId=tdlight-natives \
-    -Dversion=$REVISION \
-    -Drevision=$REVISION \
-    -Dclassifier=$TYPE \
-    -Dnative.type.classifier="$TYPE"
-if [[ "$TYPE" == "linux_amd64_ssl1" ]]; then
-mvn -B org.apache.maven.plugins:maven-deploy-plugin:3.1.1:deploy-file -Durl=https://mvn.mchv.eu/repository/mchv \
-    -DrepositoryId=mchv-release-distribution \
-    -Dfile=natives/.ci-friendly-pom.xml \
-    -Dpackaging=pom \
-    -DgroupId=it.tdlight \
-    -DartifactId=tdlight-natives \
-    -Dversion=$REVISION \
-    -Drevision=$REVISION \
-    -Dnative.type.classifier="$TYPE"
-fi
-EOF
-
-FROM debian:buster-backports AS deploy-snapshot
-SHELL ["/bin/bash", "-exc"]
-ARG REVISION="1.0.0.0-SNAPSHOT"
-ARG ARCH_DEBIAN
-ARG ARCH_TRIPLE
-ARG TRIPLE_GNU
-WORKDIR /source
-COPY --from=build /build/natives /source/natives
-
-RUN --mount=type=cache,target=/root/.m2 <<"EOF"
-export TYPE=linux_${ARCH_DEBIAN}_gnu_ssl3
-
-mvn -B -f natives/pom.xml -Drevision="$REVISION" -Dnative.type.classifier="$TYPE" clean package
-mvn -B org.apache.maven.plugins:maven-deploy-plugin:3.1.1:deploy-file -Durl=https://mvn.mchv.eu/repository/mchv-snapshot \
-    -DrepositoryId=mchv-snapshot-distribution \
-    -Dfile=natives/target-$TYPE/tdlight-natives-$REVISION-$TYPE.jar \
-    -Dpackaging=pom \
-    -DgroupId=it.tdlight \
-    -DartifactId=tdlight-natives \
-    -Dversion=$REVISION \
-    -Drevision=$REVISION \
-    -Dclassifier=$TYPE \
-    -Dnative.type.classifier="$TYPE"
-if [[ "$TYPE" == "linux_amd64_ssl1" ]]; then
-mvn -B org.apache.maven.plugins:maven-deploy-plugin:3.1.1:deploy-file -Durl=https://mvn.mchv.eu/repository/mchv-snapshot \
-    -DrepositoryId=mchv-snapshot-distribution \
-    -Dfile=natives/.ci-friendly-pom.xml \
-    -Dpackaging=pom \
-    -DgroupId=it.tdlight \
-    -DartifactId=tdlight-natives \
-    -Dversion=$REVISION \
-    -Drevision=$REVISION \
-    -Dnative.type.classifier="$TYPE"
-fi
 EOF
 
 FROM debian:buster-backports AS maven
@@ -281,6 +232,7 @@ ARG REVISION="1.0.0.0-SNAPSHOT"
 ARG ARCH_DEBIAN
 ARG ARCH_TRIPLE
 ARG TRIPLE_GNU
+ARG NATIVE=off
 WORKDIR /out
 COPY --from=build /build/natives natives
 COPY --from=build /build/natives/src/main/resources/META-INF/tdlightjni/libtdjni.linux_${ARCH_DEBIAN}_gnu_ssl3.so libtdjni.so

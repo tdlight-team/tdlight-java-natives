@@ -13,18 +13,18 @@ jobs:
     strategy:
       matrix:
         include:
-          - { os: ubuntu-22.04, type: "linux_amd64_gnu_ssl1", compiler: "gnu", ssl: "ssl1", debianArch: "amd64", tripleArch: "x86_64", tripleGnu: "gnu", debianVersion: "buster-backports" }
-          - { os: ubuntu-22.04, type: "linux_amd64_gnu_ssl3", compiler: "gnu", ssl: "ssl3", debianArch: "amd64", tripleArch: "x86_64", tripleGnu: "gnu", debianVersion: "bookworm-backports" }
-          - { os: ubuntu-22.04, type: "linux_amd64_clang_ssl3", compiler: "clang", ssl: "ssl3", debianArch: "amd64", tripleArch: "x86_64", tripleGnu: "gnu", debianVersion: "bookworm-backports" }
-          - { os: ubuntu-22.04, type: "linux_i386_gnu_ssl1", compiler: "gnu", ssl: "ssl1", debianArch: "i386", tripleArch: "i386", tripleGnu: "gnu", debianVersion: "buster-backports" }
-          - { os: ubuntu-22.04, type: "linux_i386_gnu_ssl3", compiler: "gnu", ssl: "ssl3", debianArch: "i386", tripleArch: "i386", tripleGnu: "gnu", debianVersion: "bookworm-backports" }
-          - { os: ubuntu-22.04, type: "linux_ppc64el_gnu_ssl3", compiler: "gnu", ssl: "ssl3", debianArch: "ppc64el", tripleArch: "powerpc64le", tripleGnu: "gnu", debianVersion: "bookworm-backports" }
-          - { os: ubuntu-22.04, type: "linux_riscv64_gnu_ssl3", compiler: "gnu", ssl: "ssl3", debianArch: "riscv64", tripleArch: "riscv64", tripleGnu: "gnu", debianVersion: "sid" }
-          - { os: ubuntu-22.04, type: "linux_armhf_gnu_ssl1", compiler: "gnu", ssl: "ssl1", debianArch: "armhf", tripleArch: "arm", tripleGnu: "gnueabihf", debianVersion: "buster-backports" }
-          - { os: ubuntu-22.04, type: "linux_armhf_gnu_ssl3", compiler: "gnu", ssl: "ssl3", debianArch: "armhf", tripleArch: "arm", tripleGnu: "gnueabihf", debianVersion: "bookworm-backports" }
-          - { os: ubuntu-22.04, type: "linux_arm64_gnu_ssl1", compiler: "gnu", ssl: "ssl1", debianArch: "arm64", tripleArch: "aarch64", tripleGnu: "gnu", debianVersion: "buster-backports" }
-          - { os: ubuntu-22.04, type: "linux_arm64_gnu_ssl3", compiler: "gnu", ssl: "ssl3", debianArch: "arm64", tripleArch: "aarch64", tripleGnu: "gnu", debianVersion: "bookworm-backports" }
-          - { os: ubuntu-22.04, type: "linux_arm64_clang_ssl3", compiler: "clang", ssl: "ssl3", debianArch: "arm64", tripleArch: "aarch64", tripleGnu: "gnu", debianVersion: "bookworm-backports" }
+          - { os: ubuntu-22.04, type: "linux_amd64_gnu_ssl1", compiler: "gnu", ssl: "ssl1", debianArch: "amd64", tripleArch: "x86_64", tripleGnu: "gnu", debianVersion: "buster-backports", native: "true" }
+          - { os: ubuntu-22.04, type: "linux_amd64_gnu_ssl3", compiler: "gnu", ssl: "ssl3", debianArch: "amd64", tripleArch: "x86_64", tripleGnu: "gnu", debianVersion: "bookworm-backports", native: "true" }
+          - { os: ubuntu-22.04, type: "linux_amd64_clang_ssl3", compiler: "clang", ssl: "ssl3", debianArch: "amd64", tripleArch: "x86_64", tripleGnu: "gnu", debianVersion: "bookworm-backports", native: "true" }
+          - { os: ubuntu-22.04, type: "linux_i386_gnu_ssl1", compiler: "gnu", ssl: "ssl1", debianArch: "i386", tripleArch: "i386", tripleGnu: "gnu", debianVersion: "buster-backports", native: "false" }
+          - { os: ubuntu-22.04, type: "linux_i386_gnu_ssl3", compiler: "gnu", ssl: "ssl3", debianArch: "i386", tripleArch: "i386", tripleGnu: "gnu", debianVersion: "bookworm-backports", native: "false" }
+          - { os: ubuntu-22.04, type: "linux_ppc64el_gnu_ssl3", compiler: "gnu", ssl: "ssl3", debianArch: "ppc64el", tripleArch: "powerpc64le", tripleGnu: "gnu", debianVersion: "bookworm-backports", native: "false" }
+          - { os: ubuntu-22.04, type: "linux_riscv64_gnu_ssl3", compiler: "gnu", ssl: "ssl3", debianArch: "riscv64", tripleArch: "riscv64", tripleGnu: "gnu", debianVersion: "sid", native: "false" }
+          - { os: ubuntu-22.04, type: "linux_armhf_gnu_ssl1", compiler: "gnu", ssl: "ssl1", debianArch: "armhf", tripleArch: "arm", tripleGnu: "gnueabihf", debianVersion: "buster-backports", native: "false" }
+          - { os: ubuntu-22.04, type: "linux_armhf_gnu_ssl3", compiler: "gnu", ssl: "ssl3", debianArch: "armhf", tripleArch: "arm", tripleGnu: "gnueabihf", debianVersion: "bookworm-backports", native: "false" }
+          - { os: ubuntu-22.04, type: "linux_arm64_gnu_ssl1", compiler: "gnu", ssl: "ssl1", debianArch: "arm64", tripleArch: "aarch64", tripleGnu: "gnu", debianVersion: "buster-backports", native: "false" }
+          - { os: ubuntu-22.04, type: "linux_arm64_gnu_ssl3", compiler: "gnu", ssl: "ssl3", debianArch: "arm64", tripleArch: "aarch64", tripleGnu: "gnu", debianVersion: "bookworm-backports", native: "false" }
+          - { os: ubuntu-22.04, type: "linux_arm64_clang_ssl3", compiler: "clang", ssl: "ssl3", debianArch: "arm64", tripleArch: "aarch64", tripleGnu: "gnu", debianVersion: "bookworm-backports", native: "false" }
           - { os: windows-2019, type: "windows_amd64", vcpkgCommitId: "6ca56aeb457f033d344a7106cb3f9f1abf8f4e98", triplet: "x64-windows-static" }
           - { os: macos-12, type: "macos_amd64" }
           # todo: do not enable until github actions adds support to apple silicon, accepting PRs
@@ -59,6 +59,7 @@ jobs:
           DEBIAN_ARCH=${{ matrix.debianArch }}
           TRIPLE_ARCH=${{ matrix.tripleArch }}
           TRIPLE_GNU=${{ matrix.tripleGnu }}
+          NATIVE=${{ matrix.native }}
           DEBIAN_VERSION=${{ matrix.debianVersion }}
 
           REVISION=4.0.${{ github.run_number }}
@@ -75,6 +76,7 @@ jobs:
           echo "DEBIAN_ARCH=$DEBIAN_ARCH" >> $GITHUB_ENV
           echo "TRIPLE_ARCH=$TRIPLE_ARCH" >> $GITHUB_ENV
           echo "TRIPLE_GNU=$TRIPLE_GNU" >> $GITHUB_ENV
+          echo "NATIVE=$NATIVE" >> $GITHUB_ENV
           echo "DEBIAN_VERSION=$DEBIAN_VERSION" >> $GITHUB_ENV
           echo "REVISION=$REVISION" >> $GITHUB_ENV
           echo "GH_MATRIX_OS=$GH_MATRIX_OS" >> $GITHUB_ENV
@@ -226,6 +228,7 @@ jobs:
             ARCH_DEBIAN=${{env.DEBIAN_ARCH}}
             ARCH_TRIPLE=${{env.TRIPLE_ARCH}}
             TRIPLE_GNU=${{env.TRIPLE_GNU}}
+            NATIVE=${{env.NATIVE}}
             DEBIAN_VERSION=${{env.DEBIAN_VERSION}}
           cache-from: type=gha
           cache-to: type=gha,mode=max
