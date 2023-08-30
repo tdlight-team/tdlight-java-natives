@@ -218,7 +218,7 @@ jobs:
         if: matrix.os == 'ubuntu-22.04'
         with:
           context: .
-          push: true
+          push: false
           file: tdlight.arch.${{env.SSL}}.${{env.COMPILER}}.dockerfile
           tags: tdlight.${{env.DEBIAN_ARCH}}.${{env.SSL}}.${{env.COMPILER}}:latest
           build-args: |
