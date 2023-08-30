@@ -242,7 +242,7 @@ jobs:
           
           rm -rf natives
           mv ./docker-out/out/natives natives
-          mv ./docker-out/out/libtdjni.so "libtdjni.${env.REVISION}-${env.TYPE}.so"
+          mv ./docker-out/out/libtdjni.so "libtdjni.${REVISION}-${TYPE}.so"
           mv ./docker-out/out/tdlight-natives.jar "natives/target-${TYPE}/tdlight-natives-${REVISION}-${TYPE}.jar"
       - uses: actions/upload-artifact@v3
         with:
