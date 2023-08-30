@@ -6,7 +6,7 @@ This repository generates JNI packages for each architecture and OS used by [TDL
 
 **todo**
 
-look at .github/workflows/scripts/build_linux_amd64_ssl1.sh, it's a decent example
+look at the dockerfile it's a decent example
 
 ## Download
 
