@@ -218,9 +218,9 @@ jobs:
         if: matrix.os == 'ubuntu-22.04'
         with:
           context: .
-          push: false
+          push: true
           file: tdlight.arch.${{env.SSL}}.${{env.COMPILER}}.dockerfile
-          tags: tdlight.${{env.DEBIAN_ARCH}}.${{env.SSL}}.${{env.COMPILER}}
+          tags: tdlight.${{env.DEBIAN_ARCH}}.${{env.SSL}}.${{env.COMPILER}}:latest
           build-args: |
             SCCACHE_GHA_ENABLED=on
             ACTIONS_CACHE_URL=${{env.ACTIONS_CACHE_URL}}
@@ -232,6 +232,7 @@ jobs:
             DEBIAN_VERSION=${{env.DEBIAN_VERSION}}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          outputs: type=local,dest=./docker-out
       - name: Copy built files from docker
         if: matrix.os == 'ubuntu-22.04'
         shell: bash
@@ -240,9 +241,9 @@ jobs:
           echo "REVISION: $REVISION"
           
           rm -rf natives
-          docker cp "tdlight.${DEBIAN_ARCH}.${SSL}.${COMPILER}:/out/natives" "natives"
-          docker cp "tdlight.${DEBIAN_ARCH}.${SSL}.${COMPILER}:/out/libtdjni.so" "libtdjni.${env.REVISION}-${env.TYPE}.so"
-          docker cp "tdlight.${DEBIAN_ARCH}.${SSL}.${COMPILER}:/out/tdlight-natives.jar" "natives/target-${TYPE}/tdlight-natives-${REVISION}-${TYPE}.jar"
+          mv ./docker-out/out/natives natives
+          mv ./docker-out/out/libtdjni.so "libtdjni.${env.REVISION}-${env.TYPE}.so"
+          mv ./docker-out/out/tdlight-natives.jar "natives/target-${TYPE}/tdlight-natives-${REVISION}-${TYPE}.jar"
       - uses: actions/upload-artifact@v3
         with:
           name: tdlight-natives-${{env.REVISION}}-${{env.TYPE}}.jar
