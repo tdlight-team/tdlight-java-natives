@@ -45,8 +45,8 @@ export CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -flto=thin -O3"
 
 # Build tdlib
 cd implementations/tdlight/build
-INSTALL_PREFIX="$(realpath -e ./td_bin/)"
-INSTALL_BINDIR="$(realpath -e ./td_bin/bin)"
+INSTALL_PREFIX="$(greadlink -e ./td_bin/)"
+INSTALL_BINDIR="$(greadlink -e ./td_bin/bin)"
 cmake \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_C_COMPILER_LAUNCHER="$CCACHE" \
@@ -68,14 +68,14 @@ cmake \
   -DCMAKE_C_COMPILER_LAUNCHER="$CCACHE" \
   -DCMAKE_CXX_COMPILER_LAUNCHER="$CCACHE" \
   -DOPENSSL_USE_STATIC_LIBS=True \
-  -DTD_GENERATED_BINARIES_DIR="$(realpath -e ../../implementations/tdlight/td_tools_build/td/generate)" \
-  -DTD_SRC_DIR="$(realpath -e ../../implementations/tdlight)" \
+  -DTD_GENERATED_BINARIES_DIR="$(greadlink -e ../../implementations/tdlight/td_tools_build/td/generate)" \
+  -DTD_SRC_DIR="$(greadlink -e ../../implementations/tdlight)" \
   -DTD_ENABLE_LTO=ON \
-  -DTDNATIVES_BIN_DIR="$(realpath -e ../tdjni_bin/)" \
-  -DTDNATIVES_DOCS_BIN_DIR="$(realpath -e ../tdjni_docs/)" \
-  -DTd_DIR:PATH="$(realpath -e ../../implementations/tdlight/build/td_bin/lib/cmake/Td)" \
-  -DJAVA_SRC_DIR="$(realpath -e ../src/main/java)" \
-  -DTDNATIVES_CPP_SRC_DIR="$(realpath -e ../src/main/cpp)" \
+  -DTDNATIVES_BIN_DIR="$(greadlink -e ../tdjni_bin/)" \
+  -DTDNATIVES_DOCS_BIN_DIR="$(greadlink -e ../tdjni_docs/)" \
+  -DTd_DIR:PATH="$(greadlink -e ../../implementations/tdlight/build/td_bin/lib/cmake/Td)" \
+  -DJAVA_SRC_DIR="$(greadlink -e ../src/main/java)" \
+  -DTDNATIVES_CPP_SRC_DIR="$(greadlink -e ../src/main/cpp)" \
   ../src/main/cpp
 cmake --build . --target install --config Release --parallel "$(nproc)"
 cd ..
