@@ -163,6 +163,7 @@ jobs:
             fi
           fi
       - name: Run sccache-cache
+        if: matrix.os != 'windows-2019'
         uses: mozilla-actions/sccache-action@v0.0.3
       - name: Install MSVC
         if: matrix.os == 'windows-2019'
