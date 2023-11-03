@@ -1,4 +1,9 @@
 #!/bin/bash -ex
+
+cp -r . /c/tmp_tdlight
+
+cd /c/tmp_tdlight
+
 # Windows 2019
 REVISION="${REVISION:-1.0.0.0-SNAPSHOT}"
 
