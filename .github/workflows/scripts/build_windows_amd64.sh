@@ -6,16 +6,6 @@ REVISION="${REVISION:-1.0.0.0-SNAPSHOT}"
 rm -rf implementations/tdlight/td_tools_build implementations/tdlight/build api/target-legacy api/target api/.ci-friendly-pom.xml implementations/tdlight/td/generate/auto natives/src/main/java/it/tdlight/jni natives/build natives/tdjni_bin natives/tdjni_docs
 mkdir -p implementations/tdlight/build  implementations/tdlight/build/td_bin/bin implementations/tdlight/td_tools_build/java/it/tdlight/jni api/src/main/java-legacy/it/tdlight/jni api/src/main/java-sealed/it/tdlight/jni natives/src/main/java/it/tdlight/jni natives/build natives/tdjni_bin natives/tdjni_docs
 
-# ccache
-CCACHE=$(which sccache || true)
-if [[ -x "$CCACHE" ]]; then
-  CCACHE="sccache"
-  echo "found sccache: $CCACHE"
-else
-  echo "sccache not found"
-  CCACHE="ccache"
-fi
-
 # Fix path
 export PATH="$PATH:/c/Python3:$PATH:/c/tools/php74:/c/PHP:/c/Program Files (x86)/Microsoft Visual Studio/2019/BuildTools/VC/Tools/MSVC/14.27.29110/bin/Hostx64/x64:/c/Program Files/OpenJDK/openjdk-11.0.8_10/bin:/c/Program Files/CMake/bin:/c/ProgramData/chocolatey/bin:/c/Program Files/apache-maven-3.6.3/bin:/c/ProgramData/chocolatey/lib/maven/apache-maven-3.6.3/bin:/c/ProgramData/chocolatey/lib/base64/tools:/c/Program Files/NASM"
 export VCPKG_DIR="$(readlink -e ./vcpkg)"
@@ -23,8 +13,6 @@ export VCPKG_DIR="$(readlink -e ./vcpkg)"
 # Build tdlib tools
 cd implementations/tdlight/td_tools_build
 cmake \
-  -DCMAKE_C_COMPILER_LAUNCHER="$CCACHE" \
-  -DCMAKE_CXX_COMPILER_LAUNCHER="$CCACHE" \
   -DOPENSSL_USE_STATIC_LIBS=True \
   -A x64 -DCMAKE_TOOLCHAIN_FILE:FILEPATH=$VCPKG_DIR/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-windows-static -DOPENSSL_USE_STATIC_LIBS=ON \
   -DCMAKE_C_FLAGS_RELEASE="" \
@@ -52,8 +40,6 @@ cd implementations/tdlight/build
 INSTALL_PREFIX="$(readlink -e ./td_bin/)"
 INSTALL_BINDIR="$(readlink -e ./td_bin/bin)"
 cmake \
-  -DCMAKE_C_COMPILER_LAUNCHER="$CCACHE" \
-  -DCMAKE_CXX_COMPILER_LAUNCHER="$CCACHE" \
   -DOPENSSL_USE_STATIC_LIBS=True \
   -A x64 -DCMAKE_TOOLCHAIN_FILE:FILEPATH=$VCPKG_DIR/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-windows-static -DOPENSSL_USE_STATIC_LIBS=ON \
   -DTD_SKIP_BENCHMARK=ON -DTD_SKIP_TEST=ON -DTD_SKIP_TG_CLI=ON \
@@ -67,8 +53,6 @@ cd ../../../
 
 cd natives/build
 cmake \
-  -DCMAKE_C_COMPILER_LAUNCHER="$CCACHE" \
-  -DCMAKE_CXX_COMPILER_LAUNCHER="$CCACHE" \
   -DOPENSSL_USE_STATIC_LIBS=True \
   -A x64 -DCMAKE_TOOLCHAIN_FILE:FILEPATH=$VCPKG_DIR/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-windows-static -DOPENSSL_USE_STATIC_LIBS=ON \
   -DTD_GENERATED_BINARIES_DIR="$(readlink -e ../../implementations/tdlight/td_tools_build/td/generate/Release)" \

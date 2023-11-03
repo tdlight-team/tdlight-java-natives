@@ -203,15 +203,23 @@ jobs:
           ./vcpkg/vcpkg install gperf openssl:x64-windows-static zlib:x64-windows-static
         shell: bash
       - name: Build
-        if: matrix.os == 'macos-12' || matrix.os == 'windows-2019'
+        if: matrix.os == 'macos-12'
         shell: bash
         run: |
           set -xeo pipefail
           echo "REVISION: $REVISION"
-          
+
           source ./.github/workflows/scripts/build_${SAFE_TYPE}.sh
         env:
           SCCACHE_GHA_ENABLED: "on"
+      - name: Build
+        if: matrix.os == 'windows-2019'
+        shell: bash
+        run: |
+          set -xeo pipefail
+          echo "REVISION: $REVISION"
+
+          source ./.github/workflows/scripts/build_${SAFE_TYPE}.sh
       - name: Set up Docker buildx
         uses: docker/setup-buildx-action@v2
         if: matrix.os == 'ubuntu-22.04'
