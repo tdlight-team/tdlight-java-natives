@@ -1,7 +1,8 @@
 #!/bin/bash -ex
 
+# Change working directory
+DEPLOY_DIR="$(pwd)"
 cp -r . /c/tmp_tdlight
-
 cd /c/tmp_tdlight
 
 # Windows 2019
@@ -90,3 +91,7 @@ cd ..
 mkdir -p src/main/resources/META-INF/tdlightjni/
 mv tdjni_bin/tdjni.dll src/main/resources/META-INF/tdlightjni/tdjni.windows_amd64.dll
 mvn -B -f pom.xml -Drevision="$REVISION" -Dnative.type.classifier=windows_amd64 package
+
+# Restore original working directory
+cp -r "./target/" "$DEPLOY_DIR/"
+cd "$DEPLOY_DIR"
