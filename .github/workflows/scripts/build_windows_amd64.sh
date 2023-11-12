@@ -93,5 +93,5 @@ mv tdjni_bin/tdjni.dll src/main/resources/META-INF/tdlightjni/tdjni.windows_amd6
 mvn -B -f pom.xml -Drevision="$REVISION" -Dnative.type.classifier=windows_amd64 package
 
 # Restore original working directory
-cp -r "./target/" "$DEPLOY_DIR/"
+cp -r "../natives/" "$DEPLOY_DIR/"
 cd "$DEPLOY_DIR"
