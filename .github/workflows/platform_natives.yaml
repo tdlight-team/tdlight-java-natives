@@ -27,8 +27,7 @@ jobs:
           - { os: ubuntu-22.04, type: "linux_arm64_clang_ssl3", compiler: "clang", ssl: "ssl3", debianArch: "arm64", tripleArch: "aarch64", tripleGnu: "gnu", debianVersion: "bookworm-backports", native: "false" }
           - { os: windows-2019, type: "windows_amd64", vcpkgCommitId: "6ca56aeb457f033d344a7106cb3f9f1abf8f4e98", triplet: "x64-windows-static" }
           - { os: macos-12, type: "macos_amd64" }
-          # todo: do not enable until github actions adds support to apple silicon, accepting PRs
-          # - { os: macos-12, type: "macos_arm64" }
+          - { os: macos-13-xlarge, type: "macos_arm64" }
     steps:
       - name: Checkout current repo
         uses: actions/checkout@v3
@@ -149,7 +148,7 @@ jobs:
           packages: make git zlib1g-dev libssl-dev gperf php-cli cmake default-jdk clang-14 lld-14 libc++-14-dev libc++abi-14-dev libgcc-11-dev libunwind-14-dev libclang-common-14-dev maven
           version: 1.0
       - name: Install custom dependencies
-        if: matrix.os == 'macos-12' || matrix.os == 'windows-2019'
+        if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'windows-')
         shell: bash
         run: |
           set -xeo pipefail
@@ -202,7 +201,7 @@ jobs:
           ./vcpkg/vcpkg install gperf openssl:x64-windows-static zlib:x64-windows-static
         shell: bash
       - name: Build
-        if: matrix.os == 'macos-12' || matrix.os == 'windows-2019'
+        if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'windows-')
         shell: bash
         run: |
           set -xeo pipefail
