@@ -27,7 +27,7 @@ jobs:
           - { os: ubuntu-22.04, type: "linux_arm64_clang_ssl3", compiler: "clang", ssl: "ssl3", debianArch: "arm64", tripleArch: "aarch64", tripleGnu: "gnu", debianVersion: "bookworm-backports", native: "false" }
           - { os: windows-2019, type: "windows_amd64", vcpkgCommitId: "6ca56aeb457f033d344a7106cb3f9f1abf8f4e98", triplet: "x64-windows-static" }
           - { os: macos-12, type: "macos_amd64" }
-          - { os: macos-13-xlarge, type: "macos_arm64" }
+          # - { os: macos-13-xlarge, type: "macos_arm64" }
     steps:
       - name: Checkout current repo
         uses: actions/checkout@v3
