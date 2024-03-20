@@ -44,13 +44,13 @@ if [[ "$NATIVE" != "true" ]]; then
     ./.docker/SymlinkPrefix.javash "/root/cross-build-pkgs/" "/" "./"
 fi
 apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install --no-install-recommends \
-  g++-12 gcc libstdc++-12-dev zlib1g-dev libssl-dev gperf \
+  g++-12 gcc libstdc++-12-dev zlib1g-dev linux-libc-dev libssl-dev gperf \
   tree git maven php-cli php-readline make cmake
 
 if [[ "$NATIVE" != "true" ]]; then
     apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install --no-install-recommends \
       g++-12-${ARCH_TRIPLE/_/-}-linux-${TRIPLE_GNU} gcc-12-${ARCH_TRIPLE/_/-}-linux-${TRIPLE_GNU} \
-      libatomic1-${ARCH_DEBIAN}-cross libc6-dev-${ARCH_DEBIAN}-cross libgcc-12-dev-${ARCH_DEBIAN}-cross libstdc++-12-dev-${ARCH_DEBIAN}-cross
+      libatomic1-${ARCH_DEBIAN}-cross linux-libc-dev-${ARCH_DEBIAN}-cross libc6-dev-${ARCH_DEBIAN}-cross libgcc-12-dev-${ARCH_DEBIAN}-cross libstdc++-12-dev-${ARCH_DEBIAN}-cross
 fi
 
 EOF
