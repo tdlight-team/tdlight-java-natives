@@ -20,6 +20,9 @@ RUN : "${ARCH_TRIPLE:?Build argument needs to be set and non-empty.}"
 RUN : "${TRIPLE_GNU:?Build argument needs to be set and non-empty.}"
 
 RUN rm -f /etc/apt/apt.conf.d/docker-clean; echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache
+RUN sed -i "s|http://deb.debian.org/debian buster-backports|http://archive.debian.org/debian buster-backports|g" /etc/apt/sources.list.d/backports.list
+RUN ls /etc/apt/sources.list.d
+RUN cat /etc/apt/sources.list
 
 ENV DEBIAN_FRONTEND=noninteractive
 COPY .docker ./.docker
