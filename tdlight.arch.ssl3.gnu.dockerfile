@@ -15,6 +15,7 @@ ARG NATIVE="false"
 ARG SCCACHE_GHA_ENABLED=off
 ARG ACTIONS_CACHE_URL
 ARG ACTIONS_RUNTIME_TOKEN
+ARG DEBIAN_VERSION
 
 # Check for mandatory build arguments
 RUN : "${ARCH_DEBIAN:?Build argument needs to be set and non-empty.}"
