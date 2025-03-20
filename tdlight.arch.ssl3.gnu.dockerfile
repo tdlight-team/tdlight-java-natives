@@ -36,9 +36,9 @@ apt-get --assume-yes update
 apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install --no-install-recommends openjdk-17-jdk-headless
 if [[ "$NATIVE" != "true" ]]; then
     if [[ "$DEBIAN_VERSION" == "trixie" ]]; then
-        ./.docker/downloadthis.sh /var/cache/apt/downloaded_tmp libssl3:${ARCH_DEBIAN} /root/cross-build-pkgs/
-    else
         ./.docker/downloadthis.sh /var/cache/apt/downloaded_tmp libssl3t64:${ARCH_DEBIAN} /root/cross-build-pkgs/
+    else
+        ./.docker/downloadthis.sh /var/cache/apt/downloaded_tmp libssl3:${ARCH_DEBIAN} /root/cross-build-pkgs/
     fi
     ./.docker/downloadthis.sh /var/cache/apt/downloaded_tmp libssl-dev:${ARCH_DEBIAN} /root/cross-build-pkgs/
     ./.docker/downloadthis.sh /var/cache/apt/downloaded_tmp zlib1g-dev:${ARCH_DEBIAN} /root/cross-build-pkgs/
