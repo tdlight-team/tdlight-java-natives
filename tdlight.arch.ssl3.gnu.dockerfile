@@ -1,4 +1,4 @@
-# use "sid" for riscv64
+# use "trixie" for riscv64
 ARG DEBIAN_VERSION=bookworm-backports
 FROM debian:${DEBIAN_VERSION} AS ssl3_debian
 WORKDIR /build
