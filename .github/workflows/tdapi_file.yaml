@@ -26,12 +26,12 @@ jobs:
           key: ${{ secrets.IG_SSH_KEY }}
           name: id_rsa
           known_hosts: ${{ secrets.IG_KNOWN_HOSTS }}
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: "recursive"
       - name: Setup Java (Snapshot)
         if: github.ref == 'refs/heads/develop'
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: 17
           distribution: temurin
@@ -41,7 +41,7 @@ jobs:
           cache: 'maven'
       - name: Setup Java (Release)
         if: github.ref != 'refs/heads/develop'
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: 17
           distribution: temurin
@@ -79,11 +79,11 @@ jobs:
           echo "REVISION: $REVISION"
 
           ./.github/workflows/scripts/build_api.sh
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: tdlight-api-${{env.REVISION}}.jar
           path: api/target/tdlight-api-${{env.REVISION}}.jar
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: tdlight-api-${{env.REVISION}}-legacy.jar
           path: api/target-legacy/tdlight-api-${{env.REVISION}}-legacy.jar
