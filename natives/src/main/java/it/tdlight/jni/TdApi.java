@@ -18,6 +18,8 @@ public class TdApi {
 
         public native String toString();
 
+        public native String toJsonString();
+
         public abstract int getConstructor();
     }
 
@@ -26,6 +28,8 @@ public class TdApi {
         }
 
         public native String toString();
+
+        public native String toJsonString();
     }
 
     public static class AccessHash extends Object {
