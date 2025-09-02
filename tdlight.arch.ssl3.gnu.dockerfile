@@ -34,7 +34,15 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 --mount=type=cache,target=/var/cache/sccache2,sharing=locked <<"EOF"
 dpkg --add-architecture ${ARCH_DEBIAN}
 apt-get --assume-yes update
-apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install --no-install-recommends openjdk-17-jdk-headless
+
+JAVA_VERSION="17"
+if [[ "$DEBIAN_VERSION" == "trixie" ]]; then
+  JAVA_VERSION="21"
+fi
+
+apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install --no-install-recommends openjdk-${JAVA_VERSION}-jdk-headless
+ln -s ./java-${JAVA_VERSION}-openjdk-amd64 /usr/lib/jvm/java-openjdk-amd64
+
 if [[ "$NATIVE" != "true" ]]; then
     if [[ "$DEBIAN_VERSION" == "trixie" ]]; then
         ./.docker/downloadthis.sh /var/cache/apt/downloaded_tmp libssl3t64:${ARCH_DEBIAN} /root/cross-build-pkgs/
@@ -44,9 +52,12 @@ if [[ "$NATIVE" != "true" ]]; then
     ./.docker/downloadthis.sh /var/cache/apt/downloaded_tmp libssl-dev:${ARCH_DEBIAN} /root/cross-build-pkgs/
     ./.docker/downloadthis.sh /var/cache/apt/downloaded_tmp zlib1g-dev:${ARCH_DEBIAN} /root/cross-build-pkgs/
     ./.docker/downloadthis.sh /var/cache/apt/downloaded_tmp zlib1g:${ARCH_DEBIAN} /root/cross-build-pkgs/
-    ./.docker/downloadthis.sh /var/cache/apt/downloaded_tmp openjdk-17-jre-headless:${ARCH_DEBIAN} /root/cross-build-pkgs/
-    ./.docker/downloadthis.sh /var/cache/apt/downloaded_tmp openjdk-17-jdk-headless:${ARCH_DEBIAN} /root/cross-build-pkgs/
+    ./.docker/downloadthis.sh /var/cache/apt/downloaded_tmp openjdk-${JAVA_VERSION}-jre-headless:${ARCH_DEBIAN} /root/cross-build-pkgs/
+    ./.docker/downloadthis.sh /var/cache/apt/downloaded_tmp openjdk-${JAVA_VERSION}-jdk-headless:${ARCH_DEBIAN} /root/cross-build-pkgs/
+
     ./.docker/SymlinkPrefix.javash "/root/cross-build-pkgs/" "/" "./"
+
+    ln -s ./java-${JAVA_VERSION}-openjdk-${ARCH_DEBIAN} /root/cross-build-pkgs/usr/lib/jvm/java-openjdk-${ARCH_DEBIAN}
 fi
 apt-get --assume-yes -o Dpkg::Options::="--force-overwrite" install --no-install-recommends \
   g++-12 gcc libstdc++-12-dev zlib1g-dev linux-libc-dev libssl-dev gperf \
@@ -83,7 +94,7 @@ ENV CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -fno-omit-frame-pointer -ffunction-secti
 ENV CMAKE_SHARED_LINKER_FLAGS="${CMAKE_SHARED_LINKER_FLAGS} -Wl,--gc-sections -Wl,--exclude-libs,ALL"
 ENV CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -flto -O3"
 ENV CCACHE=/opt/sccache/sccache
-ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+ENV JAVA_HOME=/usr/lib/jvm/java-openjdk-amd64
 
 COPY --link . ./
 
@@ -111,15 +122,15 @@ set(CMAKE_MODULE_LINKER_FLAGS_INIT "-flto -fno-fat-lto-objects")
 set(CMAKE_SHARED_LINKER_FLAGS_INIT "-flto -fno-fat-lto-objects")
 set(CMAKE_CXX_FLAGS_INIT "-flto -fno-fat-lto-objects")
 
-if(EXISTS "/usr/lib/jvm/java-17-openjdk-amd64")
-  SET(JAVA_HOME "/usr/lib/jvm/java-17-openjdk-amd64")
+if(EXISTS "/usr/lib/jvm/java-openjdk-amd64")
+  SET(JAVA_HOME "/usr/lib/jvm/java-openjdk-amd64")
 else()
   SET(JAVA_HOME "/usr/lib/jvm/default-java")
 endif()
 SET(JAVA_INCLUDE_PATH "\${JAVA_HOME}/include")
 SET(JAVA_AWT_INCLUDE_PATH "\${JAVA_HOME}/include")
 SET(JAVA_INCLUDE_PATH2 "\${JAVA_HOME}/include/linux")
-SET(JAVA_CROSS_HOME "/usr/lib/jvm/java-17-openjdk-$ARCH_DEBIAN")
+SET(JAVA_CROSS_HOME "/usr/lib/jvm/java-openjdk-$ARCH_DEBIAN")
 SET(JAVA_JVM_LIBRARY "\${JAVA_CROSS_HOME}/lib/server/libjvm.so")
 SET(JAVA_AWT_LIBRARY "\${JAVA_CROSS_HOME}/lib/libawt.so")
 EOF
@@ -181,15 +192,15 @@ set(CMAKE_SYSROOT /root/cross-build-pkgs)
 # This must be set or compiler checks fail when linking
 set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 
-if(EXISTS "/usr/lib/jvm/java-17-openjdk-amd64")
-  SET(JAVA_HOME "/usr/lib/jvm/java-17-openjdk-amd64")
+if(EXISTS "/usr/lib/jvm/java-openjdk-amd64")
+  SET(JAVA_HOME "/usr/lib/jvm/java-openjdk-amd64")
 else()
   SET(JAVA_HOME "/usr/lib/jvm/default-java")
 endif()
 SET(JAVA_INCLUDE_PATH "\${JAVA_HOME}/include")
 SET(JAVA_AWT_INCLUDE_PATH "\${JAVA_HOME}/include")
 SET(JAVA_INCLUDE_PATH2 "\${JAVA_HOME}/include/linux")
-SET(JAVA_CROSS_HOME "/root/cross-build-pkgs/usr/lib/jvm/java-17-openjdk-$ARCH_DEBIAN")
+SET(JAVA_CROSS_HOME "/root/cross-build-pkgs/usr/lib/jvm/java-openjdk-$ARCH_DEBIAN")
 SET(JAVA_JVM_LIBRARY "\${JAVA_CROSS_HOME}/lib/server/libjvm.so")
 SET(JAVA_AWT_LIBRARY "\${JAVA_CROSS_HOME}/lib/libawt.so")
 
