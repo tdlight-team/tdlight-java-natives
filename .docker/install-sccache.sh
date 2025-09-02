@@ -6,7 +6,7 @@ if [ ! -f /opt/sccache/sccache ]; then
   tar xzf sccache-dist-v0.10.0-x86_64-unknown-linux-musl.tar.gz
   rm sccache-dist-v0.10.0-x86_64-unknown-linux-musl.tar.gz
   mkdir -p /opt/sccache/
-  mv sccache-dist-v0.10.0-x86_64-unknown-linux-musl/sccache /opt/sccache/sccache
+  mv sccache-dist-v0.10.0-x86_64-unknown-linux-musl/sccache-dist /opt/sccache/sccache
   rm -r sccache-dist-v0.10.0-x86_64-unknown-linux-musl
   chmod +x /opt/sccache/sccache
 fi
