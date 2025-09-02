@@ -163,7 +163,7 @@ jobs:
             fi
           fi
       - name: Run sccache-cache
-        uses: mozilla-actions/sccache-action@v0.0.3
+        uses: mozilla-actions/sccache-action@v0.0.9
       - name: Install MSVC
         if: matrix.os == 'windows-2019'
         uses: ilammy/msvc-dev-cmd@v1
