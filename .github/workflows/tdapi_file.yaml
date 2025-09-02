@@ -26,12 +26,10 @@ jobs:
           key: ${{ secrets.IG_SSH_KEY }}
           name: id_rsa
           known_hosts: ${{ secrets.IG_KNOWN_HOSTS }}
-      - run: |
-          git config --global http.postBuffer 157286400
-          git config --global http.version HTTP/1.1
       - uses: actions/checkout@v5
         with:
           submodules: "recursive"
+          fetch-depth: 0
       - name: Setup Java (Snapshot)
         if: github.ref == 'refs/heads/develop'
         uses: actions/setup-java@v4

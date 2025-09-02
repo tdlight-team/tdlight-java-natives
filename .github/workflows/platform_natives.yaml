@@ -29,13 +29,11 @@ jobs:
           - { os: macos-13, type: "macos_amd64" }
           - { os: macos-15, type: "macos_arm64" }
     steps:
-      - run: |
-          git config --global http.postBuffer 157286400
-          git config --global http.version HTTP/1.1
       - name: Checkout current repo
         uses: actions/checkout@v5
         with:
           submodules: "recursive"
+          fetch-depth: 0
       - name: Get version
         shell: bash
         run: |
