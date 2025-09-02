@@ -29,8 +29,13 @@ jobs:
           - { os: macos-13, type: "macos_amd64" }
           - { os: macos-15, type: "macos_arm64" }
     steps:
+      - name: Git config
+        shell: bash
+        run: |
+          set -xeo pipefail
+          git config --global http.postBuffer 157286400
       - name: Checkout current repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           submodules: "recursive"
       - name: Get version
