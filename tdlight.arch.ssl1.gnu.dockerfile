@@ -21,6 +21,9 @@ RUN : "${TRIPLE_GNU:?Build argument needs to be set and non-empty.}"
 
 RUN rm -f /etc/apt/apt.conf.d/docker-clean; echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache
 RUN sed -i "s|http://deb.debian.org/debian buster-backports|http://archive.debian.org/debian buster-backports|g" /etc/apt/sources.list.d/backports.list
+RUN sed -i "s|http://deb.debian.org/debian buster-updates|http://archive.debian.org/debian buster-updates|g" /etc/apt/sources.list
+RUN sed -i "s|http://deb.debian.org/debian-security buster|http://archive.debian.org/debian-security buster|g" /etc/apt/sources.list
+RUN sed -i "s|http://deb.debian.org/debian buster|http://archive.debian.org/debian buster|g" /etc/apt/sources.list
 RUN ls /etc/apt/sources.list.d
 RUN cat /etc/apt/sources.list
 
