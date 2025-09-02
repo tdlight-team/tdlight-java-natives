@@ -26,11 +26,9 @@ jobs:
           key: ${{ secrets.IG_SSH_KEY }}
           name: id_rsa
           known_hosts: ${{ secrets.IG_KNOWN_HOSTS }}
-      - name: Git config
-        shell: bash
-        run: |
-          set -xeo pipefail
+      - run: |
           git config --global http.postBuffer 157286400
+          git config --global http.version HTTP/1.1
       - uses: actions/checkout@v5
         with:
           submodules: "recursive"
