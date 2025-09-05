@@ -26,12 +26,22 @@ jobs:
           key: ${{ secrets.IG_SSH_KEY }}
           name: id_rsa
           known_hosts: ${{ secrets.IG_KNOWN_HOSTS }}
+      - name: Configure Git to use HTTP/1.1
+        shell: bash
+        run: |
+          git config --global http.version HTTP/1.1
+          git config --global http.postBuffer 524288000
       - uses: actions/checkout@v5
         with:
           fetch-depth: 1
       - name: Shallow clone submodules
         shell: bash
-        run: git submodule update --init --recursive --depth=1
+        run: |
+          for i in 1 2 3; do
+            git submodule update --init --recursive --depth=1 && break
+            echo "Submodule checkout failed. Retrying in 10 seconds..."
+            sleep 10
+          done
       - name: Setup Java (Snapshot)
         if: github.ref == 'refs/heads/develop'
         uses: actions/setup-java@v4
