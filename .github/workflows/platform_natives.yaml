@@ -179,23 +179,6 @@ jobs:
           fi
       - name: Run sccache-cache
         uses: mozilla-actions/sccache-action@v0.0.9
-      - name: Debug cache variables
-        if: matrix.os == 'ubuntu-22.04'
-        shell: bash
-        run: |
-          echo "--- Verifying sccache environment variables ---"
-          if [ -z "$ACTIONS_CACHE_URL" ]; then
-            echo "ERROR: ACTIONS_CACHE_URL is NOT set or is empty."
-          else
-            echo "SUCCESS: ACTIONS_CACHE_URL is set."
-          fi
-
-          if [ -z "$ACTIONS_RUNTIME_TOKEN" ]; then
-            echo "ERROR: ACTIONS_RUNTIME_TOKEN is NOT set or is empty."
-          else
-            echo "SUCCESS: ACTIONS_RUNTIME_TOKEN is set. (Token length: ${#ACTIONS_RUNTIME_TOKEN})"
-          fi
-          echo "------------------------------------------------"
       - name: Install MSVC
         if: matrix.os == 'windows-2022'
         uses: ilammy/msvc-dev-cmd@v1
@@ -242,7 +225,7 @@ jobs:
 
           source ./.github/workflows/scripts/build_${SAFE_TYPE}.sh
         env:
-          SCCACHE_GHA_ENABLED: "on"
+          SCCACHE_GHA_ENABLED: "true"
       - name: Set up Docker buildx
         uses: docker/setup-buildx-action@v3
         if: matrix.os == 'ubuntu-22.04'
@@ -250,6 +233,18 @@ jobs:
         if: matrix.os == 'ubuntu-22.04'
         shell: bash
         run: |
+          echo "--- Verifying native cache environment variables ---"
+          if [ -z "$ACTIONS_CACHE_URL" ]; then
+            echo "ERROR: Native ACTIONS_CACHE_URL is NOT set."
+          else
+            echo "SUCCESS: Native ACTIONS_CACHE_URL is set."
+          fi
+          if [ -z "$ACTIONS_RUNTIME_TOKEN" ]; then
+            echo "ERROR: Native ACTIONS_RUNTIME_TOKEN is NOT set."
+          else
+            echo "SUCCESS: Native ACTIONS_RUNTIME_TOKEN is set."
+          fi
+          echo "----------------------------------------------------"
           echo "ACTIONS_CACHE_URL=${ACTIONS_CACHE_URL}" >> $GITHUB_ENV
           echo "ACTIONS_RUNTIME_TOKEN=${ACTIONS_RUNTIME_TOKEN}" >> $GITHUB_ENV
       - name: Build
@@ -261,7 +256,7 @@ jobs:
           file: tdlight.arch.${{env.SSL}}.${{env.COMPILER}}.dockerfile
           tags: tdlight.${{env.DEBIAN_ARCH}}.${{env.SSL}}.${{env.COMPILER}}:latest
           build-args: |
-            SCCACHE_GHA_ENABLED=on
+            SCCACHE_GHA_ENABLED=true
             ACTIONS_CACHE_URL=${{env.ACTIONS_CACHE_URL}}
             ACTIONS_RUNTIME_TOKEN=${{env.ACTIONS_RUNTIME_TOKEN}}
             ARCH_DEBIAN=${{env.DEBIAN_ARCH}}
