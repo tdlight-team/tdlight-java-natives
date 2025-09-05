@@ -234,10 +234,10 @@ jobs:
         shell: bash
         run: |
           echo "--- Verifying native cache environment variables ---"
-          if [ -z "$ACTIONS_CACHE_URL" ]; then
-            echo "ERROR: Native ACTIONS_CACHE_URL is NOT set."
+          if [ -z "$ACTIONS_RESULTS_URL" ]; then
+            echo "ERROR: Native ACTIONS_RESULTS_URL is NOT set."
           else
-            echo "SUCCESS: Native ACTIONS_CACHE_URL is set."
+            echo "SUCCESS: Native ACTIONS_RESULTS_URL is set."
           fi
           if [ -z "$ACTIONS_RUNTIME_TOKEN" ]; then
             echo "ERROR: Native ACTIONS_RUNTIME_TOKEN is NOT set."
@@ -245,7 +245,7 @@ jobs:
             echo "SUCCESS: Native ACTIONS_RUNTIME_TOKEN is set."
           fi
           echo "----------------------------------------------------"
-          echo "ACTIONS_CACHE_URL=${ACTIONS_CACHE_URL}" >> $GITHUB_ENV
+          echo "ACTIONS_RESULTS_URL=${ACTIONS_RESULTS_URL}" >> $GITHUB_ENV
           echo "ACTIONS_RUNTIME_TOKEN=${ACTIONS_RUNTIME_TOKEN}" >> $GITHUB_ENV
       - name: Build
         uses: docker/build-push-action@v6
@@ -257,7 +257,7 @@ jobs:
           tags: tdlight.${{env.DEBIAN_ARCH}}.${{env.SSL}}.${{env.COMPILER}}:latest
           build-args: |
             SCCACHE_GHA_ENABLED=true
-            ACTIONS_CACHE_URL=${{env.ACTIONS_CACHE_URL}}
+            ACTIONS_RESULTS_URL=${{env.ACTIONS_RESULTS_URL}}
             ACTIONS_RUNTIME_TOKEN=${{env.ACTIONS_RUNTIME_TOKEN}}
             ARCH_DEBIAN=${{env.DEBIAN_ARCH}}
             ARCH_TRIPLE=${{env.TRIPLE_ARCH}}
