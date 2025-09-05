@@ -10,6 +10,9 @@ jobs:
   build:
     name: ${{ matrix.type }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
+    permissions:
+      id-token: write
+      contents: read
     strategy:
       matrix:
         include:
@@ -212,10 +215,16 @@ jobs:
         env:
           SCCACHE_GHA_ENABLED: "on"
       - name: Set up Docker buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
         if: matrix.os == 'ubuntu-22.04'
+      - name: Expose GHA Cache Environment for Docker
+        if: matrix.os == 'ubuntu-22.04'
+        shell: bash
+        run: |
+          echo "ACTIONS_CACHE_URL=${ACTIONS_CACHE_URL}" >> $GITHUB_ENV
+          echo "ACTIONS_RUNTIME_TOKEN=${ACTIONS_RUNTIME_TOKEN}" >> $GITHUB_ENV
       - name: Build
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v6
         if: matrix.os == 'ubuntu-22.04'
         with:
           context: .
