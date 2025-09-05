@@ -8,11 +8,11 @@ on:
 
 jobs:
   build:
-    name: ${{ matrix.type }} on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
     permissions:
       id-token: write
       contents: read
+    name: ${{ matrix.type }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         include:
@@ -179,6 +179,23 @@ jobs:
           fi
       - name: Run sccache-cache
         uses: mozilla-actions/sccache-action@v0.0.9
+      - name: Debug cache variables
+        if: matrix.os == 'ubuntu-22.04'
+        shell: bash
+        run: |
+          echo "--- Verifying sccache environment variables ---"
+          if [ -z "$ACTIONS_CACHE_URL" ]; then
+            echo "ERROR: ACTIONS_CACHE_URL is NOT set or is empty."
+          else
+            echo "SUCCESS: ACTIONS_CACHE_URL is set."
+          fi
+
+          if [ -z "$ACTIONS_RUNTIME_TOKEN" ]; then
+            echo "ERROR: ACTIONS_RUNTIME_TOKEN is NOT set or is empty."
+          else
+            echo "SUCCESS: ACTIONS_RUNTIME_TOKEN is set. (Token length: ${#ACTIONS_RUNTIME_TOKEN})"
+          fi
+          echo "------------------------------------------------"
       - name: Install MSVC
         if: matrix.os == 'windows-2022'
         uses: ilammy/msvc-dev-cmd@v1
