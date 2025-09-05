@@ -28,8 +28,10 @@ jobs:
           known_hosts: ${{ secrets.IG_KNOWN_HOSTS }}
       - uses: actions/checkout@v5
         with:
-          submodules: "recursive"
-          fetch-depth: 0
+          fetch-depth: 1
+      - name: Shallow clone submodules
+        shell: bash
+        run: git submodule update --init --recursive --depth=1
       - name: Setup Java (Snapshot)
         if: github.ref == 'refs/heads/develop'
         uses: actions/setup-java@v4

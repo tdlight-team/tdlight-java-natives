@@ -32,11 +32,16 @@ jobs:
           - { os: macos-13, type: "macos_amd64" }
           - { os: macos-15, type: "macos_arm64" }
     steps:
+      - name: Configure Git to use HTTP/1.1
+        shell: bash
+        run: git config --global http.version HTTP/1.1
       - name: Checkout current repo
         uses: actions/checkout@v5
         with:
-          submodules: "recursive"
-          fetch-depth: 0
+          fetch-depth: 1
+      - name: Shallow clone submodules
+        shell: bash
+        run: git submodule update --init --recursive --depth=1
       - name: Get version
         shell: bash
         run: |
