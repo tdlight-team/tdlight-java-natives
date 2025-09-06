@@ -187,6 +187,8 @@ jobs:
       - name: Setup cmake
         if: matrix.os == 'windows-2022'
         uses: lukka/get-cmake@latest
+        with:
+          cmakeVersion: 3.27.7
       - name: Set up Maven
         uses: stCarolas/setup-maven@v5
         with:
@@ -214,7 +216,6 @@ jobs:
           vcpkgJsonGlob: '**/vcpkg.json'
         env:
           VCPKG_DEFAULT_TRIPLET: ${{ matrix.triplet }}
-          CMAKE_POLICY_VERSION_MINIMUM: 3.5
 
       - name: Upload vcpkg build logs on failure
         if: failure()
