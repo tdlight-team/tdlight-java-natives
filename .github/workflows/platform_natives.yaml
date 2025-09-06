@@ -28,7 +28,7 @@ jobs:
           - { os: ubuntu-22.04, type: "linux_arm64_gnu_ssl1", compiler: "gnu", ssl: "ssl1", debianArch: "arm64", tripleArch: "aarch64", tripleGnu: "gnu", debianVersion: "buster-backports", native: "false" }
           - { os: ubuntu-22.04, type: "linux_arm64_gnu_ssl3", compiler: "gnu", ssl: "ssl3", debianArch: "arm64", tripleArch: "aarch64", tripleGnu: "gnu", debianVersion: "bookworm-backports", native: "false" }
           - { os: ubuntu-22.04, type: "linux_arm64_clang_ssl3", compiler: "clang", ssl: "ssl3", debianArch: "arm64", tripleArch: "aarch64", tripleGnu: "gnu", debianVersion: "bookworm-backports", native: "false" }
-          - { os: windows-2022, type: "windows_amd64", vcpkgCommitId: "fba75d09065fcc76a25dcf386b1d00d33f5175af", triplet: "x64-windows-static" }
+          - { os: windows-2022, type: "windows_amd64", vcpkgCommitId: "5b1214315250939257ef5d62ecdcbca18cf4fb1c", triplet: "x64-windows-static" }
           - { os: macos-13, type: "macos_amd64" }
           - { os: macos-15, type: "macos_arm64" }
     steps:
@@ -183,13 +183,12 @@ jobs:
         if: matrix.os == 'windows-2022'
         uses: ilammy/msvc-dev-cmd@v1
         with:
-          toolset: 14.0
-          vs-version: '[16.4,16.5)'
+          toolset: 15.0
       - name: Setup cmake
         if: matrix.os == 'windows-2022'
         uses: lukka/get-cmake@latest
       - name: Set up Maven
-        uses: stCarolas/setup-maven@v4.5
+        uses: stCarolas/setup-maven@v5
         with:
           maven-version: 3.8.2
       - name: Setup NASM
@@ -197,7 +196,7 @@ jobs:
         uses: ilammy/setup-nasm@v1
       - name: Restore artifacts, or setup vcpkg (do not install any package)
         if: matrix.os == 'windows-2022'
-        uses: lukka/run-vcpkg@v10.2
+        uses: lukka/run-vcpkg@v11
         with:
           # Just install vcpkg for now, do not install any ports in this step yet.
           setupOnly: true
