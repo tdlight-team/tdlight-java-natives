@@ -213,7 +213,7 @@ jobs:
           vcpkgArguments: 'gperf openssl zlib'
       - name: Upload vcpkg build logs on failure
         if: failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: vcpkg-build-logs-${{ matrix.os }}-${{ matrix.triplet }}
           path: '${{ github.workspace }}/vcpkg/buildtrees/gperf/*.log'
