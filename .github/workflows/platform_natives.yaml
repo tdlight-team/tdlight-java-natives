@@ -28,7 +28,7 @@ jobs:
           - { os: ubuntu-22.04, type: "linux_arm64_gnu_ssl1", compiler: "gnu", ssl: "ssl1", debianArch: "arm64", tripleArch: "aarch64", tripleGnu: "gnu", debianVersion: "buster-backports", native: "false" }
           - { os: ubuntu-22.04, type: "linux_arm64_gnu_ssl3", compiler: "gnu", ssl: "ssl3", debianArch: "arm64", tripleArch: "aarch64", tripleGnu: "gnu", debianVersion: "bookworm-backports", native: "false" }
           - { os: ubuntu-22.04, type: "linux_arm64_clang_ssl3", compiler: "clang", ssl: "ssl3", debianArch: "arm64", tripleArch: "aarch64", tripleGnu: "gnu", debianVersion: "bookworm-backports", native: "false" }
-          - { os: windows-2022, type: "windows_amd64", vcpkgCommitId: "5b1214315250939257ef5d62ecdcbca18cf4fb1c", triplet: "x64-windows-static" }
+          - { os: windows-2022, type: "windows_amd64", vcpkgCommitId: "b1e15efef6758eaa0beb0a8732cfa66f6a68a81d", triplet: "x64-windows-static" }
           - { os: macos-13, type: "macos_amd64" }
           - { os: macos-15, type: "macos_arm64" }
     steps:
