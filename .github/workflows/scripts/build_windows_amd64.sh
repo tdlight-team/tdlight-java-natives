@@ -24,20 +24,16 @@ fi
 
 # Fix path
 export PATH="$PATH:/c/Python3:$PATH:/c/tools/php74:/c/PHP:/c/Program Files (x86)/Microsoft Visual Studio/2019/BuildTools/VC/Tools/MSVC/14.27.29110/bin/Hostx64/x64:/c/Program Files/OpenJDK/openjdk-11.0.8_10/bin:/c/Program Files/CMake/bin:/c/ProgramData/chocolatey/bin:/c/Program Files/apache-maven-3.6.3/bin:/c/ProgramData/chocolatey/lib/maven/apache-maven-3.6.3/bin:/c/ProgramData/chocolatey/lib/base64/tools:/c/Program Files/NASM"
-export VCPKG_DIR="$VCPKG_ROOT"
+export VCPKG_DIR="$(readlink -e ./vcpkg)"
 
 echo "CMAKE_TOOLCHAIN_FILE=$VCPKG_DIR/scripts/buildsystems/vcpkg.cmake"
-
-echo "VCPKG_DIR:"
-tree $VCPKG_DIR
-echo "Tmp tdlight dir:"
-tree /c/tmp_tdlight
 
 # Build tdlib tools
 cd implementations/tdlight/td_tools_build
 cmake \
   -DCMAKE_C_COMPILER_LAUNCHER="$CCACHE" \
   -DCMAKE_CXX_COMPILER_LAUNCHER="$CCACHE" \
+  -DZLIB_USE_STATIC_LIBS=True \
   -DOPENSSL_USE_STATIC_LIBS=True \
   -A x64 -DCMAKE_TOOLCHAIN_FILE="$VCPKG_DIR/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x64-windows-static -DOPENSSL_USE_STATIC_LIBS=ON \
   -DCMAKE_C_FLAGS_RELEASE="" \
@@ -67,6 +63,7 @@ INSTALL_BINDIR="$(readlink -e ./td_bin/bin)"
 cmake \
   -DCMAKE_C_COMPILER_LAUNCHER="$CCACHE" \
   -DCMAKE_CXX_COMPILER_LAUNCHER="$CCACHE" \
+  -DZLIB_USE_STATIC_LIBS=True \
   -DOPENSSL_USE_STATIC_LIBS=True \
   -A x64 -DCMAKE_TOOLCHAIN_FILE="$VCPKG_DIR/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x64-windows-static -DOPENSSL_USE_STATIC_LIBS=ON \
   -DTD_SKIP_BENCHMARK=ON -DTD_SKIP_TG_CLI=ON \
@@ -82,6 +79,7 @@ cd natives/build
 cmake \
   -DCMAKE_C_COMPILER_LAUNCHER="$CCACHE" \
   -DCMAKE_CXX_COMPILER_LAUNCHER="$CCACHE" \
+  -DZLIB_USE_STATIC_LIBS=True \
   -DOPENSSL_USE_STATIC_LIBS=True \
   -A x64 -DCMAKE_TOOLCHAIN_FILE="$VCPKG_DIR/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x64-windows-static -DOPENSSL_USE_STATIC_LIBS=ON \
   -DTD_GENERATED_BINARIES_DIR="$(readlink -e ../../implementations/tdlight/td_tools_build/td/generate/Release)" \
