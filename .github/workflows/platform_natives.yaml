@@ -214,6 +214,7 @@ jobs:
           vcpkgJsonGlob: '**/vcpkg.json'
         env:
           VCPKG_DEFAULT_TRIPLET: ${{ matrix.triplet }}
+          CMAKE_POLICY_VERSION_MINIMUM: 3
 
       - name: Upload vcpkg build logs on failure
         if: failure()
