@@ -5,8 +5,6 @@ DEPLOY_DIR="$(pwd)"
 cp -r . /c/tmp_tdlight
 cd /c/tmp_tdlight
 
-tree /c/tmp_tdlight
-
 # Windows 2019
 REVISION="${REVISION:-1.0.0.0-SNAPSHOT}"
 
@@ -29,6 +27,11 @@ export PATH="$PATH:/c/Python3:$PATH:/c/tools/php74:/c/PHP:/c/Program Files (x86)
 export VCPKG_DIR="$VCPKG_ROOT"
 
 echo "CMAKE_TOOLCHAIN_FILE=$VCPKG_DIR/scripts/buildsystems/vcpkg.cmake"
+
+echo "VCPKG_DIR:"
+tree $VCPKG_DIR
+echo "Tmp tdlight dir:"
+tree /c/tmp_tdlight
 
 # Build tdlib tools
 cd implementations/tdlight/td_tools_build
