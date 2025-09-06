@@ -200,7 +200,7 @@ jobs:
         with:
           # Just install vcpkg for now, do not install any ports in this step yet.
           setupOnly: true
-          # Location of the vcpkg submodule in the Git repository.
+          # Location of the vcpkg submoduleworkspace in the Git repository.
           vcpkgDirectory: '${{ github.workspace }}/vcpkg'
           vcpkgGitCommitId: '${{ matrix.vcpkgCommitId}}'
           # Since the cache must be invalidated when content of the vcpkg.json file changes, let's
@@ -209,12 +209,14 @@ jobs:
           vcpkgTriplet: ${{ matrix.triplet }}
           # Ensure the vcpkg artifacts are cached, they are generated in the 'CMAKE_BINARY_DIR/vcpkg_installed' directory.
           additionalCachedPaths: ${{ github.workspace }}/vcpkg
-      - name: Install vcpkg deps
-        if: matrix.os == 'windows-2022'
-        run: |
-          set -xeo pipefail
-          ./vcpkg/vcpkg install gperf openssl:x64-windows-static zlib:x64-windows-static
-        shell: bash
+          # Use vcpkgArguments to perform the installation
+          vcpkgArguments: 'gperf openssl zlib'
+      - name: Upload vcpkg build logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: vcpkg-build-logs-${{ matrix.os }}-${{ matrix.triplet }}
+          path: '${{ github.workspace }}/vcpkg/buildtrees/gperf/*.log'
       - name: Build
         if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'windows-')
         shell: bash
