@@ -55,9 +55,9 @@ jobs:
         id: vcpkg-cache
         uses: actions/cache/restore@v4
         with:
-          path: ${{ env._vcpkg_binary_cache }}
-          key: vcpkg-${{ matrix.config.os }}-${{ matrix.config.type }}-${{ hashFiles('vcpkg.json') }}
-          restore-keys: vcpkg-${{ matrix.config.os }}-${{ matrix.config.type }}-
+          path: ${{ github.workspace }}/.vcpkg-cache
+          key: vcpkg-${{ matrix.os }}-${{ matrix.type }}-${{ hashFiles('vcpkg.json') }}
+          restore-keys: vcpkg-${{ matrix.os }}-${{ matrix.type }}-
       - name: Get version
         shell: bash
         run: |
@@ -234,8 +234,8 @@ jobs:
         if: matrix.os == 'windows-2022' && steps.vcpkg-cache.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4
         with:
-          path: ${{ env._vcpkg_binary_cache }}
-          key: vcpkg-${{ matrix.config.os }}-${{ matrix.config.type }}-${{ hashFiles('vcpkg.json') }}
+          path: ${{ github.workspace }}/.vcpkg-cache
+          key: vcpkg-${{ matrix.os }}-${{ matrix.type }}-${{ hashFiles('vcpkg.json') }}
 
       - name: Build
         if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'windows-')
