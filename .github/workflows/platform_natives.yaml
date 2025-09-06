@@ -183,7 +183,7 @@ jobs:
         if: matrix.os == 'windows-2022'
         uses: ilammy/msvc-dev-cmd@v1
         with:
-          toolset: 15.0
+          toolset: 14.40
       - name: Setup cmake
         if: matrix.os == 'windows-2022'
         uses: lukka/get-cmake@latest
