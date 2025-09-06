@@ -211,7 +211,7 @@ jobs:
           additionalCachedPaths: ${{ github.workspace }}/vcpkg
           # Use vcpkgArguments to perform the installation
           runVcpkgInstall: true
-          vcpkgJsonGlob: '.github\workflows\vcpkg\vcpkg.json'
+          vcpkgJsonGlob: '**/vcpkg.json'
         env:
           VCPKG_DEFAULT_TRIPLET: ${{ matrix.triplet }}
 
