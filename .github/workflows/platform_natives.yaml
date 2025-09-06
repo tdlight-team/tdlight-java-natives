@@ -49,6 +49,15 @@ jobs:
             echo "Submodule checkout failed. Retrying in 10 seconds..."
             sleep 10
           done
+      # Workaround for https://github.com/lukka/run-vcpkg/issues/251.
+      - name: Restore vcpkg Cache
+        if: matrix.os == 'windows-2022'
+        id: vcpkg-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ env._vcpkg_binary_cache }}
+          key: vcpkg-${{ matrix.config.os }}-${{ matrix.config.type }}-${{ hashFiles('vcpkg.json') }}
+          restore-keys: vcpkg-${{ matrix.config.os }}-${{ matrix.config.type }}-
       - name: Get version
         shell: bash
         run: |
@@ -203,17 +212,15 @@ jobs:
           # Just install vcpkg for now, do not install any ports in this step yet.
           setupOnly: true
           # Location of the vcpkg submoduleworkspace in the Git repository.
-          vcpkgDirectory: '${{ github.workspace }}/vcpkg'
+          vcpkgDirectory: '${{ github.workspace }}/.vcpkg'
           vcpkgGitCommitId: '${{ matrix.vcpkgCommitId}}'
-          # Since the cache must be invalidated when content of the vcpkg.json file changes, let's
-          # compute its hash and append this to the computed cache's key.
-          appendedCacheKey: ${{ hashFiles( '**/vcpkg.json' ) }}
-          # Ensure the vcpkg artifacts are cached, they are generated in the 'CMAKE_BINARY_DIR/vcpkg_installed' directory.
-          additionalCachedPaths: ${{ github.workspace }}/vcpkg
           # Use vcpkgArguments to perform the installation
           runVcpkgInstall: true
           vcpkgJsonGlob: '**/vcpkg.json'
         env:
+          _vcpkg_binary_cache: ${{ github.workspace }}/.vcpkg-cache
+          VCPKG_BINARY_SOURCES: clear;files,${{ github.workspace }}/.vcpkg-cache,readwrite
+          VCPKG_BUILD_TYPE: release
           VCPKG_DEFAULT_TRIPLET: ${{ matrix.triplet }}
           VCPKG_FEATURE_FLAGS: "ccache"
 
@@ -222,7 +229,14 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: vcpkg-build-logs-${{ matrix.os }}-${{ matrix.triplet }}
-          path: '${{ github.workspace }}/vcpkg/buildtrees/gperf/*.log'
+          path: '${{ github.workspace }}/.vcpkg/buildtrees/gperf/*.log'
+      - name: Save vcpkg Cache
+        if: matrix.os == 'windows-2022' && steps.vcpkg-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ env._vcpkg_binary_cache }}
+          key: vcpkg-${{ matrix.config.os }}-${{ matrix.config.type }}-${{ hashFiles('vcpkg.json') }}
+
       - name: Build
         if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'windows-')
         shell: bash

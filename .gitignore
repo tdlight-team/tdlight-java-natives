@@ -54,6 +54,7 @@ buildNumber.properties
 /generated/
 /generated-sealed/
 /generated-legacy/
+/.vcpkg/
 /vcpkg/
 linux-build.sh
 linux-deploy-release.sh
