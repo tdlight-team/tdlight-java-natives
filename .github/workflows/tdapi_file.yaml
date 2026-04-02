@@ -155,7 +155,7 @@ jobs:
           git config --global init.defaultBranch master
           git init
           git checkout -b "tdlight"
-          git remote add origin "https://${DOCS_DEPLOY_USERNAME}:${DOCS_DEPLOY_PASSWORD}@git.ignuranza.net/tdlight-team/tdlight-docs"
+          git remote add origin "ssh://git@ssh.git.mchv.eu:2222/tdlight-team/tdlight-docs.git"
           git config user.email "andrea@warp.ovh"
           git config user.name "Andrea Cavalli"
           git fetch --all
@@ -167,6 +167,4 @@ jobs:
         env:
           MAVEN_USERNAME: ${{ secrets.MCHV_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.MCHV_TOKEN }}
-          DOCS_DEPLOY_USERNAME: ${{ secrets.DOCS_DEPLOY_USERNAME }}
-          DOCS_DEPLOY_PASSWORD: ${{ secrets.DOCS_DEPLOY_PASSWORD }}
 
