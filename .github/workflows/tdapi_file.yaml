@@ -23,7 +23,7 @@ jobs:
       - name: Install SSH key
         uses: shimataro/ssh-key-action@v2
         with:
-          key: ${{ secrets.IG_SSH_KEY }}
+          key: ${{ secrets.IG_SSH_KEY_TEMP_DEPLOY }}
           name: id_rsa
           known_hosts: ${{ secrets.IG_KNOWN_HOSTS }}
       - name: Configure Git to use HTTP/1.1
