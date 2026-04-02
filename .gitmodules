@@ -1,6 +1,6 @@
 [submodule "tdlib-serializer"]
 	path = tdlib-serializer
-	url = https://git.ignuranza.net/tdlight-team/tdlib-serializer
+	url = https://github.com/tdlight-team/tdlib-serializer
 [submodule "implementations/tdlight"]
 	path = implementations/tdlight
-	url = https://git.ignuranza.net/tdlight-team/tdlight
+	url = https://github.com/tdlight-team/tdlight
