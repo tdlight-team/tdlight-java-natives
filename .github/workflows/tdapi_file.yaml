@@ -26,6 +26,12 @@ jobs:
           key: ${{ secrets.IG_SSH_KEY_TEMP_DEPLOY }}
           name: id_rsa
           known_hosts: ${{ secrets.IG_KNOWN_HOSTS }}
+          if_key_exists: replace
+      - name: Add host key for ssh.git.mchv.eu on port 2222
+        shell: bash
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -p 2222 ssh.git.mchv.eu >> ~/.ssh/known_hosts
       - name: Configure Git to use HTTP/1.1
         shell: bash
         run: |
