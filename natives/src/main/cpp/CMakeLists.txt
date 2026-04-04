@@ -66,7 +66,7 @@ add_library(tdjni SHARED
   td_jni.cpp
 )
 target_include_directories(tdjni PRIVATE ${JAVA_INCLUDE_PATH} ${JAVA_INCLUDE_PATH2})
-target_link_libraries(tdjni PRIVATE Td::TdStatic ${JAVA_JVM_LIBRARY})
+target_link_libraries(tdjni PRIVATE Td::TdJsonStatic Td::TdStatic ${JAVA_JVM_LIBRARY})
 target_compile_definitions(tdjni PRIVATE PACKAGE_NAME="${TD_API_JAVA_PACKAGE}" API_PACKAGE_NAME="${TD_API_SPEC_JAVA_PACKAGE}")
 set_property(TARGET tdjni PROPERTY CXX_STANDARD 14)
 
