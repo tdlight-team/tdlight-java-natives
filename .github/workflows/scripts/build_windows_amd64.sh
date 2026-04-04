@@ -36,6 +36,7 @@ cmake \
   -DZLIB_USE_STATIC_LIBS=True \
   -DOPENSSL_USE_STATIC_LIBS=True \
   -A x64 -DCMAKE_TOOLCHAIN_FILE="$VCPKG_DIR/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x64-windows-static -DOPENSSL_USE_STATIC_LIBS=ON \
+  -DOPENSSL_CRYPTO_LIBRARY="OpenSSL::Crypto" -DOPENSSL_SSL_LIBRARY="OpenSSL::SSL" \
   -DCMAKE_C_FLAGS_RELEASE="" \
   -DCMAKE_CXX_FLAGS_RELEASE="-O0 -DNDEBUG" \
   -DTD_ENABLE_LTO=OFF \
@@ -66,6 +67,7 @@ cmake \
   -DZLIB_USE_STATIC_LIBS=True \
   -DOPENSSL_USE_STATIC_LIBS=True \
   -A x64 -DCMAKE_TOOLCHAIN_FILE="$VCPKG_DIR/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x64-windows-static -DOPENSSL_USE_STATIC_LIBS=ON \
+  -DOPENSSL_CRYPTO_LIBRARY="OpenSSL::Crypto" -DOPENSSL_SSL_LIBRARY="OpenSSL::SSL" \
   -DTD_SKIP_BENCHMARK=ON -DTD_SKIP_TG_CLI=ON \
   -DTD_ENABLE_LTO=ON \
   -DTD_ENABLE_JNI=ON \
@@ -82,6 +84,7 @@ cmake \
   -DZLIB_USE_STATIC_LIBS=True \
   -DOPENSSL_USE_STATIC_LIBS=True \
   -A x64 -DCMAKE_TOOLCHAIN_FILE="$VCPKG_DIR/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x64-windows-static -DOPENSSL_USE_STATIC_LIBS=ON \
+  -DOPENSSL_CRYPTO_LIBRARY="OpenSSL::Crypto" -DOPENSSL_SSL_LIBRARY="OpenSSL::SSL" \
   -DTD_GENERATED_BINARIES_DIR="$(readlink -e ../../implementations/tdlight/td_tools_build/td/generate/Release)" \
   -DTD_SRC_DIR="$(readlink -e ../../implementations/tdlight)" \
   -DTD_ENABLE_LTO=ON \
