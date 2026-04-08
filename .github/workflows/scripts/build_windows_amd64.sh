@@ -2,8 +2,12 @@
 
 # Change working directory
 DEPLOY_DIR="$(pwd)"
-cp -r . /c/tmp_tdlight
-cd /c/tmp_tdlight
+BUILD_DIR="/c/tmp_tdlight"
+rm -rf "$BUILD_DIR"
+mkdir -p "$BUILD_DIR"
+cp -r . "$BUILD_DIR"
+cd "$BUILD_DIR"
+BUILD_DIR="$(pwd)"
 
 # Windows 2019
 REVISION="${REVISION:-1.0.0.0-SNAPSHOT}"
@@ -59,8 +63,12 @@ export CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -flto=thin -O3"
 
 # Build tdlib
 cd implementations/tdlight/build
-INSTALL_PREFIX="$(readlink -e ./td_bin/)"
-INSTALL_BINDIR="$(readlink -e ./td_bin/bin)"
+INSTALL_PREFIX="$BUILD_DIR/implementations/tdlight/build/td_bin"
+mkdir -p "$INSTALL_PREFIX"
+INSTALL_PREFIX="$(readlink -e "$INSTALL_PREFIX")"
+INSTALL_BINDIR="$INSTALL_PREFIX/bin"
+mkdir -p "$INSTALL_BINDIR"
+INSTALL_BINDIR="$(readlink -e "$INSTALL_BINDIR")"
 cmake \
   -DCMAKE_C_COMPILER_LAUNCHER="$CCACHE" \
   -DCMAKE_CXX_COMPILER_LAUNCHER="$CCACHE" \
@@ -78,6 +86,14 @@ cmake --build . --target install --config Release --parallel "$(nproc)"
 cd ../../../
 
 cd natives/build
+TD_GENERATED_BINARIES_DIR="$BUILD_DIR/implementations/tdlight/td_tools_build/td/generate/Release"
+TD_SRC_DIR="$BUILD_DIR/implementations/tdlight"
+TDNATIVES_BIN_DIR="$BUILD_DIR/natives/tdjni_bin"
+TDNATIVES_DOCS_BIN_DIR="$BUILD_DIR/natives/tdjni_docs"
+Td_DIR="$INSTALL_PREFIX/lib/cmake/Td"
+JAVA_SRC_DIR="$BUILD_DIR/natives/src/main/java"
+TDNATIVES_CPP_SRC_DIR="$BUILD_DIR/natives/src/main/cpp"
+
 cmake \
   -DCMAKE_C_COMPILER_LAUNCHER="$CCACHE" \
   -DCMAKE_CXX_COMPILER_LAUNCHER="$CCACHE" \
@@ -85,14 +101,14 @@ cmake \
   -DOPENSSL_USE_STATIC_LIBS=True \
   -A x64 -DCMAKE_TOOLCHAIN_FILE="$VCPKG_DIR/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x64-windows-static -DOPENSSL_USE_STATIC_LIBS=ON \
   -DOPENSSL_ROOT_DIR="$VCPKG_DIR/installed/x64-windows-static" \
-  -DTD_GENERATED_BINARIES_DIR="$(readlink -e ../../implementations/tdlight/td_tools_build/td/generate/Release)" \
-  -DTD_SRC_DIR="$(readlink -e ../../implementations/tdlight)" \
+  -DTD_GENERATED_BINARIES_DIR="$TD_GENERATED_BINARIES_DIR" \
+  -DTD_SRC_DIR="$TD_SRC_DIR" \
   -DTD_ENABLE_LTO=ON \
-  -DTDNATIVES_BIN_DIR="$(readlink -e ../tdjni_bin/)" \
-  -DTDNATIVES_DOCS_BIN_DIR="$(readlink -e ../tdjni_docs/)" \
-  -DTd_DIR:PATH="$(readlink -e ../../implementations/tdlight/build/td_bin/lib/cmake/Td)" \
-  -DJAVA_SRC_DIR="$(readlink -e ../src/main/java)" \
-  -DTDNATIVES_CPP_SRC_DIR="$(readlink -e ../src/main/cpp)" \
+  -DTDNATIVES_BIN_DIR="$TDNATIVES_BIN_DIR" \
+  -DTDNATIVES_DOCS_BIN_DIR="$TDNATIVES_DOCS_BIN_DIR" \
+  -DTd_DIR:PATH="$Td_DIR" \
+  -DJAVA_SRC_DIR="$JAVA_SRC_DIR" \
+  -DTDNATIVES_CPP_SRC_DIR="$TDNATIVES_CPP_SRC_DIR" \
   ../src/main/cpp
 cmake --build . --target install --config Release --parallel "$(nproc)"
 cd ..
