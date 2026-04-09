@@ -86,21 +86,22 @@ cmake --build . --target install --config Release --parallel "$(nproc)"
 cd ../../../
 
 cd natives/build
-TD_GENERATED_BINARIES_DIR="$BUILD_DIR/implementations/tdlight/td_tools_build/td/generate/Release"
-TD_SRC_DIR="$BUILD_DIR/implementations/tdlight"
-TDNATIVES_BIN_DIR="$BUILD_DIR/natives/tdjni_bin"
-TDNATIVES_DOCS_BIN_DIR="$BUILD_DIR/natives/tdjni_docs"
-Td_DIR="$INSTALL_PREFIX/lib/cmake/Td"
-JAVA_SRC_DIR="$BUILD_DIR/natives/src/main/java"
-TDNATIVES_CPP_SRC_DIR="$BUILD_DIR/natives/src/main/cpp"
+TD_GENERATED_BINARIES_DIR="$(cygpath -m "$BUILD_DIR/implementations/tdlight/td_tools_build/td/generate/Release")"
+TD_SRC_DIR="$(cygpath -m "$BUILD_DIR/implementations/tdlight")"
+TDNATIVES_BIN_DIR="$(cygpath -m "$BUILD_DIR/natives/tdjni_bin")"
+TDNATIVES_DOCS_BIN_DIR="$(cygpath -m "$BUILD_DIR/natives/tdjni_docs")"
+Td_DIR="$(cygpath -m "$INSTALL_PREFIX/lib/cmake/Td")"
+JAVA_SRC_DIR="$(cygpath -m "$BUILD_DIR/natives/src/main/java")"
+TDNATIVES_CPP_SRC_DIR="$(cygpath -m "$BUILD_DIR/natives/src/main/cpp")"
+WIN_VCPKG_DIR="$(cygpath -m "$VCPKG_DIR")"
 
 cmake \
   -DCMAKE_C_COMPILER_LAUNCHER="$CCACHE" \
   -DCMAKE_CXX_COMPILER_LAUNCHER="$CCACHE" \
   -DZLIB_USE_STATIC_LIBS=True \
   -DOPENSSL_USE_STATIC_LIBS=True \
-  -A x64 -DCMAKE_TOOLCHAIN_FILE="$VCPKG_DIR/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x64-windows-static -DOPENSSL_USE_STATIC_LIBS=ON \
-  -DOPENSSL_ROOT_DIR="$VCPKG_DIR/installed/x64-windows-static" \
+  -A x64 -DCMAKE_TOOLCHAIN_FILE="$WIN_VCPKG_DIR/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x64-windows-static -DOPENSSL_USE_STATIC_LIBS=ON \
+  -DOPENSSL_ROOT_DIR="$WIN_VCPKG_DIR/installed/x64-windows-static" \
   -DTD_GENERATED_BINARIES_DIR="$TD_GENERATED_BINARIES_DIR" \
   -DTD_SRC_DIR="$TD_SRC_DIR" \
   -DTD_ENABLE_LTO=ON \
