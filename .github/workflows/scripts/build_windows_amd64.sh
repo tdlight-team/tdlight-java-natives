@@ -30,13 +30,25 @@ fi
 export PATH="$PATH:/c/Python3:$PATH:/c/tools/php74:/c/PHP:/c/Program Files (x86)/Microsoft Visual Studio/2019/BuildTools/VC/Tools/MSVC/14.27.29110/bin/Hostx64/x64:/c/Program Files/OpenJDK/openjdk-11.0.8_10/bin:/c/Program Files/CMake/bin:/c/ProgramData/chocolatey/bin:/c/Program Files/apache-maven-3.6.3/bin:/c/ProgramData/chocolatey/lib/maven/apache-maven-3.6.3/bin:/c/ProgramData/chocolatey/lib/base64/tools:/c/Program Files/NASM"
 # Use the original vcpkg directory from the workspace, not the copy.
 # The cp -r may not fully copy vcpkg's installed packages (symlinks, large dirs).
-if [ -d "$DEPLOY_DIR/.vcpkg/installed" ]; then
-  export VCPKG_DIR="$(cd "$DEPLOY_DIR/.vcpkg" && pwd)"
-  echo "Using original vcpkg dir: $VCPKG_DIR"
+export VCPKG_DIR="$(cd "$DEPLOY_DIR/.vcpkg" && pwd)"
+echo "Using vcpkg dir: $VCPKG_DIR"
+
+# In manifest mode, vcpkg installs packages to vcpkg_installed/ next to vcpkg.json,
+# not to <vcpkg-root>/installed/. Detect the correct installed directory.
+if [ -d "$DEPLOY_DIR/vcpkg_installed/x64-windows-static" ]; then
+  VCPKG_INSTALLED_BASE="$DEPLOY_DIR/vcpkg_installed"
+  echo "Found manifest-mode vcpkg_installed at: $VCPKG_INSTALLED_BASE"
+elif [ -d "$VCPKG_DIR/installed" ]; then
+  VCPKG_INSTALLED_BASE="$VCPKG_DIR/installed"
+  echo "Found classic-mode installed at: $VCPKG_INSTALLED_BASE"
 else
-  export VCPKG_DIR="$(readlink -e ./.vcpkg)"
-  echo "Using copied vcpkg dir: $VCPKG_DIR"
+  echo "ERROR: Cannot find vcpkg installed packages."
+  echo "Checked: $DEPLOY_DIR/vcpkg_installed/ and $VCPKG_DIR/installed/"
+  ls -la "$DEPLOY_DIR/" | grep vcpkg || true
+  ls -la "$VCPKG_DIR/" || true
+  exit 1
 fi
+export VCPKG_INSTALLED_DIR="$VCPKG_INSTALLED_BASE"
 
 echo "CMAKE_TOOLCHAIN_FILE=$VCPKG_DIR/scripts/buildsystems/vcpkg.cmake"
 
@@ -48,7 +60,8 @@ cmake \
   -DZLIB_USE_STATIC_LIBS=True \
   -DOPENSSL_USE_STATIC_LIBS=True \
   -A x64 -DCMAKE_TOOLCHAIN_FILE="$(cygpath -m "$VCPKG_DIR/scripts/buildsystems/vcpkg.cmake")" -DVCPKG_TARGET_TRIPLET=x64-windows-static -DOPENSSL_USE_STATIC_LIBS=ON \
-  -DOPENSSL_ROOT_DIR="$(cygpath -m "$VCPKG_DIR/installed/x64-windows-static")" \
+  -DOPENSSL_ROOT_DIR="$(cygpath -m "$VCPKG_INSTALLED_BASE/x64-windows-static")" \
+  -DVCPKG_INSTALLED_DIR="$(cygpath -m "$VCPKG_INSTALLED_BASE")" \
   -DCMAKE_C_FLAGS_RELEASE="" \
   -DCMAKE_CXX_FLAGS_RELEASE="-O0 -DNDEBUG" \
   -DTD_ENABLE_LTO=OFF \
@@ -71,7 +84,7 @@ export CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -flto=thin -O3"
 
 # Verify vcpkg OpenSSL is installed
 echo "=== Checking vcpkg OpenSSL installation ==="
-VCPKG_OPENSSL_DIR="$VCPKG_DIR/installed/x64-windows-static"
+VCPKG_OPENSSL_DIR="$VCPKG_INSTALLED_BASE/x64-windows-static"
 if [ -d "$VCPKG_OPENSSL_DIR" ]; then
   echo "vcpkg installed dir exists: $VCPKG_OPENSSL_DIR"
   echo "Contents of lib/:"
@@ -80,8 +93,6 @@ if [ -d "$VCPKG_OPENSSL_DIR" ]; then
   ls "$VCPKG_OPENSSL_DIR/include/openssl/" 2>/dev/null | head -10 || echo "WARNING: No OpenSSL headers found"
 else
   echo "ERROR: vcpkg installed directory not found at $VCPKG_OPENSSL_DIR"
-  echo "Checking DEPLOY_DIR vcpkg: $DEPLOY_DIR/.vcpkg/installed/x64-windows-static"
-  ls -la "$DEPLOY_DIR/.vcpkg/installed/x64-windows-static/lib/" 2>/dev/null || echo "Not found in DEPLOY_DIR either"
   echo "Ensure 'vcpkg install openssl:x64-windows-static' has been run."
   exit 1
 fi
@@ -95,7 +106,7 @@ INSTALL_PREFIX="$(readlink -e "$INSTALL_PREFIX")"
 INSTALL_BINDIR="$INSTALL_PREFIX/bin"
 mkdir -p "$INSTALL_BINDIR"
 INSTALL_BINDIR="$(readlink -e "$INSTALL_BINDIR")"
-WIN_VCPKG_INSTALLED="$(cygpath -m "$VCPKG_DIR/installed/x64-windows-static")"
+WIN_VCPKG_INSTALLED="$(cygpath -m "$VCPKG_INSTALLED_BASE/x64-windows-static")"
 cmake \
   -DCMAKE_C_COMPILER_LAUNCHER="$CCACHE" \
   -DCMAKE_CXX_COMPILER_LAUNCHER="$CCACHE" \
@@ -104,6 +115,7 @@ cmake \
   -A x64 -DCMAKE_TOOLCHAIN_FILE="$(cygpath -m "$VCPKG_DIR/scripts/buildsystems/vcpkg.cmake")" -DVCPKG_TARGET_TRIPLET=x64-windows-static -DOPENSSL_USE_STATIC_LIBS=ON \
   -DOPENSSL_ROOT_DIR="$WIN_VCPKG_INSTALLED" \
   -DCMAKE_PREFIX_PATH="$WIN_VCPKG_INSTALLED" \
+  -DVCPKG_INSTALLED_DIR="$(cygpath -m "$VCPKG_INSTALLED_BASE")" \
   -DTD_SKIP_BENCHMARK=ON -DTD_SKIP_TG_CLI=ON \
   -DTD_ENABLE_LTO=ON \
   -DTD_ENABLE_JNI=ON \
@@ -138,7 +150,8 @@ cmake \
   -DZLIB_USE_STATIC_LIBS=True \
   -DOPENSSL_USE_STATIC_LIBS=True \
   -A x64 -DCMAKE_TOOLCHAIN_FILE="$WIN_VCPKG_DIR/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x64-windows-static -DOPENSSL_USE_STATIC_LIBS=ON \
-  -DOPENSSL_ROOT_DIR="$WIN_VCPKG_DIR/installed/x64-windows-static" \
+  -DOPENSSL_ROOT_DIR="$(cygpath -m "$VCPKG_INSTALLED_BASE/x64-windows-static")" \
+  -DVCPKG_INSTALLED_DIR="$(cygpath -m "$VCPKG_INSTALLED_BASE")" \
   -DTD_GENERATED_BINARIES_DIR="$TD_GENERATED_BINARIES_DIR" \
   -DTD_SRC_DIR="$TD_SRC_DIR" \
   -DTD_ENABLE_LTO=ON \
