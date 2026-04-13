@@ -83,6 +83,15 @@ cmake \
   -DCMAKE_INSTALL_BINDIR:PATH="$(cygpath -m "$INSTALL_BINDIR")" \
   ..
 cmake --build . --target install --config Release --parallel "$(nproc)"
+
+# Verify that TdConfig.cmake was installed (OpenSSL must be found for full build)
+INSTALL_TD_CMAKE_DIR="$INSTALL_PREFIX/lib/cmake/Td"
+if [ ! -f "$INSTALL_TD_CMAKE_DIR/TdConfig.cmake" ]; then
+  echo "ERROR: TdConfig.cmake was not installed at $INSTALL_TD_CMAKE_DIR"
+  echo "This usually means OpenSSL was not found during the build, causing CMakeLists.txt to return() early."
+  echo "Check that vcpkg OpenSSL is properly installed for triplet x64-windows-static."
+  exit 1
+fi
 cd ../../../
 
 cd natives/build
