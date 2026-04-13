@@ -61,6 +61,19 @@ export CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -fno-omit-frame-pointer -ffunction-se
 export CMAKE_SHARED_LINKER_FLAGS="${CMAKE_SHARED_LINKER_FLAGS} -Wl,--gc-sections -Wl,--exclude-libs,ALL"
 export CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -flto=thin -O3"
 
+# Verify vcpkg OpenSSL is installed
+echo "=== Checking vcpkg OpenSSL installation ==="
+VCPKG_OPENSSL_DIR="$VCPKG_DIR/installed/x64-windows-static"
+if [ -d "$VCPKG_OPENSSL_DIR" ]; then
+  echo "vcpkg installed dir exists: $VCPKG_OPENSSL_DIR"
+  ls -la "$VCPKG_OPENSSL_DIR/lib/"*ssl* "$VCPKG_OPENSSL_DIR/lib/"*crypto* 2>/dev/null || echo "WARNING: No OpenSSL library files found in $VCPKG_OPENSSL_DIR/lib/"
+  ls -la "$VCPKG_OPENSSL_DIR/include/openssl/" 2>/dev/null | head -5 || echo "WARNING: No OpenSSL headers found in $VCPKG_OPENSSL_DIR/include/openssl/"
+else
+  echo "ERROR: vcpkg installed directory not found at $VCPKG_OPENSSL_DIR"
+  echo "Ensure 'vcpkg install openssl:x64-windows-static' has been run."
+fi
+echo "=== End OpenSSL check ==="
+
 # Build tdlib
 cd implementations/tdlight/build
 INSTALL_PREFIX="$BUILD_DIR/implementations/tdlight/build/td_bin"
@@ -79,6 +92,7 @@ cmake \
   -DTD_SKIP_BENCHMARK=ON -DTD_SKIP_TG_CLI=ON \
   -DTD_ENABLE_LTO=ON \
   -DTD_ENABLE_JNI=ON \
+  -DCMAKE_FIND_DEBUG_MODE=ON \
   -DCMAKE_INSTALL_PREFIX:PATH="$(cygpath -m "$INSTALL_PREFIX")" \
   -DCMAKE_INSTALL_BINDIR:PATH="$(cygpath -m "$INSTALL_BINDIR")" \
   ..
