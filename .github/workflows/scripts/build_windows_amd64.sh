@@ -79,8 +79,8 @@ cmake \
   -DTD_SKIP_BENCHMARK=ON -DTD_SKIP_TG_CLI=ON \
   -DTD_ENABLE_LTO=ON \
   -DTD_ENABLE_JNI=ON \
-  -DCMAKE_INSTALL_PREFIX:PATH="$INSTALL_PREFIX" \
-  -DCMAKE_INSTALL_BINDIR:PATH="$INSTALL_BINDIR" \
+  -DCMAKE_INSTALL_PREFIX:PATH="$(cygpath -m "$INSTALL_PREFIX")" \
+  -DCMAKE_INSTALL_BINDIR:PATH="$(cygpath -m "$INSTALL_BINDIR")" \
   ..
 cmake --build . --target install --config Release --parallel "$(nproc)"
 cd ../../../
@@ -108,6 +108,7 @@ cmake \
   -DTDNATIVES_BIN_DIR="$TDNATIVES_BIN_DIR" \
   -DTDNATIVES_DOCS_BIN_DIR="$TDNATIVES_DOCS_BIN_DIR" \
   -DTd_DIR:PATH="$Td_DIR" \
+  -DCMAKE_PREFIX_PATH="$(cygpath -m "$INSTALL_PREFIX")" \
   -DJAVA_SRC_DIR="$JAVA_SRC_DIR" \
   -DTDNATIVES_CPP_SRC_DIR="$TDNATIVES_CPP_SRC_DIR" \
   ../src/main/cpp
