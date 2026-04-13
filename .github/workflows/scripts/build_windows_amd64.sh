@@ -35,6 +35,7 @@ echo "Using vcpkg dir: $VCPKG_DIR"
 
 # In manifest mode, vcpkg installs packages to vcpkg_installed/ next to vcpkg.json,
 # not to <vcpkg-root>/installed/. Detect the correct installed directory.
+# lukka/run-vcpkg@v11 may place vcpkg_installed under a UUID-named subdirectory.
 if [ -d "$DEPLOY_DIR/vcpkg_installed/x64-windows-static" ]; then
   VCPKG_INSTALLED_BASE="$DEPLOY_DIR/vcpkg_installed"
   echo "Found manifest-mode vcpkg_installed at: $VCPKG_INSTALLED_BASE"
@@ -42,11 +43,18 @@ elif [ -d "$VCPKG_DIR/installed" ]; then
   VCPKG_INSTALLED_BASE="$VCPKG_DIR/installed"
   echo "Found classic-mode installed at: $VCPKG_INSTALLED_BASE"
 else
-  echo "ERROR: Cannot find vcpkg installed packages."
-  echo "Checked: $DEPLOY_DIR/vcpkg_installed/ and $VCPKG_DIR/installed/"
-  ls -la "$DEPLOY_DIR/" | grep vcpkg || true
-  ls -la "$VCPKG_DIR/" || true
-  exit 1
+  # Search for vcpkg_installed under a UUID subdirectory (lukka/run-vcpkg@v11)
+  FOUND_DIR="$(find "$DEPLOY_DIR" -maxdepth 3 -type d -name "x64-windows-static" -path "*/vcpkg_installed/*" 2>/dev/null | head -1)"
+  if [ -n "$FOUND_DIR" ]; then
+    VCPKG_INSTALLED_BASE="$(dirname "$FOUND_DIR")"
+    echo "Found vcpkg_installed (via search) at: $VCPKG_INSTALLED_BASE"
+  else
+    echo "ERROR: Cannot find vcpkg installed packages."
+    echo "Checked: $DEPLOY_DIR/vcpkg_installed/ and $VCPKG_DIR/installed/"
+    ls -la "$DEPLOY_DIR/" | grep vcpkg || true
+    ls -la "$VCPKG_DIR/" || true
+    exit 1
+  fi
 fi
 export VCPKG_INSTALLED_DIR="$VCPKG_INSTALLED_BASE"
 
