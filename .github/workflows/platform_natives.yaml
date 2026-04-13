@@ -205,16 +205,12 @@ jobs:
       - name: Setup NASM
         if: matrix.os == 'windows-2022'
         uses: ilammy/setup-nasm@v1
-      - name: Restore artifacts, or setup vcpkg (do not install any package)
+      - name: Setup vcpkg and install packages
         if: matrix.os == 'windows-2022'
         uses: lukka/run-vcpkg@v11
         with:
-          # Just install vcpkg for now, do not install any ports in this step yet.
-          setupOnly: true
-          # Location of the vcpkg submoduleworkspace in the Git repository.
           vcpkgDirectory: '${{ github.workspace }}/.vcpkg'
           vcpkgGitCommitId: '${{ matrix.vcpkgCommitId}}'
-          # Use vcpkgArguments to perform the installation
           runVcpkgInstall: true
           vcpkgJsonGlob: '**/vcpkg.json'
         env:
@@ -228,7 +224,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: vcpkg-build-logs-${{ matrix.os }}-${{ matrix.triplet }}
-          path: '${{ github.workspace }}/.vcpkg/buildtrees/gperf/*.log'
+          path: |
+            ${{ github.workspace }}/.vcpkg/buildtrees/**/*.log
       - name: Save vcpkg Cache
         if: matrix.os == 'windows-2022' && steps.vcpkg-cache.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4
