@@ -28,7 +28,15 @@ fi
 
 # Fix path
 export PATH="$PATH:/c/Python3:$PATH:/c/tools/php74:/c/PHP:/c/Program Files (x86)/Microsoft Visual Studio/2019/BuildTools/VC/Tools/MSVC/14.27.29110/bin/Hostx64/x64:/c/Program Files/OpenJDK/openjdk-11.0.8_10/bin:/c/Program Files/CMake/bin:/c/ProgramData/chocolatey/bin:/c/Program Files/apache-maven-3.6.3/bin:/c/ProgramData/chocolatey/lib/maven/apache-maven-3.6.3/bin:/c/ProgramData/chocolatey/lib/base64/tools:/c/Program Files/NASM"
-export VCPKG_DIR="$(readlink -e ./.vcpkg)"
+# Use the original vcpkg directory from the workspace, not the copy.
+# The cp -r may not fully copy vcpkg's installed packages (symlinks, large dirs).
+if [ -d "$DEPLOY_DIR/.vcpkg/installed" ]; then
+  export VCPKG_DIR="$(cd "$DEPLOY_DIR/.vcpkg" && pwd)"
+  echo "Using original vcpkg dir: $VCPKG_DIR"
+else
+  export VCPKG_DIR="$(readlink -e ./.vcpkg)"
+  echo "Using copied vcpkg dir: $VCPKG_DIR"
+fi
 
 echo "CMAKE_TOOLCHAIN_FILE=$VCPKG_DIR/scripts/buildsystems/vcpkg.cmake"
 
@@ -39,8 +47,8 @@ cmake \
   -DCMAKE_CXX_COMPILER_LAUNCHER="$CCACHE" \
   -DZLIB_USE_STATIC_LIBS=True \
   -DOPENSSL_USE_STATIC_LIBS=True \
-  -A x64 -DCMAKE_TOOLCHAIN_FILE="$VCPKG_DIR/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x64-windows-static -DOPENSSL_USE_STATIC_LIBS=ON \
-  -DOPENSSL_ROOT_DIR="$VCPKG_DIR/installed/x64-windows-static" \
+  -A x64 -DCMAKE_TOOLCHAIN_FILE="$(cygpath -m "$VCPKG_DIR/scripts/buildsystems/vcpkg.cmake")" -DVCPKG_TARGET_TRIPLET=x64-windows-static -DOPENSSL_USE_STATIC_LIBS=ON \
+  -DOPENSSL_ROOT_DIR="$(cygpath -m "$VCPKG_DIR/installed/x64-windows-static")" \
   -DCMAKE_C_FLAGS_RELEASE="" \
   -DCMAKE_CXX_FLAGS_RELEASE="-O0 -DNDEBUG" \
   -DTD_ENABLE_LTO=OFF \
@@ -66,11 +74,16 @@ echo "=== Checking vcpkg OpenSSL installation ==="
 VCPKG_OPENSSL_DIR="$VCPKG_DIR/installed/x64-windows-static"
 if [ -d "$VCPKG_OPENSSL_DIR" ]; then
   echo "vcpkg installed dir exists: $VCPKG_OPENSSL_DIR"
-  ls -la "$VCPKG_OPENSSL_DIR/lib/"*ssl* "$VCPKG_OPENSSL_DIR/lib/"*crypto* 2>/dev/null || echo "WARNING: No OpenSSL library files found in $VCPKG_OPENSSL_DIR/lib/"
-  ls -la "$VCPKG_OPENSSL_DIR/include/openssl/" 2>/dev/null | head -5 || echo "WARNING: No OpenSSL headers found in $VCPKG_OPENSSL_DIR/include/openssl/"
+  echo "Contents of lib/:"
+  ls -la "$VCPKG_OPENSSL_DIR/lib/" 2>/dev/null || echo "WARNING: lib/ directory not found"
+  echo "Contents of include/openssl/ (first 10):"
+  ls "$VCPKG_OPENSSL_DIR/include/openssl/" 2>/dev/null | head -10 || echo "WARNING: No OpenSSL headers found"
 else
   echo "ERROR: vcpkg installed directory not found at $VCPKG_OPENSSL_DIR"
+  echo "Checking DEPLOY_DIR vcpkg: $DEPLOY_DIR/.vcpkg/installed/x64-windows-static"
+  ls -la "$DEPLOY_DIR/.vcpkg/installed/x64-windows-static/lib/" 2>/dev/null || echo "Not found in DEPLOY_DIR either"
   echo "Ensure 'vcpkg install openssl:x64-windows-static' has been run."
+  exit 1
 fi
 echo "=== End OpenSSL check ==="
 
@@ -82,13 +95,15 @@ INSTALL_PREFIX="$(readlink -e "$INSTALL_PREFIX")"
 INSTALL_BINDIR="$INSTALL_PREFIX/bin"
 mkdir -p "$INSTALL_BINDIR"
 INSTALL_BINDIR="$(readlink -e "$INSTALL_BINDIR")"
+WIN_VCPKG_INSTALLED="$(cygpath -m "$VCPKG_DIR/installed/x64-windows-static")"
 cmake \
   -DCMAKE_C_COMPILER_LAUNCHER="$CCACHE" \
   -DCMAKE_CXX_COMPILER_LAUNCHER="$CCACHE" \
   -DZLIB_USE_STATIC_LIBS=True \
   -DOPENSSL_USE_STATIC_LIBS=True \
-  -A x64 -DCMAKE_TOOLCHAIN_FILE="$VCPKG_DIR/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x64-windows-static -DOPENSSL_USE_STATIC_LIBS=ON \
-  -DOPENSSL_ROOT_DIR="$VCPKG_DIR/installed/x64-windows-static" \
+  -A x64 -DCMAKE_TOOLCHAIN_FILE="$(cygpath -m "$VCPKG_DIR/scripts/buildsystems/vcpkg.cmake")" -DVCPKG_TARGET_TRIPLET=x64-windows-static -DOPENSSL_USE_STATIC_LIBS=ON \
+  -DOPENSSL_ROOT_DIR="$WIN_VCPKG_INSTALLED" \
+  -DCMAKE_PREFIX_PATH="$WIN_VCPKG_INSTALLED" \
   -DTD_SKIP_BENCHMARK=ON -DTD_SKIP_TG_CLI=ON \
   -DTD_ENABLE_LTO=ON \
   -DTD_ENABLE_JNI=ON \
