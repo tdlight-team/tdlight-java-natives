@@ -80,3 +80,5 @@ win-deps.sh
 natives/.ci-friendly-pom.xml
 
 *.so
+/api/src/main/java-sealed/it/tdlight/jni/TdApi.java
+/api/src/main/java-legacy/it/tdlight/jni/TdApi.java
