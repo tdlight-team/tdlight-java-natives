@@ -1,6 +1,13 @@
 #!/bin/bash -ex
 REVISION="${REVISION:-1.0.0.0-SNAPSHOT}"
 
+SERIALIZER_TEST_CLASSES="$(mktemp -d)"
+trap 'rm -rf "$SERIALIZER_TEST_CLASSES"' EXIT
+javac -d "$SERIALIZER_TEST_CLASSES" ./tdlib-serializer/transform.java ./tdlib-serializer/transform_test.java
+java -cp "$SERIALIZER_TEST_CLASSES" transform_test
+rm -rf "$SERIALIZER_TEST_CLASSES"
+trap - EXIT
+
 #export CC="ccache /usr/bin/clang"
 #export CXX="ccache /usr/bin/clang++"
 
